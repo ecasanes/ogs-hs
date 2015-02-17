@@ -1,0 +1,32 @@
+.btn{
+	&.btn-bordered{
+		background-color:#fff !important;
+		&.btn-danger{
+			color:#d9534f !important;
+		}
+
+		&.btn-info{
+			color:#5bc0de !important;
+		}
+
+		&.btn-primary{
+			color:#357ebd !important;
+		}
+
+		&.btn-success{
+			color:#5cb85c !important;
+		}
+	}
+
+	&.attach-btn{
+		color:#5bc0de !important;
+	}
+}
+
+
+[class^="pe-7s-"], 
+[class*=" pe-7s-"]{
+	&.no-line-height{
+		line-height:0;
+	}
+}

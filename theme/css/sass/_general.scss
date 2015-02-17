@@ -1,0 +1,37 @@
+#panLeft {
+    left:0px;
+}
+#panRight {
+    right:0px;
+}
+
+#my-weekly-plan{
+	.action{
+		width:110px;
+	}
+}
+
+#scollUp{
+
+	right: 0px !important;
+  	padding: 13px 18px !important;
+
+	@media screen and (max-width: 768px){
+		padding: 5px 10px !important;
+	}
+}
+
+#criticality-analysis-scoring{
+  width:350px;
+}
+
+#project-leader-ddl {
+	.tt-dropdown-menu{
+		max-height: 150px;
+  		overflow-y: auto;
+	}
+}
+
+#hub-action-tracker-add-top{
+	margin-top:-5px;
+}

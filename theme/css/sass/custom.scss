@@ -1,0 +1,170 @@
+	@import "variables";
+@import "mixins";
+
+@import "header";
+@import "navigation";
+@import "sidebar";
+@import "footer";
+
+@import "login";
+@import "table";
+@import "panel";
+@import "modal";
+@import "document";
+@import "buttons";
+
+@import "timeline";
+
+@import "classes";
+
+.fileupload input {
+max-width: none;
+}
+
+.ie{
+	.fileupload{
+		.form-control-file{
+			z-index:1;
+			/*width:117% !important;*/
+			background:none !important;
+			cursor:pointer !important;
+		}
+	}
+}
+
+
+.row, .row-table{
+	&.no-top-margin{
+		margin-top:-19px;
+	}
+}
+
+
+.nav-tabs{
+	/* background:#fff;
+	border:1px solid #ccc;
+	border-radius:0; */
+}
+
+
+.fileinput .form-control{
+	/* border:1px solid #ccc;
+	overflow:none; */
+}
+
+
+.tab-content{
+	box-shadow:none !important;
+}
+
+
+.page-header{
+	margin:18px 0 18px !important;
+	padding-bottom:5px !important;
+}
+
+
+#scrollUp {
+	bottom: 2px !important;
+	right: 2px !important;
+	background-color: #555;
+	color: #fff;
+	font-size: 12px;
+	font-family: sans-serif;
+	text-decoration: none;
+	opacity: .9;
+	padding: 12px 16px;
+	-webkit-border-radius: 16px;
+	-moz-border-radius: 16px;
+	border-radius: 16px;
+	-webkit-transition: background 200ms linear;
+	-moz-transition: background 200ms linear;
+	-o-transition: background 200ms linear;
+	transition: background 200ms linear;
+	-webkit-backface-visibility: hidden;
+
+}
+.my-account{
+	.action{
+		&.update-status{
+			width:110px !important;
+		}
+	}
+}
+
+.modal-row{
+	margin-bottom:10px;
+}
+
+.filter-spinner{
+	margin-top:10px;
+}
+
+.file_manager_filename{
+	width: 35%;
+}
+
+.status-btn{
+	border-radius:3px;
+	padding:3px;
+}
+
+/*Colors*/
+.bg-grey{
+	background: #eee;
+}
+
+.bg-blue{
+	background: #2E64FE;
+}
+
+.bg-red{
+	background: red;
+}
+
+.bg-green{
+	background: green;
+}
+
+.bg-violet{
+	background: #EE82EE;
+}
+
+#critical-equipment{
+	.ref{
+		width:30px;
+	}
+
+	.parent-sce{
+		width:100px;
+	}
+
+	.tag-no{
+		width:110px;
+	}
+
+	.component{
+		width:50px;
+	}
+}
+
+.bg-padding{
+	padding: 5px;
+}
+
+.sticky_column{
+	z-index: 1;
+	background: white;
+}
+
+.is_stuck{
+	position: fixed !important;
+	top: 0px !important;
+	height: 319px !important;
+}
+
+#roles-checkbox{
+	position: fixed;
+    top: 0px; display:none;
+    background-color:white;
+}

@@ -1,0 +1,143 @@
+
+#action-tracker-ajax{
+    /*width: 3000px !important;*/
+
+    td.doc-code{
+      width: 250px !important;
+
+      select.table-select{
+        width: 212px !important;
+        overflow:hidden; 
+        white-space:nowrap; 
+        text-overflow:ellipsis;
+      }
+    }
+
+    td.subaction-doc-code{
+      width: 250px !important;
+
+      select.table-select{
+        width: 212px !important;
+        overflow:hidden; 
+        white-space:nowrap; 
+        text-overflow:ellipsis;
+      }
+    }
+}
+
+.fix-row-height{
+  height: 45px;
+}
+
+.table-bordered, 
+.table-bordered>tbody>tr>td, 
+.table-bordered>tbody>tr>th, 
+.table-bordered>tfoot>tr>td, 
+.table-bordered>tfoot>tr>th, 
+.table-bordered>thead>tr>td, 
+.table-bordered>thead>tr>th{
+  @media print{
+    border: 1px solid #000 !important;
+  }
+  
+}
+
+.dynatable-search{
+  input{
+    @media screen and (max-width: 768px){
+      margin-top: 5px !important;
+    }
+    
+  }
+}
+
+ul{
+  .pagination{
+    @media screen and (max-width: 768px){
+      margin-top: 5px !important;
+    }
+  }
+}
+
+.dynatable-record-count{
+  @media screen and (max-width: 768px){
+    margin-bottom: 20px !important;
+    margin-top: 50px !important;
+  }
+}
+
+.dynatable-per-page{
+  @media screen and (max-width: 768px){
+    display: inline !important;
+    float: left !important;
+  }
+}
+
+.dynatable-per-page-select{
+  @media screen and (max-width: 768px){
+    margin-top: 5px !important;
+  }
+}
+
+#mcdr-register-table{
+  width: 6000px;
+
+  th{
+    text-align: center;
+  }
+  
+
+  th.large-width{
+    width: 500px !important;
+  }
+
+  th.larger-width{
+    width: 800px !important;
+  }
+}
+
+#mcdr-table{
+  th{
+    text-align: center;
+  }
+}
+
+.mcdr-view-table{
+  td.fixed-medium-width{
+    width: 150px;
+  }
+  td.fixed-large-width{
+    width: 250px;
+  }
+}
+
+
+.table-label{
+  &.label-large{
+    @media print{
+      width:auto !important;
+    }
+  }
+
+  &.label-xxs{
+    @media print{
+      width:auto !important;
+    }
+  }
+  &.label-small{
+    @media print{
+      width:auto !important;
+    }
+  }
+
+  &.label-full-width{
+    width:100% !important;
+  }
+}
+
+
+.no-border{
+  td{
+    border-top:none;
+  }
+}

@@ -1,0 +1,46 @@
+body{
+  height:100% !important;
+}
+
+header{
+  &.header-fixed{
+    position:fixed;
+    z-index:1000;
+    width:100%;
+    border-bottom:1px solid #ccc;
+  }
+}
+
+#social-icons{
+  padding-top:5px;
+}
+
+.page-heading{
+  @media print{
+    border:none !important;
+    margin-top:0 !important;
+    display:none;
+  }
+}
+
+.page-wrapper{
+  @media print{
+    border:none !important;
+    margin-top:0 !important;
+  }
+}
+
+.page-content{
+  @media print{
+    border:none !important;
+    margin-top:0 !important;
+  }
+}
+
+.navbar-default{
+  z-index: 1;
+}
+
+.text-grey{
+  color: #bbb;
+}

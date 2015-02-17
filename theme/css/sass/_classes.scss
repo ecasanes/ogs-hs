@@ -1,0 +1,270 @@
+
+.page-wrapper{
+  /* padding-top:50px; */
+}
+
+.dynamic-row.with-padding{
+  padding-left:15px;
+  padding-right:15px;
+}
+
+.fa{
+  &.fa-lg-2{
+    font-size:1.9em;
+    line-height:0.75em;
+    vertical-align: -15%;
+  }
+}
+
+.document-status{
+  margin-top: 30px;
+  margin-bottom:-10px;
+}
+
+.horizontal-overflow-scroll{
+  overflow-x: scroll;
+}
+
+.select2-choice{
+  border-radius:0px !important;
+}
+
+.panner {
+    border:1px solid black;
+    display:block;
+    position:absolute;
+    width:50px;
+    height:50px;
+    top:45%;
+}
+
+.question-mark-tooltip{
+  color: #41914C;
+  cursor: pointer;
+}
+
+
+.control-label{
+  font-weight:bold;
+  @media screen and (max-width: 768px){
+    text-align:left !important;
+    margin-bottom:10px !important;
+  }
+}
+
+
+.input-small{
+  height:20px;
+}
+
+.no-wrap-style{
+  white-space:nowrap;
+}
+
+.sample{
+    position: relative;
+}
+
+.arrow-scroll{
+  top: 5px;
+  width: 100%;
+  position: absolute !important;
+  z-index: 999;
+}
+
+a{
+  .glyphicon-arrow-left{
+    text-decoration: none;
+    font-size: 20px;
+  }
+
+  .glyphicon-arrow-right{
+    text-decoration: none;
+    font-size: 20px;
+  }
+}
+
+.btn-print{
+  display:none;
+  @media print{
+    display:block;
+  }
+}
+
+.print-break{
+  @media print{
+    display: block; page-break-before: always;
+  }
+}
+
+
+.col-sm-6.tinymce-textarea{
+  @media screen and (min-width: 769px){
+    width:49.99% !important;
+  }
+}
+
+.text-required{
+  color:red;
+}
+
+
+.criticality-criteria{
+  .sub-title{
+    width:120px;
+  }
+
+  .value{
+    width:80px;
+  }
+
+  .option-name{
+     width:80px;
+  }
+
+  .action{
+    width:80px;
+  }
+}
+
+.profile-body{
+  h5{
+    color:#fff;
+  }
+}
+
+.count-value{
+  font-size: 13px !important; 
+  margin: 25px 0 0 62px !important;
+}
+
+.panel-heading{
+  .panel-code{
+    font-weight: bold;
+  }
+}
+
+
+.datepicker{
+  z-index:1151 !important;
+}
+
+.lower-tb-image{
+  height: 210px !important;
+}
+
+.marker{
+  width: 27px;
+  height: 40px;
+  position: absolute;
+  left: -13px;
+  top: -35px;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 25px;
+  letter-spacing: -1px;
+  text-align: center;
+  color: #fff;
+  &.black{
+    background:url(../../images/image_notes/marker_black.png);
+    /* position:absolute;
+    width:27px;
+    height:39px;
+    color:#fff;
+    font-weight:bold;
+    text-align:center; */
+  }
+  &:hover{
+    cursor:pointer;
+  }
+}
+
+/* gantt chart */
+.gantt{
+  @media screen and (max-width: 768px){
+    width: 700px;
+  }
+}
+
+.gantt-color-green{
+  background-color: #2ecc71 !important; //#5CB85C
+}
+
+.gantt-color-orange{
+  background-color: #f39c12 !important;
+}
+
+.gantt-color-red{
+  background-color: #e74c3c !important;
+
+}
+
+.gantt-color-blue{
+  background-color: #2980b9 !important;
+}
+
+.gantt-color-violet{
+  background-color: #8e44ad !important;
+}
+
+.fn-gantt{
+  .bar{
+    .fn-label {
+      color: #fff !important;
+      text-shadow: none !important;
+    }  
+  }
+
+  .today{
+    background-color: #3498db !important;
+    color: #fff !important;
+  }
+
+  .month{
+    background-color: #e74c3c !important;
+    color: #fff !important;
+    text-shadow: none !important;
+    border-top: 1px solid #07262E !important;
+    border-bottom: 1px solid #07262E !important;
+    border-left: 1px solid #07262E !important;
+    font-size: 13px !important;
+  }
+
+  .year{
+    background-color: #7f8c8d !important;
+    color: #fff !important;
+    text-shadow: none !important;
+    border-top: 1px solid #07262E !important;
+    border-bottom: 1px solid #95a5a6 !important;
+    border-left: 1px solid #07262E !important;
+    font-size: 13px !important;
+  }
+
+  .date{
+    border-bottom: 1px solid #07262E !important;
+    border-left: 1px solid #07262E !important;
+  }
+
+  .day{
+    border-bottom: 1px solid #07262E !important;
+    border-left: 1px solid #07262E !important;
+  }
+}  
+
+.fa-question-circle{
+  cursor:pointer !important; 
+}
+
+
+
+.datepicker-dropdown.datepicker-orient-bottom:before{
+  display:none !important;
+  border:none;
+  background:none;
+}
+
+.datepicker-dropdown.datepicker-orient-bottom:after{
+  display:none !important;
+  border:none;
+  background:none;
+}

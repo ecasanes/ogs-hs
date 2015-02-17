@@ -1,0 +1,22 @@
+
+
+/* .modal-open{
+  .navbar-fixed-top,
+  .navber-fixed-bottom{
+    margin-right: -17px !important;
+  }
+} */
+
+body{
+	&.modal-open{
+		margin-right: -17px !important;
+		overflow-x:hidden;
+
+		&.has-scroll{
+			margin-right: 0px !important;
+		}
+	}
+
+	
+}
+
