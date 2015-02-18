@@ -1,4 +1,4 @@
-	@import "variables";
+@import "variables";
 @import "mixins";
 
 @import "header";
@@ -17,50 +17,9 @@
 
 @import "classes";
 
-.fileupload input {
-max-width: none;
-}
 
-.ie{
-	.fileupload{
-		.form-control-file{
-			z-index:1;
-			/*width:117% !important;*/
-			background:none !important;
-			cursor:pointer !important;
-		}
-	}
-}
-
-
-.row, .row-table{
-	&.no-top-margin{
-		margin-top:-19px;
-	}
-}
-
-
-.nav-tabs{
-	/* background:#fff;
-	border:1px solid #ccc;
-	border-radius:0; */
-}
-
-
-.fileinput .form-control{
-	/* border:1px solid #ccc;
-	overflow:none; */
-}
-
-
-.tab-content{
-	box-shadow:none !important;
-}
-
-
-.page-header{
-	margin:18px 0 18px !important;
-	padding-bottom:5px !important;
+body{
+	background:#95a5a6;
 }
 
 
@@ -84,30 +43,6 @@ max-width: none;
 	-webkit-backface-visibility: hidden;
 
 }
-.my-account{
-	.action{
-		&.update-status{
-			width:110px !important;
-		}
-	}
-}
-
-.modal-row{
-	margin-bottom:10px;
-}
-
-.filter-spinner{
-	margin-top:10px;
-}
-
-.file_manager_filename{
-	width: 35%;
-}
-
-.status-btn{
-	border-radius:3px;
-	padding:3px;
-}
 
 /*Colors*/
 .bg-grey{
@@ -130,41 +65,69 @@ max-width: none;
 	background: #EE82EE;
 }
 
-#critical-equipment{
-	.ref{
-		width:30px;
-	}
 
-	.parent-sce{
-		width:100px;
-	}
+#banner{
+	background:#c0392b;
+	color:#fff;
+	height:100px;
+	padding-top:30px;
 
-	.tag-no{
-		width:110px;
-	}
-
-	.component{
-		width:50px;
+	.banner-title{
+		margin:auto auto;
+		font-weight:bold;
+		width:400px;
 	}
 }
 
-.bg-padding{
-	padding: 5px;
+#navbar-hs{
+	background:#f39c12;
+	color:#fff;
+
+	a{
+		color:#000;
+		&:hover{
+			background:#000;
+			color:#fff;
+			text-decoration:none;
+		}
+	}
 }
 
-.sticky_column{
-	z-index: 1;
-	background: white;
+
+
+.panel{
+	/*margin-bottom:0px;*/
+
+	.panel-heading{
+		position:relative;
+		.panel-options{
+			position:absolute;
+			top:10px;
+			right:15px;
+		}
+	}
+
+
+	.panel-footer{
+		.error-message{
+			position:absolute;
+			top:10px;
+			color:red;
+		}
+		.success-message{
+			position:absolute;
+			top:10px;
+			color:green;
+		}
+	}
+
+	
 }
 
-.is_stuck{
-	position: fixed !important;
-	top: 0px !important;
-	height: 319px !important;
-}
 
-#roles-checkbox{
-	position: fixed;
-    top: 0px; display:none;
-    background-color:white;
+input, textarea, select{
+	&.error{
+		border:1px solid red;
+		color:red;
+	}
 }

@@ -39,6 +39,17 @@
 
         <?php $this->load->view('layout/footer-scripts'); ?>
 
+        <?php if(! empty($listeners) ): ?>
+            <script type="text/javascript">
+                $(document).ready(function() {
+                        // Use php array loop.
+                    <?php foreach($listeners as $listener): ?>
+                        <?php print($listener); ?>;
+                    <?php endforeach ?>
+                }); 
+            </script>
+        <?php endif ?>
+
         <?php 
             if(!isset($footer_scripts)){
                 $footer_scripts = null;

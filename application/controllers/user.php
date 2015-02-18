@@ -9,8 +9,6 @@ class User extends My_Controller {
 		$main_model_str = 'User_Model';
 		$this->load->model( $main_model_str );
 		$this->main_model = new $main_model_str;
-		$this->load->model( 'Document_Model' );
-		$this->document_model = new Document_Model();
 
 		$this->form_primary = 'user_id';
 	}
@@ -32,12 +30,12 @@ class User extends My_Controller {
 		$header_data = array();
 
 		$user_id = $this->session->userdata( 'session' );
-		$privilage = $user_model->get_value( $user_id, 'privilage', 'user' );
+		$privilege = $user_model->get_value( $user_id, 'privilege' );
 		//$password_key = $user_model->get_value( $user_id, 'password_key', 'user' );
 
 		$model_data = array();
 
-		$model_data['privilage'] = $privilage;
+		$model_data['privilege'] = $privilege;
 		//$model_data['password_key'] = $password_key;
 
 		$header_data['data'] = $header_data;
@@ -45,10 +43,167 @@ class User extends My_Controller {
 
 		$footer_data = array();
 		//$footer_data['modals'] = array('new-document-modal');
+		$footer_data['listeners'] = array(
+			'Module.Instructor.add_instructor()', 
+			'Module.Instructor.search_instructor()',
+			'Module.Instructor.refresh_instructor_list()'
+		);
 
 		$this->load->view( 'layout/header', $header_data );
 		$this->load->view( 'user/dashboard', $model_data );
 		$this->load->view( 'layout/footer' , $footer_data);
+	}
+
+	public function login() {
+
+		//TODO: top ranking documents
+		$controller = $this->controller;
+    	$method = $this->method;
+
+		$logged_in = $this->session->userdata( 'is_logged_in' );
+		$user = $this->session->userdata( 'session' );
+
+		$not_activated = $this->session->flashdata('not_activated');
+        $login_error = $this->session->flashdata('login_error');
+        $password_reset_success = $this->session->flashdata('password_reset_success');
+
+		$model_data = array(
+			'base_url' => base_url(),
+			'not_activated' => $not_activated,
+			'login_error' => $login_error,
+			'password_reset_success' => $password_reset_success,
+			'controller' => $controller,
+			'method' => $method
+		);
+
+		if ( !$logged_in ) {
+
+			$redirect_link = $this->session->userdata( 'redirect_link' );
+
+			if ( isset( $redirect_link ) ) {
+				$model_data['redirect_link'] = $redirect_link;
+			}else {
+				$model_data['redirect_link'] = '';
+			}
+
+
+		}else {
+			redirect( '' );
+		}
+
+		$header_data = array();
+
+		$header_data['data'] = $header_data;
+		$model_data['data'] = $model_data;
+
+
+		$this->load->view( 'user/login', $model_data );
+	}
+
+	public function validate_login() {
+
+		$user_model = $this->main_model;
+
+		$this->load->library( 'form_validation' );
+
+		$this->form_validation->set_rules( 'username', 'Username', 'required|trim|xss_clean|callback_validate_credentials' );
+		$this->form_validation->set_rules( 'password', 'Password', 'required|md5' );
+
+		if ( $this->form_validation->run() ) {
+
+			$username = $this->input->post( 'username' );
+			$password = $this->input->post( 'password' );
+
+			$id = $user_model->get_id_by_credentials( $username, $password );
+
+
+
+			if ( $id == null ) {
+				$this->session->set_flashdata( 'login_error', 'Incorrect Username/Password' );
+				redirect();
+				//'user/login'
+			}else {
+				//$status = $user_model->get_value( $id, 'status' );
+				$status = 1;
+			}
+
+			if ( $status == 1 ) {
+
+				$uploads_folder = $this->uploads_folder;
+				
+				/*$user_photo_id = $user_model->get_value( $id, 'user_photo' );
+				
+				// Get user photo if there is.
+				$user_photo_name = '';
+
+				// Get photodetails.
+				$user_photo_details = $user_model->get_file_item_name($user_photo_id);
+
+				// Isolate index value if there is.
+				if( isset($user_photo_details['filename']) ) { $user_photo_name = $user_photo_details['filename']; }
+
+				// Build into exact location.
+				$user_photo = base_url($uploads_folder.'/'.$user_photo_name);*/
+
+				$privilege = $user_model->get_value($id, 'privilege');
+				$username = $user_model->get_value($id, 'username');
+
+				if($privilege == 1)// admin
+				{
+					
+					$role = 'admin';
+				}
+				else if($privilege == 2)// student
+				{
+					$full_name = $user_model->get_student_fullname($id);
+					$role = 'student';
+				}
+				else if($privilege == 3)// teacher
+				{
+					$role = 'teacher';
+					$full_name = $user_model->get_teacher_fullname($id);
+				}
+
+				
+
+
+				$data = array(
+					'is_logged_in' => '1',
+					'session' => $id,
+					'session_user' => $username,
+					'session_full_name' => $full_name,
+					//'user_photo' => image_exist($user_photo, 'circle', 'url'),
+					'session_role' => $role,
+					'session_privilege' => $privilege,
+					'sidebar_state' => ''
+				);
+
+
+
+				$this->session->set_userdata( $data );
+
+				$redirect_link = $this->input->post( 'redirect_link' );
+				$this->session->set_userdata( 'redirect_link', '' );
+
+				redirect( $redirect_link );
+
+			}else {
+
+				$this->session->set_flashdata( 'not_activated', true );
+
+				redirect();
+
+			}
+
+
+
+		}else {
+
+
+			$this->session->set_flashdata( 'login_error', 'Incorrect Username/Password' );
+			redirect();
+
+		}
 	}
 
 
@@ -1236,88 +1391,7 @@ class User extends My_Controller {
 		}
 	}
 
-	public function login() {
-
-		//TODO: top ranking documents
-		$controller = $this->controller;
-    	$method = $this->method;
-
-		$logged_in = $this->session->userdata( 'is_logged_in' );
-		$user = $this->session->userdata( 'session' );
-
-		$not_activated = $this->session->flashdata('not_activated');
-        $login_error = $this->session->flashdata('login_error');
-        $password_reset_success = $this->session->flashdata('password_reset_success');
-
-		$model_data = array(
-			'base_url' => base_url(),
-			'attributes' => array(
-					'role' => 'form',
-					'class' => 'form-horizontal',
-					'id' => 'loginform'
-				),
-			'not_activated' => $not_activated,
-			'login_error' => $login_error,
-			'password_reset_success' => $password_reset_success,
-			'controller' => $controller,
-			'method' => $method
-		);
-
-		if ( !$logged_in ) {
-
-
-
-			$this->load->model( 'DocumentRanking_Model' );
-			$this->load->model( 'TB_Model' );
-
-			$document_ranking_model = new DocumentRanking_Model();
-			$tehnical_bulletin_model = new TB_Model();
-
-			$top_documents = $document_ranking_model->get_top_document( 'technical-bulletin', 4 );
-
-			$documents = array();
-
-			foreach ( $top_documents as $document ) {
-
-				$document_id = $document->document_id;
-				$code = $document->code;
-				$name = $document->name;
-
-				$document_info = array(
-					'id' => $document_id,
-					'code' => $code,
-					'name' => truncate( $name, 20 ),
-					'likes' => $document_ranking_model->get_likes( $document_id )
-				);
-
-				$documents[] = $document_info;
-			}
-
-			$redirect_link = $this->session->userdata( 'redirect_link' );
-
-			if ( isset( $redirect_link ) ) {
-				$model_data['redirect_link'] = $redirect_link;
-			}else {
-				$model_data['redirect_link'] = '';
-			}
-
-			$model_data['documents'] = $documents;
-
-
-		}else {
-			redirect( '' );
-		}
-
-		$header_data = array(
-			'hidden' => ''
-		);
-
-		$header_data['data'] = $header_data;
-		$model_data['data'] = $model_data;
-
-
-		$this->load->view( 'user/login-new', $model_data );
-	}
+	
 
 	public function validate_sample_user() {
 
@@ -1347,95 +1421,7 @@ class User extends My_Controller {
 		return $validate;
 	}
 
-	public function validate_login() {
-
-		$user_model = $this->main_model;
-
-		$this->load->library( 'form_validation' );
-
-		$this->form_validation->set_rules( 'username', 'Username', 'required|trim|xss_clean|callback_validate_credentials' );
-		$this->form_validation->set_rules( 'password', 'Password', 'required|md5' );
-
-		if ( $this->form_validation->run() ) {
-
-			$username = $this->input->post( 'username' );
-			$password = $this->input->post( 'password' );
-
-			$id = $user_model->get_id_by_credentials( $username, $password );
-
-
-
-			if ( $id == null ) {
-				$this->session->set_flashdata( 'login_error', 'Incorrect Username/Password' );
-				redirect();
-				//'user/login'
-			}else {
-				$status = $user_model->get_value( $id, 'status' );
-			}
-
-			if ( $status == 1 ) {
-
-				$uploads_folder = $this->uploads_folder;
-
-				$database = $user_model->get_value( $id, 'database' );
-				
-				$user_photo_id = $user_model->get_value( $id, 'user_photo' );
-				
-				// Get user photo if there is.
-				$user_photo_name = '';
-
-				// Get photodetails.
-				$user_photo_details = $user_model->get_file_item_name($user_photo_id);
-
-				// Isolate index value if there is.
-				if( isset($user_photo_details['filename']) ) { $user_photo_name = $user_photo_details['filename']; }
-
-				// Build into exact location.
-				$user_photo = base_url($uploads_folder.'/'.$user_photo_name);
-
-				$full_name = $user_model->get_full_name($id);
-				$role = $user_model->get_value( $id, 'role' );
-
-
-				$data = array(
-					'is_logged_in' => '1',
-					'session' => $id,
-					'session_user' => $username,
-					'session_full_name' => $full_name,
-					'case_file_step' => 0,
-					'database' => $database,
-					'user_photo' => image_exist($user_photo, 'circle', 'url'),
-					'session_role' => $role,
-					'sidebar_state' => ''
-				);
-
-
-
-				$this->session->set_userdata( $data );
-
-				$redirect_link = $this->input->post( 'redirect_link' );
-				$this->session->set_userdata( 'redirect_link', '' );
-
-				redirect( $redirect_link );
-
-			}else {
-
-				$this->session->set_flashdata( 'not_activated', true );
-
-				redirect();
-
-			}
-
-
-
-		}else {
-
-
-			$this->session->set_flashdata( 'login_error', 'Incorrect Username/Password' );
-			redirect();
-
-		}
-	}
+	
 
 	public function validate_credentials() {
 		$this->load->model( 'User_Model' );

@@ -13,8 +13,7 @@
         <meta name="viewport" content="width=device-width">
         <link rel="shortcut icon" href="/favicon.ico">
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-        <link rel="stylesheet" href="<?php echo $base_url.'theme/css/bootstrap.min.css'; ?>">
-        <link rel="stylesheet" href="<?php echo $base_url.'theme/css/iriy-admin.min.css'; ?>">
+        <link rel="stylesheet" href="<?php echo $base_url.'theme/css/bootstrap-cosmo.css'; ?>">
         <link rel="stylesheet" href="<?php echo $base_url.'theme/assets/font-awesome/css/font-awesome.css'; ?>">
 
         <!--[if lt IE 9]>

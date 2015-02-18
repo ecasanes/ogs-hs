@@ -29,7 +29,7 @@ class MY_Controller extends CI_Controller {
 
     parent::__construct();
 
-    ini_set('date.timezone', 'Europe/London');
+    //ini_set('date.timezone', 'Europe/London');
     //echo ini_get('date.timezone');
 
     $this->controller_uri = generate_slug( $this->uri->segment( 1, 0 ) );
@@ -43,13 +43,6 @@ class MY_Controller extends CI_Controller {
 
     $this->load->model( 'User_Model' );
     $this->user_model = new User_Model();
-
-    $this->main_tables_array = array(
-      'step_0_case_file',
-      'ofi_0_profile',
-      'pp_0_project_plan',
-      'tb_0_main'
-    );
 
     $this->databases = array(
       'default',
@@ -73,47 +66,13 @@ class MY_Controller extends CI_Controller {
     $this->controller = $controller;
     $this->method = $method;
 
-    $form_id = $this->uri->segment( 3, 0 );
-    $current_form_step = $this->uri->segment( 4, 1 );
-    $next_form_step = $current_form_step+1;
-
-    $model_id = $form_id;
-
-    $edit_method = $controller.'/edit';
-    $delete_method = $controller.'/delete';
-    $save_method = $controller.'/save';
-
-    if ( $controller == 'case-file' && $current_form_step == 1 ) {
-      $additional_form_class = 'build history';
-    }else{
-      $additional_form_class = '';
-    }
-
-    $update_method = 'update';
-
-    $this->document_variables = array(
-      'controller' => $controller,
-      'method' => $method,
-      'form_id' => $form_id,
-      'current_form_step' => $current_form_step,
-      'next_form_step' => $next_form_step,
-      'model_id' => $model_id,
-      'edit_method' => $edit_method,
-      'delete_method' => $delete_method,
-      'save_method' => $save_method,
-      'additional_form_class' => $additional_form_class,
-      'update_method' => $update_method
-    );
-    //END DOCUMENT VARIABLES
-
-
-
-    $this->output->set_header("HTTP/1.0 200 OK");
+   
+    /*$this->output->set_header("HTTP/1.0 200 OK");
     $this->output->set_header("HTTP/1.1 200 OK");
     $this->output->set_header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
     $this->output->set_header("Cache-Control: no-store, no-cache, must-revalidate");
     $this->output->set_header("Cache-Control: post-check=0, pre-check=0");
-    $this->output->set_header("Pragma: no-cache");
+    $this->output->set_header("Pragma: no-cache");*/
   }
 
   public function create_document($return_type = 'redirect') {

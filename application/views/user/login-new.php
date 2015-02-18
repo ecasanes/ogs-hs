@@ -24,42 +24,11 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
-            <div class="col-xs-12 col-sm-8 hidden-xs">
-                <div id="login-content" class="panel">
-                    <div class="panel-body">
-                        <div id="metric-1" class="chart"></div> 
-                        <p>
-                            <a href=""><b>ISO14224.com</b></a> A new dimension to maintenance. Making Personal Development, 
-                            Knowledge Transfer and Continuous Improvement the driving forces 
-                            for Asset Integrity and Process Safety. A global knowledge transfer 
-                            site for everyone involved in oil & gas, regardless of position or 
-                            location our toolkit and database can make reliability everyone’s business.
-                        </p>
-                        <p>
-                            <ul id="login-check">
-                                <li><img src="<?php echo base_url('theme/assets/img/logincheck.png'); ?>" width="20" height="20" style="margin-right: 10px;">Share warnings and alerts with Technical Bulletins</li>
-                                <li><img src="<?php echo base_url('theme/assets/img/logincheck.png'); ?>" width="20" height="20" style="margin-right: 10px;">Improve diagnostics with Technical Posts</li>
-                                <li><img src="<?php echo base_url('theme/assets/img/logincheck.png'); ?>" width="20" height="20" style="margin-right: 10px;">Search our database for similar issues and solutions</li>
-                            </ul>
-                        </p>
-                        <p>
-                            Manage performance and contribution with step by step guides, auto populated reports and customised dashboards for;
-                        </p>
-                        <p>
-                            <ul id="login-check">
-                                <li><img src="<?php echo base_url('theme/assets/img/logincheck.png'); ?>" width="20" height="20" style="margin-right: 10px;">Forensic Defect Elimination</li>
-                                <li><img src="<?php echo base_url('theme/assets/img/logincheck.png'); ?>" width="20" height="20" style="margin-right: 10px;">Continuous Improvement</li>
-                                <li><img src="<?php echo base_url('theme/assets/img/logincheck.png'); ?>" width="20" height="20" style="margin-right: 10px;">Projects</li>
-                            </ul>
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-4">
+            <div class="col-xs-12 col-sm-4 col-sm-offset-4">
                <div id="login-panel" class="panel panel-default form-container">
-                <div class="panel panel-info">
+                <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Sign In</h3>
+                        <h3 class="panel-title">Please Sign In</h3>
                     </div>
                     <div class="panel-body">
 
@@ -84,11 +53,7 @@
               </div>
           <?php endif; ?>
 
-          <p align="center">
-            <img src="<?php echo $base_url.'theme/assets/img/userlogin.png'; ?>" width="103" class="" >
-        </p>
-
-        <?php echo form_open('user/validate_login', $attributes); ?>
+        <?php echo form_open('user/validate_login', array('id' => 'loginform', 'class' => 'form-horizontal')); ?>
         <?php echo form_hidden('redirect_link', $redirect_link); ?>
 
         <p>
@@ -106,14 +71,14 @@
 
 
 
-        <button type="submit" class="btn btn-info btn-block" style="margin-bottom: 25px;">Sign In</button>
+        <button type="submit" class="btn btn-danger btn-block" style="margin-bottom: 25px;">Login</button>
 
         <?php echo form_close(); ?>
 
-        <p align="center">
+        <!-- <p align="center">
             <a href="<?php echo base_url("user/forgot-password"); ?>">Forgot Password</a> | 
             <a href="<?php echo base_url("user/contact-us"); ?>">Contact Us</a>
-        </p>
+        </p> -->
 
     </div>
 </div>

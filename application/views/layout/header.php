@@ -2,6 +2,7 @@
 
 $controller = $this->uri->segment(1, null);
 $method = $this->uri->segment(2, null);
+$username = $this->session->userdata('session_user');
 $role = $this->session->userdata('session_role');
 $sidebar_state = $this->session->userdata('sidebar_state');
 $session_photo = $this->session->userdata('user_photo');
@@ -10,7 +11,7 @@ $session_full_name = $this->session->userdata('session_full_name');
 $data = array(
     'session_photo' => $session_photo,
     'uploads_folder' => $uploads_folder, 
-    'user_photo_url' => $session_photo,
+    //'user_photo_url' => $session_photo,
     'full_name' => $session_full_name,
     'role' => $role,
     'controller' => $controller,
@@ -62,8 +63,45 @@ $search_data = $this->session->userdata( 'search_data' );
 <body class="<?php echo $sidebar_state; ?>">
 
     <header>
-        <div id="banner">
+        <div id="banner" class="container-fluid-md">
+            <div class="row">
+                <div class="col-xs-12">
+                    <h2 class="banner-title">SPC Online Grading System</h2>
+                </div>
+            </div>
+        </div>
+        <div id="navbar-hs" class="navbar navbar-default">
+          <div class="container">
+            <div class="navbar-collapse collapse" id="navbar-main">
+              <ul class="nav navbar-nav">
+                <li>
+                  <a href="<?php echo base_url('user/profile'); ?>"><i class="fa fa-info-circle"></i> Profile</a>
+                </li>
+                <li>
+                  <a href="<?php echo base_url('subjects'); ?>"><i class="fa fa-book"></i> Subjects</a>
+                </li>
+                <li>
+                  <a href="<?php echo base_url('instructors'); ?>"><i class="fa fa-male"></i> Instructors</a>
+                </li>
+                <li>
+                  <a href="<?php echo base_url('instructors/assign'); ?>"><i class="fa fa-plus"></i> Assign Instructors</a>
+                </li>
+                <li>
+                  <a href="<?php echo base_url('students'); ?>"><i class="fa fa-users"></i> Students</a>
+                </li>
+              </ul>
 
+              <ul class="nav navbar-nav navbar-right">
+                <li>
+                  <a href="<?php echo base_url('user/profile'); ?>"><i class="fa fa-user"></i> Welcome <?php echo $username; ?></a>
+                </li>
+                <li>
+                  <a href="<?php echo base_url('user/logout'); ?>"><i class="fa fa-power-off"></i> Logout</a>
+                </li>
+              </ul>
+
+            </div>
+          </div>
         </div>
     </header>
 
@@ -74,6 +112,6 @@ $search_data = $this->session->userdata( 'search_data' );
 
                 <div class="page-content">
 
-                    <div class="container-fluid-md">
+                    <div class="container">
 
 
