@@ -6,11 +6,9 @@ class Curiculum extends My_Controller {
 
 		parent::__construct();
 
-		$main_model_str = 'Subject_Model';
+		$main_model_str = 'Curiculum_Model';
 		$this->load->model( $main_model_str );
 		$this->main_model = new $main_model_str;
-
-		$this->form_primary = 'subject_id';
 	}
 
 	public function index() {
@@ -23,8 +21,7 @@ class Curiculum extends My_Controller {
 		$model_data = array();
 		$footer_data = array();
 		$footer_data['listeners'] = array(
-			'Module.Subject.add_subject()', 
-			'Module.Subject.refresh_subject_list()'
+			'Module.Curiculum.add_grade_level()'
 		);
 
 		$this->load->view( 'layout/header', $header_data );
@@ -34,7 +31,7 @@ class Curiculum extends My_Controller {
 
 	}
 
-	public function create_subject(){
+	public function create_grade_level(){
 
 		$data = $this->input->post();
 
@@ -44,22 +41,17 @@ class Curiculum extends My_Controller {
 
 			$main_model = $this->main_model;
 
-			$this->load->library( 'form_validation' );
+			$exist = $this->grade_level_exist($grade_level, $sy_start, $sy_end);
 
-			$this->form_validation->set_error_delimiters('','');
-			$this->form_validation->set_message( 'is_unique', 'failed' );
+			if(!$exist){
 
-			$this->form_validation->set_rules( 'subject_code', 'Subject Code', 'is_unique[tbl_subject.subj_code]' );
+				$grade_level_id = $main_model->create_grade_level($sy_start, $sy_end, $grade_level);
+				$success_message = "Grade Level was added successfully. ";
 
-			if ( $this->form_validation->run() ) {
-
-				$subject_id = $main_model->create_subject($subject_code, $subject_unit, $subject_description);
-				$success_message = "Subject was added successfully. ";
-
-				if($subject_id){
+				if($grade_level_id){
 
 					$json_result = array(
-						'subject_id' => $subject_id,
+						'grade_level_id' => $grade_level_id,
 						'result' => 'success',
 						'success_message' => $success_message
 						);
@@ -69,12 +61,12 @@ class Curiculum extends My_Controller {
 						);
 				}
 
-				$json_result['subject_code'] = 'success';      
+				$json_result['grade_level'] = 'success';      
 
 			}else{
 				$json_result = array(
-					'subject_code' => form_error('subject_code'),
-					'subject_code_message' => 'Subject Code already exist. ',
+					'grade_level' => 'failed',
+					'grade_level_message' => 'Grade Level already exist. ',
 					'result' => 'failed'
 					);
 			}
@@ -87,39 +79,24 @@ class Curiculum extends My_Controller {
 		}
 	}
 
-	public function data_list(){
+
+	public function grade_level_exist($grade_level, $sy_start, $sy_end){
 
 		$main_model = $this->main_model;
-		$controller = $this->controller;
 
-		$results = $main_model->get_subjects();
+		$count = $main_model->count_grade_level($grade_level, $sy_start, $sy_end);
 
-		$model_data = array(
-			'results' => $results
-			);
+		if($count > 0){
+			return true;
+		}else{
+			return false;
+		}
 
-		$this->load->view($controller.'/list', $model_data);
 	}
 
-	public function search_list(){
 
-		$main_model = $this->main_model;
-		$user_model = $this->user_model;
-		$user_type = $this->user_type;
-		$controller = $this->controller;
-
-		$search_key = $this->input->get('search');
-
-		$results = $user_model->search_list($search_key, $user_type);
-
-		$model_data = array(
-			'results' => $results
-			);
-
-		$this->load->view($controller.'/list', $model_data);
-	}
 
 }
 
-/* End of file subject.php */
-/* Location: ./application/controllers/subject.php */
+/* End of file curiculum.php */
+/* Location: ./application/controllers/curiculum.php */

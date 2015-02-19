@@ -7,10 +7,7 @@
                         <!-- Tabs -->
                         <ul class="nav panel-tabs">
                             <li class="active"><a href="#add-school-year" data-toggle="tab">Add School Year</a></li>
-                            <li><a href="#first-year" data-toggle="tab">First Year</a></li>
-                            <li><a href="#second-year" data-toggle="tab">Second Year</a></li>
-                            <li><a href="#third-year" data-toggle="tab">Third Year</a></li>
-                            <li><a href="#fourth-year" data-toggle="tab">Fourth Year</a></li>
+                            <li><a href="#view-class-record" data-toggle="tab">View Class Record</a></li>
                         </ul>
                     </span>
                 </div>
@@ -25,11 +22,12 @@
                             <strong>Note.</strong> Click on the tab button to select a Subject for a Grade level in a School Year.
                           </div>
 
+                          <?php echo form_open('', array('id'=>'add-grade-level-form')); ?>
                           <div class="form-horizontal">
                               <div class="form-group">
                                 <label for="username" class="control-label col-sm-2 col-xs-12">Grade Level</label>
                                 <div class="col-sm-2 col-xs-12">
-                                  <select name="grade_level" id="" class="form-control">
+                                  <select name="grade_level" id="" class="form-control" required>
                                     <option value="">Select</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -42,7 +40,8 @@
                               <div class="form-group">
                                 <label for="username" class="control-label col-sm-2 col-xs-12">SY Start</label>
                                 <div class="col-sm-2 col-xs-12">
-                                  <select name="sy_start" class="form-control">
+                                  <select name="sy_start" class="form-control" required>
+                                    <option value="">Select</option>
                                     <?php echo year_dropdown(); ?>
                                   </select>
                                 </div>
@@ -51,7 +50,8 @@
                               <div class="form-group">
                                 <label for="username" class="control-label col-sm-2 col-xs-12">SY End</label>
                                 <div class="col-sm-2 col-xs-12">
-                                  <select name="sy_end" class="form-control">
+                                  <select name="sy_end" class="form-control" required>
+                                    <option value="">Select</option>
                                     <?php echo year_dropdown(); ?>
                                   </select>
                                 </div>
@@ -59,32 +59,21 @@
 
                               <div class="form-group">
                                 <label for="username" class="control-label col-sm-2 col-xs-12"></label>
-                                <div class="col-sm-2 col-xs-12">
+                                <div class="col-sm-5 col-xs-12">
                                   <input type="submit" value="Add" class="btn btn-success">
+                                  &nbsp;
+                                  <span class="error-message"></span>
+                                  <span class="success-message"></span>
                                 </div>
                               </div>
 
                           </div>
+                          <?php echo form_close(); ?>
 
                         </div>
 
 
-                        <div class="tab-pane fade" id="first-year">
-                          
-                        </div>
-
-
-                        <div class="tab-pane fade" id="second-year">
-                          
-                        </div>
-
-
-                        <div class="tab-pane fade" id="third-year">
-                          
-                        </div>
-
-
-                        <div class="tab-pane fade" id="fourth-year">
+                        <div class="tab-pane fade" id="view-class-record">
                           
                         </div>
 

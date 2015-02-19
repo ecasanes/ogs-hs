@@ -322,3 +322,81 @@ Module.Subject = (function() {
 	}
 
 })();
+
+
+Module.Curiculum = (function() {
+
+	function add_grade_level(){
+
+		var $form = $('#add-grade-level-form');
+
+		$form.submit(function(e){
+			e.preventDefault();
+			var $this = $(this);
+			
+			var post_data = $this.serializeArray();
+
+			console.log(post_data);
+
+			$.ajax({
+				url: base_url + controller + '/create_grade_level',
+				method: "post",
+				dataType: "json",
+				data: post_data,
+				beforeSend: function(data){
+					
+				},
+				success: function(data) {
+					console.log(data);
+
+					var grade_level = data.grade_level;
+					var grade_level_message = data.grade_level_message;
+					var success_message = data.success_message;
+					var result = data.result;
+
+					var $grade_level = $this.find('[name=grade_level]');
+					var $sy_start = $this.find('[name=sy_start]');
+					var $sy_end = $this.find('[name=sy_end]');
+
+					$this.find('.error-message').text('');
+					$this.find('.success-message').text('');
+
+					if(grade_level == 'failed'){
+						$grade_level.addClass('error');
+						$sy_start.addClass('error');
+						$sy_end.addClass('error');
+						$this.find('.error-message').append(grade_level_message);
+					}else{
+						$grade_level.removeClass('error');
+						$sy_start.removeClass('error');
+						$sy_end.removeClass('error');
+					}
+
+					
+
+					if(result != 'failed'){
+						$this.find('.success-message').text(success_message).fadeOut(3000);
+						$this.find('input,select').not('[type=submit], input[type=hidden]').val('');
+					}
+
+
+				},
+				complete: function(data){
+					
+				},
+				error: function(error, data){
+					console.log(error.responseText);
+				}
+
+			});
+		});
+	}
+
+
+
+
+	return {
+		add_grade_level: add_grade_level
+	}
+
+})();

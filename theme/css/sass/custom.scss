@@ -98,6 +98,17 @@ body{
 
 
 
+.error-message{
+	color:red;
+}
+
+
+.success-message{
+	color:green;
+}
+
+
+
 .panel{
 	/*margin-bottom:0px;*/
 
@@ -115,12 +126,11 @@ body{
 		.error-message{
 			position:absolute;
 			top:10px;
-			color:red;
+			
 		}
 		.success-message{
 			position:absolute;
 			top:10px;
-			color:green;
 		}
 	}
 
