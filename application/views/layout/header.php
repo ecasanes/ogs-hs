@@ -78,16 +78,24 @@ $search_data = $this->session->userdata( 'search_data' );
                   <a href="<?php echo base_url('user/profile'); ?>"><i class="fa fa-info-circle"></i> Profile</a>
                 </li>
                 <li>
-                  <a href="<?php echo base_url('subjects'); ?>"><i class="fa fa-book"></i> Subjects</a>
+                  <a href="<?php echo base_url('subject'); ?>"><i class="fa fa-book"></i> Subjects</a>
                 </li>
                 <li>
-                  <a href="<?php echo base_url('instructors'); ?>"><i class="fa fa-male"></i> Instructors</a>
+                  <a href="<?php echo base_url('teacher'); ?>"><i class="fa fa-male"></i> Instructors</a>
                 </li>
                 <li>
-                  <a href="<?php echo base_url('instructors/assign'); ?>"><i class="fa fa-plus"></i> Assign Instructors</a>
+                  <a href="<?php echo base_url('teacher/assign'); ?>"><i class="fa fa-plus"></i> Assign Instructors</a>
                 </li>
                 <li>
-                  <a href="<?php echo base_url('students'); ?>"><i class="fa fa-users"></i> Students</a>
+                  <a href="<?php echo base_url('student'); ?>"><i class="fa fa-users"></i> Students</a>
+                </li>
+                <li class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    Other Options <span class="caret"></span>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a href="<?php echo base_url('curiculum'); ?>">Manage Curiculum</a></li>
+                  </ul>
                 </li>
               </ul>
 
@@ -95,6 +103,7 @@ $search_data = $this->session->userdata( 'search_data' );
                 <li>
                   <a href="<?php echo base_url('user/profile'); ?>"><i class="fa fa-user"></i> Welcome <?php echo $username; ?></a>
                 </li>
+                <li class="divider"></li>
                 <li>
                   <a href="<?php echo base_url('user/logout'); ?>"><i class="fa fa-power-off"></i> Logout</a>
                 </li>

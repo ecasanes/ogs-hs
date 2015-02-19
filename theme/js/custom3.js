@@ -30,11 +30,11 @@ error_input_keyup();
 
 
 
-Module.Instructor = (function() {
+Module.User = (function() {
 
-	function add_instructor(){
+	function add_user(){
 
-		var $form = $('#add-instructor-form');
+		var $form = $('#add-user-form');
 
 		$form.submit(function(e){
 			e.preventDefault();
@@ -42,8 +42,10 @@ Module.Instructor = (function() {
 			
 			var post_data = $this.serializeArray();
 
+			console.log(post_data);
+
 			$.ajax({
-				url: base_url + 'teacher/insert',
+				url: base_url + controller + '/create_user',
 				method: "post",
 				dataType: "json",
 				data: post_data,
@@ -88,9 +90,9 @@ Module.Instructor = (function() {
 					
 
 					if(result != 'failed'){
-						$this.find('.success-message').text(success_message);
-						$this.find('input,select').not('[type=submit]').val('');
-						refresh_instructor_list(true);
+						$this.find('.success-message').text(success_message).fadeOut(3000);
+						$this.find('input,select').not('[type=submit], input[type=hidden]').val('');
+						refresh_user_list(true);
 					}
 
 
@@ -107,16 +109,16 @@ Module.Instructor = (function() {
 	}
 
 
-	function search_instructor(){
+	function search_user(){
 
-		var $search_instructor = $('#search-instructor');
-		var $search_results = $search_instructor.find('.search-results');
-		var $search_input = $search_instructor.find('[name=search]');
+		var $search_user = $('#search-user');
+		var $search_results = $search_user.find('.search-results');
+		var $search_input = $search_user.find('[name=search]');
 
 		
-		var $loading = $search_instructor.find('.loading');
+		var $loading = $search_user.find('.loading');
 
-		$(document).on('keyup', '#search-instructor-input', function(e){
+		$(document).on('keyup', '#search-user-input', function(e){
 
 			var $this = $(this);
 			var search_key = $this.val();
@@ -149,14 +151,14 @@ Module.Instructor = (function() {
 	}
 
 
-	function refresh_instructor_list(retain_height){
+	function refresh_user_list(retain_height){
 
 		var retain_height = retain_height || false;
 
-		var $search_instructor = $('#search-instructor');
-		var $search_results = $search_instructor.find('.search-results');
+		var $search_user = $('#search-user');
+		var $search_results = $search_user.find('.search-results');
 		
-		var $loading = $search_instructor.find('.loading');
+		var $loading = $search_user.find('.loading');
 		
 		if(retain_height){
 			var height = $search_results.height();
@@ -164,7 +166,7 @@ Module.Instructor = (function() {
 		
 
 		$.ajax({
-				url: base_url + 'teacher/data_list',
+				url: base_url + controller + '/data_list',
 				method: "post",
 				dataType: "html",
 				beforeSend: function(data){
@@ -196,9 +198,127 @@ Module.Instructor = (function() {
 
 
 	return {
-		add_instructor: add_instructor,
-		search_instructor: search_instructor,
-		refresh_instructor_list: refresh_instructor_list
+		add_user: add_user,
+		search_user: search_user,
+		refresh_user_list: refresh_user_list
+	}
+
+})();
+
+
+Module.Subject = (function() {
+
+	function add_subject(){
+
+		var $form = $('#add-subject-form');
+
+		$form.submit(function(e){
+			e.preventDefault();
+			var $this = $(this);
+			
+			var post_data = $this.serializeArray();
+
+			console.log(post_data);
+
+			$.ajax({
+				url: base_url + controller + '/create_subject',
+				method: "post",
+				dataType: "json",
+				data: post_data,
+				beforeSend: function(data){
+					
+				},
+				success: function(data) {
+					console.log(data);
+
+					var subject_code = data.subject_code;
+					var subject_code_message = data.subject_code_message;
+					var success_message = data.success_message;
+					var result = data.result;
+
+					var $subject_code = $this.find('[name=subject_code]');
+
+					$this.find('.error-message').text('');
+					$this.find('.success-message').text('');
+
+					if(subject_code == 'failed'){
+						$subject_code.addClass('error');
+						$this.find('.error-message').append(subject_code_message);
+					}else{
+						$subject_code.removeClass('error');
+					}
+
+					
+
+					if(result != 'failed'){
+						$this.find('.success-message').text(success_message).fadeOut(3000);
+						$this.find('input,select').not('[type=submit], input[type=hidden]').val('');
+						refresh_subject_list(true);
+					}
+
+
+				},
+				complete: function(data){
+					
+				},
+				error: function(error, data){
+					console.log(error.responseText);
+				}
+
+			});
+		});
+	}
+
+
+	function refresh_subject_list(retain_height){
+
+		var retain_height = retain_height || false;
+
+		var $search_subject = $('#search-subject');
+		var $search_results = $search_subject.find('.search-results');
+		
+		var $loading = $search_subject.find('.loading');
+		
+		if(retain_height){
+			var height = $search_results.height();
+		}
+		
+
+		$.ajax({
+				url: base_url + controller + '/data_list',
+				method: "post",
+				dataType: "html",
+				beforeSend: function(data){
+
+					if(retain_height){
+						$search_results.height(height);
+					}
+					
+					$search_results.html('');
+
+					$loading.removeClass('hidden');
+				},
+				success: function(data) {
+					$search_results.html(data);
+				},
+				complete: function(data){
+					$loading.addClass('hidden');
+					$search_results.height('auto');
+				},
+				error: function(error, data){
+					console.log(error.responseText);
+				}
+
+			});
+
+	}
+
+
+
+
+	return {
+		add_subject: add_subject,
+		refresh_subject_list: refresh_subject_list
 	}
 
 })();

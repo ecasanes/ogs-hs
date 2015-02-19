@@ -2,20 +2,74 @@
 
 class User_Model extends MY_Model {
 
-    const DB_TABLE = 'user';
+    const DB_TABLE = 'tbl_user';
     const DB_TABLE_PK = 'user_id';
 
     /* start CRUD */
-    public function create_user($username, $password, $privilege){
+    public function create_user($username, $password, $fname, $lname, $age, $gender, $address, $user_type, $mname=''){
 
-        $sql = "INSERT INTO user (username, password, privilege) VALUES (?, ?, ?)";
+        $db_table = $this::DB_TABLE;
+        $db_primary =$this::DB_TABLE_PK;
 
-        $escaped_values = array($username, md5($password), $privilege);
+        $sql = "INSERT INTO {$db_table} (username, password, fname, lname, age, gender, address, user_type, mname) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        $escaped_values = array($username, md5($password), $fname, $lname, $age, $gender, $address, $user_type, $mname);
 
         $query = $this->db->query($sql, $escaped_values);
 
         return $this->db->insert_id();
     }
+
+    public function get_user_by_type($user_type){
+
+        $db_table = $this::DB_TABLE;
+        $db_primary =$this::DB_TABLE_PK;
+
+        $sql = "SELECT * FROM {$db_table} WHERE user_type = ?";
+
+        $escaped_values = array($user_type);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function search_list($search_key, $user_type){
+
+        $db_table = $this::DB_TABLE;
+        $db_primary =$this::DB_TABLE_PK;
+
+        $sql = "SELECT * FROM {$db_table} WHERE user_type = ? AND CONCAT_WS(' ', fname,lname) LIKE '%{$search_key}%'";
+
+        $escaped_values = array($user_type);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public function get_user($id){
 

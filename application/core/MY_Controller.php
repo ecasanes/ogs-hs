@@ -44,651 +44,162 @@ class MY_Controller extends CI_Controller {
     $this->load->model( 'User_Model' );
     $this->user_model = new User_Model();
 
-    $this->databases = array(
-      'default',
-      'sample'
-    );
-
-    $database = $this->session->userdata( 'database' );
-
-    if ( empty( $database ) || $database == '' ) {
-      $database = 'default';
-    }
-
-    $this->db = $this->load->database( $database, TRUE );
-
-    //START DOCUMENT VARIABLES
-    $required_at_least = 'data-bv-message="at least 1 is required"';
-
     $controller = $this->uri->segment( 1, 0 );
     $method = $this->uri->segment( 2, 0 );
 
     $this->controller = $controller;
     $this->method = $method;
-
-   
-    /*$this->output->set_header("HTTP/1.0 200 OK");
-    $this->output->set_header("HTTP/1.1 200 OK");
-    $this->output->set_header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
-    $this->output->set_header("Cache-Control: no-store, no-cache, must-revalidate");
-    $this->output->set_header("Cache-Control: post-check=0, pre-check=0");
-    $this->output->set_header("Pragma: no-cache");*/
   }
 
-  public function create_document($return_type = 'redirect') {
 
-    $this->load->model('Document_Model');
-    $document_model = new Document_Model;
-    $controller_uri = $this->controller_uri;
-    $user_model = $this->user_model;
+  public function create_user(){
+
+    $data = $this->input->post();
+
+    if($data){
+
+      extract( $data, EXTR_SKIP );
+      
+      $main_model = $this->main_model;
+      $user_model = $this->user_model;
+      $user_type = $this->user_type;
+      $user_title = $this->user_title;
+
+      $this->load->library( 'form_validation' );
+
+      $this->form_validation->set_error_delimiters('','');
+      $this->form_validation->set_message( 'is_unique', 'failed' );
+      $this->form_validation->set_message( 'matches', 'failed' );
+
+      //min_length[4]
+      //required
+
+      $this->form_validation->set_rules( 'username', 'Username', 'is_unique[tbl_user.username]' );
+      $this->form_validation->set_rules( 'password', 'Password', 'trim|matches[confirm_password]' );
+      //$this->form_validation->set_rules( 'confirm_password', 'Password Confirmation', 'trim|required' );
+      //$this->form_validation->set_rules( 'email_address', 'Email', 'required|valid_email|is_unique[user.email_address]' );
+
+      if ( $this->form_validation->run() ) {
+
+        $user_id = $user_model->create_user($username, $password, $firstname, $lastname, $age, $gender, $address, $user_type);
+        $success_message = $user_title." was added successfully. ";
+
+        if($user_id){
+          
+          $json_result = array(
+              'user_id' => $user_id,
+              'result' => 'success',
+              'success_message' => $success_message
+            );
+        }else{
+          $json_result = array(
+            'result' => 'failed'
+          );
+        }
+
+        $json_result['username'] = 'success';
+        $json_result['confirm_password'] = 'success';       
+
+      }else{
+        $json_result = array(
+            'username' => form_error('username'),
+            'username_message' => 'Username already exist. ',
+            'confirm_password' => form_error('password'),
+            'password_message' => 'Password does not match. ',
+            'result' => 'failed'
+          );
+      }
+
+      echo json_encode($json_result);
+
+      
+      
+
+    }
+  }
+
+  public function data_list(){
+
     $main_model = $this->main_model;
-    $document_code = $this->document_code;
-    $document_primary = 'document_id';
-    $document_model = $this->document_model;
-    $no_of_steps = $this->no_of_steps;
+    $user_model = $this->user_model;
+    $user_type = $this->user_type;
+    $controller = $this->controller;
 
-    $user_id = $this->session->userdata( 'session' );
-
-    //create empty document
-    $document_type_id = $document_model->get_document_type_id( $controller_uri );
-    $document_id = $main_model->create_empty_document( $document_type_id );    
-
-    $document_model->create_empty_sub_table( $document_id, 'equipment_profile' );
-    $document_model->create_empty_sub_table( $document_id, 'timeline' );
-    $document_model->create_empty_sub_table( $document_id, 'failure_impact' );
-    $document_model->create_empty_sub_table( $document_id, 'failure_cause' );
-    $document_model->create_empty_sub_table( $document_id, 'type_of_improvement' );
-
-    $document_model->create_empty_sub_table( $document_id, 'enabler' );
-    $document_model->create_empty_sub_table( $document_id, 'prerequisite' );
-    $document_model->create_empty_sub_table( $document_id, 'dependency' );
-    $document_model->create_empty_sub_table( $document_id, 'benefits_breakdown' );
-    $document_model->create_empty_sub_table( $document_id, 'cost_breakdown' );
-    $document_model->create_empty_sub_table( $document_id, 'constraints' );
-    $document_model->create_empty_sub_table( $document_id, 'maintenance_activity' );
-    $document_model->create_empty_sub_table( $document_id, 'next_step' );
-    $document_model->create_empty_sub_table( $document_id, 'rate_of_success' );
-    $document_model->create_empty_sub_table( $document_id, 'test_process' );
-
-    $document_model->create_empty_sub_table( $document_id, 'action_log' );
-    $document_model->create_empty_sub_table( $document_id, 'deliverable' );
-    $document_model->create_empty_sub_table( $document_id, 'expectation' );
-    $document_model->create_empty_sub_table( $document_id, 'interested_party' );
-    $document_model->create_empty_sub_table( $document_id, 'meeting' );
-    $document_model->create_empty_sub_table( $document_id, 'organisation' );
-    $document_model->create_empty_sub_table( $document_id, 'reporting' );
-    $document_model->create_empty_sub_table( $document_id, 'responsible_party' );
-
-    $document_model->create_empty_sub_table( $document_id, 'milestone' );
-    $document_model->create_empty_sub_table( $document_id, 'process_step' );
-    $document_model->create_empty_sub_table( $document_id, 'quality_control_step' );
-
-    $document_model->create_empty_sub_table( $document_id, 'change_management' );
-    $document_model->create_empty_sub_table( $document_id, 'action_tracker' );
-
-    //assign document owner
-    $user_model->assign_document_owner( $document_id, $user_id );
-
-    //initialize code, ref_id, and sub tables
-    $get_form_id = true;
-    $form_id = $main_model->get_document( $document_id, $get_form_id );
-
-    $ref_id = rand( 100, 999999 )+$document_id+rand( 100, 999999 );
-    $code = $document_code.'-'.$form_id;
-
-    //TODO: get document_status id by name strtolower
-    $document_model->initialize_document( $document_id, $code, $ref_id );
-
-    //assign empty document owners
-    $document_model->create_empty_sub_table( $document_id, 'document_owner', 2 );
-
-
-    //NOT FINAL - MUST BE PUT IN EACH MAJOR DOCUMENT MODEL
-    //initialize files
-    for ( $i=0;$i<$no_of_steps;$i++ ) {
-      $document_model->create_empty_sub_table_step( $document_id, 'file', 1, $document_primary, $i );
-    }
-
-    //initialize equipment history answers
-    $document_model->create_empty_equipment_history_answer( $document_id );
-
-    $document_name = $this->session->userdata('new_document_name');
-    $start_date = $this->session->userdata('start_date');
-    $duration = $this->session->userdata('duration');
-  
-    $document_model->update_value($document_id, 'name', $document_name);
-
-    # Log -----------------------------------------------------------------------------
-    $this->load->model('Document_Tracker_Model');
-    $document_tracker_model = new Document_Tracker_Model();
-
-    $user_id = $this->session->userdata('session');
-    $action = '<span class="text-warning">Added</span> Document';
-    $document_name = $document_tracker_model->get_name_by_id($document_id);
-
-    $document_tracker_model->add_action_track($user_id, $action.' '.$document_name);
-    # end of Log -----------------------------------------------------------------------
-
-    if(isset($start_date) && $start_date != ''){
-      $document_model->update_value($document_id, 'estimated_start_date', convert_string_to_date($start_date), 'project_plan', 'document_id');
-      $document_model->update_value($document_id, 'estimated_project_duration', $duration, 'project_plan', 'document_id');
-    }
-
-    $this->session->set_userdata('new_document_name', '');
-    $this->session->set_userdata('start_date', '');
-    $this->session->set_userdata('duration','');
-
-    $header_data = array(
-      'title' => 'Create a Case File',
-      'hidden' => ''
-    );
+    $results = $user_model->get_user_by_type($user_type);
 
     $model_data = array(
-      'action' => base_url( $controller_uri.'/save/update' ),
-      'reset' => base_url( $controller_uri.'/create' ),
-      'id' => $document_id,
-      'ref_id' => $ref_id,
-      'code' => $code
-    );
+        'results' => $results
+      );
 
-    $redirect_url = $controller_uri.'/edit/'.$document_id;
-
-    switch($return_type){
-      case 'redirect':
-        redirect( $redirect_url );
-        break;
-      case 'url':
-        return $redirect_url;
-        break;
-      case 'id':
-        return $document_id;
-        break;
-    }
+    $this->load->view($controller.'/list', $model_data);
   }
 
-  public function delete_document( $id, $redirect = false ) {
+  public function search_list(){
 
-    //$form_model = $this->main_model;
-    $document_model = $this->document_model;
-
-    $document_model->delete( $id );
-
-    if ( $redirect ) {
-      redirect( 'user/my-account' );
-    }
-
-    echo $id;
-  }
-
-  public function duplicate_document( $old_document_id, $return_type = 'redirect' ) {
-
-    $controller_uri = $this->controller_uri;
-    $user_model = $this->user_model;
     $main_model = $this->main_model;
-    $document_code = $this->document_code;
-    $document_primary = 'document_id';
-    $form_primary = $this->form_primary;
-    $document_model = $this->document_model;
-    $no_of_steps = $this->no_of_steps;
-
-    $user_id = $this->session->userdata( 'session' );
-
-    $document_id = $document_model->duplicate( $old_document_id );
-
-    //assign document owner
-    $user_model->assign_document_owner( $document_id, $user_id );
-
-
-    $model_db_table = null;
-    $main_model->duplicate_sub_table( $model_db_table, $old_document_id, $document_id );
-
-    //initialize code, ref_id, and sub tables
-    $get_form_id = true;
-    $form_id = $main_model->get_value( $document_id, $form_primary, null, $document_primary );
-
-    $ref_id = rand( 100, 999999 )+$document_id+rand( 100, 999999 );
-    $code = $document_code.'-'.$form_id;
-
-    $document_model->initialize_document( $document_id, $code, $ref_id );
-
-    //assign empty document owners
-    $document_model->create_empty_sub_table( $document_id, 'document_owner', 2 );
-
-    $main_model->duplicate_sub_table( 'equipment_profile', $old_document_id, $document_id );
-    $main_model->duplicate_sub_table( 'equipment_history_answer', $old_document_id, $document_id );
-
-    $main_model->duplicate_sub_table( 'timeline', $old_document_id, $document_id );
-    $main_model->duplicate_sub_table( 'failure_impact', $old_document_id, $document_id );
-    $main_model->duplicate_sub_table( 'failure_cause', $old_document_id, $document_id );
-    $main_model->duplicate_sub_table( 'type_of_improvement', $old_document_id, $document_id );
-
-    $main_model->duplicate_sub_table( 'enabler', $old_document_id, $document_id );
-    $main_model->duplicate_sub_table( 'prerequisite', $old_document_id, $document_id );
-    $main_model->duplicate_sub_table( 'dependency', $old_document_id, $document_id );
-    $main_model->duplicate_sub_table( 'benefits_breakdown', $old_document_id, $document_id );
-    $main_model->duplicate_sub_table( 'cost_breakdown', $old_document_id, $document_id );
-    $main_model->duplicate_sub_table( 'constraints', $old_document_id, $document_id );
-    $main_model->duplicate_sub_table( 'maintenance_activity', $old_document_id, $document_id );
-    $main_model->duplicate_sub_table( 'next_step', $old_document_id, $document_id );
-    $main_model->duplicate_sub_table( 'rate_of_success', $old_document_id, $document_id );
-    $main_model->duplicate_sub_table( 'test_process', $old_document_id, $document_id );
-
-    $main_model->duplicate_sub_table( 'action_log', $old_document_id, $document_id );
-    $main_model->duplicate_sub_table( 'deliverable', $old_document_id, $document_id );
-    $main_model->duplicate_sub_table( 'expectation', $old_document_id, $document_id );
-    $main_model->duplicate_sub_table( 'interested_party', $old_document_id, $document_id );
-    $main_model->duplicate_sub_table( 'meeting', $old_document_id, $document_id );
-    $main_model->duplicate_sub_table( 'organisation', $old_document_id, $document_id );
-    $main_model->duplicate_sub_table( 'reporting', $old_document_id, $document_id );
-    $main_model->duplicate_sub_table( 'responsible_party', $old_document_id, $document_id );
-
-    $main_model->duplicate_sub_table( 'milestone', $old_document_id, $document_id );
-    $main_model->duplicate_sub_table( 'process_step', $old_document_id, $document_id );
-    $main_model->duplicate_sub_table( 'quality_control_step', $old_document_id, $document_id );
-
-    $main_model->duplicate_sub_table( 'change_management', $old_document_id, $document_id );
-    $main_model->duplicate_sub_table( 'action_tracker', $old_document_id, $document_id );
-
-    //duplicate files
-    $main_model->duplicate_sub_table( 'file', $old_document_id, $document_id );
-
-    $document_name = $this->session->userdata('new_document_name');
-    $document_model->update_value( $document_id, 'name', $document_name);
-
-    $redirect_url = $controller_uri.'/edit/'.$document_id;
-
-    switch($return_type){
-      case 'redirect':
-        redirect( $redirect_url );
-        break;
-      case 'url':
-        return $redirect_url;
-        break;
-      case 'id':
-        return $document_id;
-        break;
-    }
-  }
-
-  public function notify_completed( $follower_array = array(), $selected_documents = array() ) {
-
-    $this->load->model( 'Document_Model' );
-    $document_model = new Document_Model();
-
     $user_model = $this->user_model;
-    $message = '';
+    $user_type = $this->user_type;
+    $controller = $this->controller;
 
-    $notification_info = $document_model->get_notification_info( 'completed_document' );
+    $search_key = $this->input->get('search');
 
+    $results = $user_model->search_list($search_key, $user_type);
 
+    $model_data = array(
+        'results' => $results
+      );
 
-    //query all user_preference with preference_type = equipment_profile
-    $equipment_categories = $user_model->get_user_preferences( 'equipment_category' );
-
-    //loop through document
-    for ( $i=0;$i<count( $selected_documents );$i++ ) {
-
-      $doc_id = $selected_documents[$i];
-
-      $document_preferences = $user_model->get_user_preferences_doc( $doc_id );
-
-
-      foreach ( $document_preferences as $preference ) {
-
-        $preference_document_id = $preference->document_id;
-        $preference_document_type = $preference->document_code;
-        $preference_user_id = $preference->user_id;
-        $preference_code = $preference->code;
-        $preference_name = $preference->name;
-        $preference_email_address = $preference->email_address;
-
-        $document_owner_count = $user_model->check_document_owner_count( $preference_user_id, $preference_document_id );
-
-
-
-        //loop through each document that has notificiation settings
-        /*echo '<pre>';
-          var_dump($notification_info);
-          echo '</pre>';*/
-        foreach ( $notification_info as $info ) {
-
-          $controller = $info->controller;
-          $subject = $info->email_subject;
-          $form_name = $info->email_form_name;
-          $notify_column_name = $info->user_notification_column_name;
-
-
-          if ( !in_array( $preference_user_id, $follower_array ) ) {
-
-
-            if ( $controller == $preference_document_type ) {
-
-              if ( $document_owner_count > 0 ) {
-                //echo 'document owner';
-                //echo '<br>';
-                $message = $this->complete_form_message( $form_name, $preference_code, $preference_name, $controller, $preference_document_id );
-                echo $preference_email_address;
-                echo '<br>';
-                echo $message;
-                echo '<br>';
-              }else {
-                //echo 'user checked preference';
-                //echo '<br>';
-                if ( !in_array( $preference_user_id, $follower_array ) ) {
-                  $message = $this->complete_form_message( $form_name, $preference_code, $preference_name, $controller, $preference_document_id, true );
-                  echo $preference_email_address;
-                  echo '<br>';
-                  echo $message;
-                  echo '<br>';
-                }
-
-              }
-
-              //echo 'send to:'.$preference_email_address;
-              //echo '<br>';
-              $this->send_mail( $preference_email_address, $subject, $message );
-
-            }
-
-            //just comment for testing
-            $document_model->update_value( $preference_document_id, 'notification_sent', 'true' );
-
-          }
-
-        }
-        //user_id - document_id = document_owner
-        /*echo '<br>';
-          echo 'document id:'.$preference_document_id;
-          echo '<br>';
-          echo 'user id:'.$preference_user_id;
-          echo '<br>';
-          echo 'owner_count:'.$document_owner_count;
-          echo '<br>';*/
-      }
-    }
+    $this->load->view($controller.'/list', $model_data);
   }
 
-  public function notify_followers( $owner_array = array(), $selected_documents = array() ) {
 
-    $document_array = array();
-    $follower_array = array();
 
-    $this->load->model( 'Document_Model' );
-    $document_model = new Document_Model();
 
-    $user_model = $this->user_model;
-    $message = '';
 
-    $notification_info = $document_model->get_notification_info( 'completed_document' );
 
 
 
 
-    foreach ( $notification_info as $info ) {
 
-      $controller = $info->controller;
-      $subject = $info->email_subject;
-      $form_name = $info->email_form_name;
-      $notify_column_name = $info->user_notification_column_name;
 
-      for ( $i=0;$i<count( $selected_documents );$i++ ) {
 
-        $doc_id = $selected_documents[$i];
 
-        $completed_document_owners = $user_model->get_document_completed_followers( $doc_id );
 
-        foreach ( $completed_document_owners as $user ) {
 
-          $document_id = $user->document_id;
-          $follower_id = $user->follower_id;
-          $document_type = $user->document_code;
-          $document_code = $user->code;
-          $document_name = $user->name;
-          $follower_email_address = $user_model->get_value( $follower_id, 'email_address' );
 
 
-          if ( !in_array( $follower_id, $owner_array ) ) {
 
-            if ( $controller == $document_type ) {
-              $message = $this->complete_form_message( $form_name, $document_code, $document_name, $controller, $document_id, true );
-              $this->send_mail( $follower_email_address, $subject, $message );
-              echo $follower_email_address;
-              echo '<br>';
-              echo $message;
-              echo '<br>';
-              $document_array[] = $document_id;
-              $follower_array[] = $follower_id;
 
-            }
 
 
-          }
 
 
 
 
-        }
 
-      }
 
-    }
 
-    $new_array = array_merge( $follower_array, $owner_array );
 
-    $this->notify_completed( $new_array, $selected_documents );
-  }
 
-  public function notify_owners() {
 
-    $owner_array = array();
-    $selected_documents = array();
 
-    $this->load->model( 'Document_Model' );
-    $document_model = new Document_Model();
 
-    $user_model = $this->user_model;
-    $message = '';
 
-    $notification_info = $document_model->get_notification_info( 'completed_document' );
-    $completed_document_owners = $user_model->get_completed_document_owners();
 
 
 
-    foreach ( $notification_info as $info ) {
 
-      $controller = $info->controller;
-      $subject = $info->email_subject;
-      $form_name = $info->email_form_name;
-      $notify_column_name = $info->user_notification_column_name;
 
-      foreach ( $completed_document_owners as $user ) {
 
-        $document_id = $user->document_id;
-        $owner_id = $user->user_id;
-        $document_type = $user->document_code;
-        $document_code = $user->code;
-        $document_name = $user->name;
-        $owner_email_address = $user->email_address;
 
 
 
 
-        if ( $controller == $document_type ) {
-          $owner_array[] = $owner_id;
-          $selected_documents[] = $document_id;
-          $message = $this->complete_form_message( $form_name, $document_code, $document_name, $controller, $document_id );
-          $this->send_mail( $owner_email_address, $subject, $message );
-          echo $owner_email_address;
-          echo '<br>';
-          echo $message;
-          echo '<br>';
-        }
 
-      }
 
-    }
 
-    $this->notify_followers( $owner_array, $selected_documents );
-  }
 
-  public function notify_completed_forms() {
 
-    $this->load->model( 'Document_Model' );
-    $document_model = new Document_Model();
-
-    $notification_info = $document_model->get_notification_info( 'completed_document' );
-
-    $current_session_cust_id = $this->session->userdata( 'session' );
-
-    if ( $current_session_cust_id ) {
-
-      $user_model = $this->user_model;
-
-      $users = $user_model->get_all_records( 'document_owner' );
-
-      foreach ( $notification_info as $info ) {
-
-        $controller = $info->controller;
-        $subject = $info->email_subject;
-        $form_name = $info->email_form_name;
-        $notify_column_name = $info->user_notification_column_name;
-
-
-        $notification_completed_forms = $document_model->get_completed_documents();
-
-        foreach ( $notification_completed_forms as $form_detail ) {
-
-          /*echo '<pre>';
-          var_dump($form_detail);
-          echo '</pre>';*/
-
-          $main_id = $form_detail->document_id;
-          $name = $form_detail->name;
-          $code = $form_detail->code;
-          $notification_sent = $form_detail->notification_sent;
-          $document_type = $form_detail->document_code;
-
-          if ( $controller == $document_type && $notification_sent != 'true' ) {
-
-            $message = $this->complete_form_message( $form_name, $code, $name, $controller, $main_id );
-
-            foreach ( $users as $user_form_info ) {
-
-              $notify_user = false;
-
-              $user_id = $user_form_info->user_id;
-              $user_document_id = $user_form_info->document_id;
-              $notification_answer = $user_model->get_value( $user_id, $notify_column_name );
-
-              $equipment_categories = $user_model->get_record_by_column_value( 'user_id', $user_id , '*', 'user_preference' );
-
-
-              if ( empty( $equipment_categories ) ) {
-                $notify_user = false;
-              }else {
-                foreach ( $equipment_categories as $equipment_category_detail ) {
-                  $equipment_category_id = $equipment_category_detail->menu_id;
-                  $equipment_category_notification = $equipment_category_detail->notify;
-
-                  if ( $equipment_category_notification == 1 ) {
-                    $notify_user = true;
-                    break;
-                  }
-
-                }
-              }
-
-
-
-
-
-              if ( $main_id == $user_document_id && $notification_answer == 'yes' && $notify_user ) {
-                echo 'send to:'.$user_id.' | ';
-                $to = $user_model->get_value( $user_id, 'email_address' );
-
-                $this->send_mail( $to, $subject, $message );
-                /*echo '<br>';
-                echo 'to:'.$to;
-                echo '<br>';*/
-
-
-                $document_model->update_value( $main_id, 'notification_sent', 'true' );
-
-                $followers = $user_model->get_followers( $user_id );
-
-                //var_dump($followers);
-
-                foreach ( $followers as $follower ) {
-                  $follower_id = $follower->user_id;
-                  $follower_email = $follower->email_address;
-                  $firstname = $follower->first_name;
-                  $lastname = $follower->last_name;
-                  $full_name = $firstname.' '.$lastname;
-
-
-
-                  $notification_answer = $user_model->get_value( $follower_id, $notify_column_name );
-
-                  $equipment_categories = $user_model->get_record_by_column_value( 'user_id', $follower_id , '*', 'user_preference' );
-
-
-                  if ( empty( $equipment_categories ) ) {
-                    $notify_user = false;
-                  }else {
-                    foreach ( $equipment_categories as $equipment_category_detail ) {
-                      $equipment_category_id = $equipment_category_detail->menu_id;
-                      $equipment_category_notification = $equipment_category_detail->notify;
-
-                      if ( $equipment_category_notification == 1 ) {
-                        $notify_user = true;
-                        break;
-                      }
-
-                    }
-                  }
-
-                  if ( $notification_answer == 'yes' && $notify_user ) {
-                    $message = $this->complete_form_message( $form_name, $code, $name, $controller, $main_id, true, $full_name );
-                    $this->send_mail( $follower_email, $subject, $message );
-                    echo '<br>';
-                    echo ' | ';
-                    echo 'follower email:'.$follower_email;
-                    echo ' | ';
-                  }
-
-
-
-
-                }
-
-              }
-
-
-            }
-          }
-
-
-        }
-
-      }
-
-    }
-  }
-
-  public function redirect_form( $id, $current_step, $link_to ) {
-
-    $controller_uri = $this->controller_uri;
-
-    if ( $link_to == '' ) {
-      redirect( $controller_uri.'/edit/'.$id.'/'.$current_step );
-    }else {
-      header( "location:".$link_to );
-    }
-  }
-
-  public function is_post() {
-    return $_SERVER['REQUEST_METHOD'] == 'POST' ? TRUE : FALSE;
-  }
 
   public function is_logged_in($redirect = true) {
 
@@ -712,35 +223,6 @@ class MY_Controller extends CI_Controller {
   public function _is_not_id( $id, $redirect_link = 'user/my-account' ) {
     if ( !is_numeric( $id ) ) {
       redirect( $redirect_link );
-    }
-  }
-
-  public function _form_check( $id, $redirect = true ) {
-
-    $editable = false;
-
-    $this->load->model( 'Document_Model' );
-    $document_model = new Document_Model();
-
-    $user_id = $this->session->userdata( 'session' );
-
-    $document_id = $document_model->get_value( $id, 'document_id' );
-
-    //echo $value;
-    $editable = $document_model->verify_form_permission( $document_id, $user_id );
-
-    if ( $redirect ) {
-      if ( $document_id == '' ) {
-        redirect();
-      }
-
-      if ( !$editable ) {
-        $uri_string = $this->uri->uri_string();
-        $this->session->set_userdata( 'redirect_link', $uri_string );
-        redirect();
-      }
-    }else {
-      return $editable;
     }
   }
 

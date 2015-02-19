@@ -1,18 +1,18 @@
 <?php if ( ! defined( 'BASEPATH' ) ) exit( 'No direct script access allowed' );
 
-class Teacher extends My_Controller {
+class Student extends My_Controller {
 
 	public function __construct() {
 
 		parent::__construct();
 
-		$main_model_str = 'Teacher_Model';
+		$main_model_str = 'Student_Model';
 		$this->load->model( $main_model_str );
 		$this->main_model = new $main_model_str;
 
-		$this->form_primary = 'teacher_id';
-		$this->user_type = 2;
-		$this->user_title = "Instructor";
+		$this->form_primary = 'student_id';
+		$this->user_type = 3;
+		$this->user_title = "Student";
 	}
 
 	public function index() {
@@ -32,12 +32,11 @@ class Teacher extends My_Controller {
 		);
 
 		$this->load->view( 'layout/header', $header_data );
-		$this->load->view( 'teacher/index', $model_data );
+		$this->load->view( 'student/index', $model_data );
 		$this->load->view( 'layout/footer' , $footer_data);
 
 
 	}
-
 }
 
 /* End of file instructor.php */

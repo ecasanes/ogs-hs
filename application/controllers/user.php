@@ -11,17 +11,21 @@ class User extends My_Controller {
 		$this->main_model = new $main_model_str;
 
 		$this->form_primary = 'user_id';
+		$this->user_type = 1;
+		$this->user_title = "Admin";
 	}
 
 	public function index() {
 		if ( $this->session->userdata( 'session' ) ) {
-			redirect( 'user/dashboard' );
+			redirect( 'user/profile' );
 		}else {
 			$this->login();
 		}
 	}
 
-	public function dashboard() {
+
+
+	public function profile() {
 
 		$this->is_logged_in();
 
@@ -30,12 +34,12 @@ class User extends My_Controller {
 		$header_data = array();
 
 		$user_id = $this->session->userdata( 'session' );
-		$privilege = $user_model->get_value( $user_id, 'privilege' );
+		$user_type = $user_model->get_value( $user_id, 'user_type' );
 		//$password_key = $user_model->get_value( $user_id, 'password_key', 'user' );
 
 		$model_data = array();
 
-		$model_data['privilege'] = $privilege;
+		$model_data['user_type'] = $user_type;
 		//$model_data['password_key'] = $password_key;
 
 		$header_data['data'] = $header_data;
@@ -145,23 +149,24 @@ class User extends My_Controller {
 				// Build into exact location.
 				$user_photo = base_url($uploads_folder.'/'.$user_photo_name);*/
 
-				$privilege = $user_model->get_value($id, 'privilege');
+				$user_type = $user_model->get_value($id, 'user_type');
 				$username = $user_model->get_value($id, 'username');
 
-				if($privilege == 1)// admin
+				if($user_type == 1)// admin
 				{
 					
 					$role = 'admin';
 				}
-				else if($privilege == 2)// student
+				else if($user_type == 2)// teacher
+				{
+					$full_name = $user_model->get_teacher_fullname($id);
+					$role = 'teacher';
+				}
+				else if($user_type == 3)// student
 				{
 					$full_name = $user_model->get_student_fullname($id);
 					$role = 'student';
-				}
-				else if($privilege == 3)// teacher
-				{
-					$role = 'teacher';
-					$full_name = $user_model->get_teacher_fullname($id);
+					
 				}
 
 				
@@ -174,7 +179,7 @@ class User extends My_Controller {
 					'session_full_name' => $full_name,
 					//'user_photo' => image_exist($user_photo, 'circle', 'url'),
 					'session_role' => $role,
-					'session_privilege' => $privilege,
+					'user_type' => $user_type,
 					'sidebar_state' => ''
 				);
 

@@ -1,16 +1,15 @@
 <?php
 if(empty($results)):
 ?>
-<p class="text-error">No Instructors found.</p>
+<p class="text-error">No Students found.</p>
 <?php
 else:
 ?>
 <table class="table table-bordered">
 	<thead>
 		<tr>
-			<td>Instructor ID</td>
+			<td>Student ID</td>
 			<td>Name</td>
-			<td>Profile</td>
 		</tr>
 	</thead>
 	<tbody>
@@ -26,7 +25,6 @@ else:
 			<tr>
 				<td><?php echo $id; ?></td>
 				<td><?php echo $fullname; ?></td>
-				<td><?php echo $link; ?></td>
 			</tr>
 		<?php endforeach; ?>
 		

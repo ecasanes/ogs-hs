@@ -1488,3 +1488,33 @@ if ( !function_exists( 'calculate_time_between_dates' ) ) {
 
 	}
 }
+
+
+
+if ( !function_exists( 'year_dropdown' ) ) {
+	function year_dropdown($default_value = null) {
+
+		if($default_value == null){
+			$current_year = date('Y');
+		}else{
+			$current_year = $default_value;
+		}
+		
+
+		$year_lowest_limit = date('Y', strtotime(date("Y", strtotime( date('Y'))) . " - 10 year"));
+		$year_highest_limit = date('Y', strtotime(date("Y", strtotime( date('Y'))) . " + 10 year"));
+
+		$output = "";
+		for($i=$year_lowest_limit;$i<$year_highest_limit;$i++){
+			if($i != $current_year){
+				$output .= '<option value="'.$i.'">'.$i.'</option>';
+			}else{
+				$output .= '<option value="'.$i.'" selected="selected">'.$i.'</option>';
+			}
+			
+		}
+
+		return $output;
+
+	}
+}
