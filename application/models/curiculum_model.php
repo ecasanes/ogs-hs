@@ -49,7 +49,139 @@ class Curiculum_Model extends MY_Model {
         $query = $this->db->query($sql, $escaped_values);
 
         return $this->db->insert_id();
+    }
 
+    public function enroll_student($offer_id, $user_id){
+
+        $sql = "INSERT INTO tbl_enroll_student (offer_id, user_id) VALUES (?, ?)";
+
+        $escaped_values = array($offer_id, $user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id();
+
+        return $result;
+    }
+
+    public function add_project($subj_offerid, $no_of_items, $term, $tag){
+
+        $sql = "INSERT INTO tbl_project (subj_offerid, p_item, term, ptag) VALUES (?, ?, ?, ?)";
+
+        $escaped_values = array($subj_offerid, $no_of_items, $term, $tag);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        return $this->db->insert_id();
+    }
+
+    public function add_quiz($subj_offerid, $no_of_items, $term, $tag){
+
+        $sql = "INSERT INTO tbl_quiz (subj_offerid, q_item, term, qtag) VALUES (?, ?, ?, ?)";
+
+        $escaped_values = array($subj_offerid, $no_of_items, $term, $tag);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        return $this->db->insert_id();
+    }
+
+    public function add_recitation($subj_offerid, $no_of_items, $term, $tag){
+
+        $sql = "INSERT INTO tbl_recitation (subj_offerid, r_item, term, rtag) VALUES (?, ?, ?, ?)";
+
+        $escaped_values = array($subj_offerid, $no_of_items, $term, $tag);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        return $this->db->insert_id();
+    }
+
+    public function add_assignment($subj_offerid, $no_of_items, $term, $tag){
+
+        $sql = "INSERT INTO tbl_assignment (subj_offerid, a_item, term, atag) VALUES (?, ?, ?, ?)";
+
+        $escaped_values = array($subj_offerid, $no_of_items, $term, $tag);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        return $this->db->insert_id();
+    }
+
+    public function add_exam($subj_offerid, $no_of_items, $term){
+
+        $sql = "INSERT INTO tbl_exam (subj_offerid, e_item, term) VALUES (?, ?, ?)";
+
+        $escaped_values = array($subj_offerid, $no_of_items, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        return $this->db->insert_id();
+    }
+
+    public function assign_student_project($user_id, $activity_id){
+
+        $sql = "INSERT INTO tbl_student_project (user_id, PID) VALUES (?, ?)";
+
+        $escaped_values = array($user_id, $activity_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id();
+
+        return $result;
+    }
+
+    public function assign_student_quiz($user_id, $activity_id){
+
+        $sql = "INSERT INTO tbl_student_quiz (user_id, QID) VALUES (?, ?)";
+
+        $escaped_values = array($user_id, $activity_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id();
+
+        return $result;
+    }
+
+    public function assign_student_recitation($user_id, $activity_id){
+
+        $sql = "INSERT INTO tbl_student_recitation (user_id, RID) VALUES (?, ?)";
+
+        $escaped_values = array($user_id, $activity_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id();
+
+        return $result;
+    }
+
+    public function assign_student_assignment($user_id, $activity_id){
+
+        $sql = "INSERT INTO tbl_student_assignment (user_id, AID) VALUES (?, ?)";
+
+        $escaped_values = array($user_id, $activity_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id();
+
+        return $result;
+    }
+
+    public function assign_student_exam($user_id, $activity_id){
+
+        $sql = "INSERT INTO tbl_student_exam (user_id, exam_id) VALUES (?, ?)";
+
+        $escaped_values = array($user_id, $activity_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id();
+
+        return $result;
     }
 
     /* count */
@@ -114,6 +246,28 @@ class Curiculum_Model extends MY_Model {
         $query = $this->db->query($sql, $escaped_values);
 
         $result = $query->row()->assign_count;
+
+        return $result;
+    }
+
+    public function count_enrolled_students($grade_level_id, $user_id){
+
+        $sql = "SELECT 
+              count(*) as count_users 
+            FROM
+              tbl_enroll_student a,
+              tbl_grade_level b,
+              tbl_grade_section c 
+            WHERE c.`gl_id` = b.`gl_id` 
+              AND c.`offer_id` = a.`offer_id` 
+              AND b.`gl_id` = ?
+              AND a.`user_id` = ?";
+
+        $escaped_values = array($grade_level_id, $user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row()->count_users;
 
         return $result;
     }
@@ -348,6 +502,40 @@ class Curiculum_Model extends MY_Model {
 
         return $result;
     }
+
+    public function get_subject_offerid_by_enrolled_student($user_id){
+
+        $sql = "SELECT 
+              * 
+            FROM
+              tbl_enroll_student a,
+              tbl_subj_offering d
+            WHERE a.`offer_id` = d.`offer_id`
+            AND a.`user_id` = ?";
+
+        $escaped_values = array($user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function get_project_by_subj_offerid($subj_offerid){
+
+        $sql = "SELECT * FROM tbl_assignment a, tbl_student_assignment b WHERE a.`AID` = b.`AID` AND a.subj_offerid = ?";
+
+        $escaped_values = array($subj_offerid);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    /*todo for others */
 
 
 

@@ -26,6 +26,7 @@
     <!--'theme/assets/plugins/bootstrap-wysihtml5/css/bootstrap-wysihtml5.css'-->
 
     <!-- icheck and select2 here-->
+    <link rel="stylesheet" href="<?php echo $base_url.'theme/css/plugins/jquery-select2.min.css'; ?>">
 
     <link rel="stylesheet" href="<?php echo $base_url.'theme/css/custom.css'; ?>">
 	

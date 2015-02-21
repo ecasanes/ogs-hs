@@ -111,6 +111,80 @@ class Curiculum extends My_Controller {
 		$this->load->view( 'layout/footer' , $footer_data);
 	}
 
+	public function enroll_student(){
+
+		$this->is_logged_in();
+
+		$user_model = $this->user_model;
+		$student_user_type = 3;
+		$user_dropdown = $this->user_dropdown(3);
+
+		$header_data = array();
+
+		$model_data = array(
+				'grade_level_dropdown' => $this->grade_level_dropdown(),
+				'school_year_dropdown' => $this->school_year_dropdown(),
+				'student_dropdown' => $user_dropdown,
+				'error' => $this->session->flashdata('error'),
+				'success' => $this->session->flashdata('success')
+			);
+
+		$footer_data = array();
+		$footer_data['listeners'] = array(
+			'Module.Curiculum.enroll_student()'
+		);
+
+		$this->load->view( 'layout/header', $header_data );
+		$this->load->view( 'curiculum/enroll-student', $model_data );
+		$this->load->view( 'layout/footer' , $footer_data);
+	}
+
+	public function manage_grades(){
+
+		/*
+		
+		FOR ADMIN
+		select school year
+		grade level
+		section name
+		offered subjects
+		autocomplete instructor name
+
+		FOR INSTRUCTOR
+		user id from session
+		school year
+		assigned grade level
+		assigned section
+		assigned subjects
+
+		*/
+
+		$this->is_logged_in();
+
+		$user_model = $this->user_model;
+		$student_user_type = 3;
+		$user_dropdown = $this->user_dropdown(3);
+
+		$header_data = array();
+
+		$model_data = array(
+				'grade_level_dropdown' => $this->grade_level_dropdown(),
+				'school_year_dropdown' => $this->school_year_dropdown(),
+				'student_dropdown' => $user_dropdown,
+				'error' => $this->session->flashdata('error'),
+				'success' => $this->session->flashdata('success')
+			);
+
+		$footer_data = array();
+		$footer_data['listeners'] = array(
+			'Module.Curiculum.manage_grades()'
+		);
+
+		$this->load->view( 'layout/header', $header_data );
+		$this->load->view( 'curiculum/manage-grades', $model_data );
+		$this->load->view( 'layout/footer' , $footer_data);
+	}
+
 	/* submits */
 	public function create_grade_level(){
 
@@ -257,7 +331,8 @@ class Curiculum extends My_Controller {
 					$this->session->set_flashdata( 'error', 'Subject already offered.' );
 				}else{
 					var_dump($data);
-					$main_model->offer_subject($section, $subject);
+					$subj_offerid = $main_model->offer_subject($section, $subject);
+					$this->assign_subject_defaults($subj_offerid);
 					$this->session->set_flashdata( 'success', 'Subject was successfully offered.' );
 				}
 
@@ -292,6 +367,7 @@ class Curiculum extends My_Controller {
 				}else{
 					var_dump($data);
 					$main_model->assign_instructor($subj_offerid, $user);
+					
 					$this->session->set_flashdata( 'success', 'Instructor was successfully assigned.' );
 				}
 
@@ -304,8 +380,110 @@ class Curiculum extends My_Controller {
 			
 			
 		}
-
 	}
+
+	public function submit_enroll_student(){
+
+		$data = $this->input->post();
+
+		if($data){
+			extract( $data, EXTR_SKIP );
+
+			$main_model = $this->main_model;
+
+			if($school_year != '' && $grade_level != '' && $section != '' && $student != ''){
+
+				$school_year = explode('-', $school_year);
+				$sy_start = $school_year[0];
+				$sy_end = $school_year[1];
+
+				$grade_level_id = $main_model->get_grade_level_id_by_detail($sy_start, $sy_end, $grade_level);
+				$exist = $this->enroll_student_exist($grade_level_id, $student);
+
+				if($exist){
+					$this->session->set_flashdata( 'error', 'Student already enrolled.' );
+				}else{
+					var_dump($data);
+					$main_model->enroll_student($section, $student);
+					
+					$this->session->set_flashdata( 'success', 'Student was successfully enrolled.' );
+				}
+
+			}else{
+				$this->session->set_flashdata( 'error', 'Please select schoolyear, grade level and section.' );
+			}
+
+			redirect('curiculum/enroll-student');	
+		}
+	}
+
+	public function submit_manage_grades(){
+
+		$data = $this->input->post();
+
+		if($data){
+			extract( $data, EXTR_SKIP );
+
+			$main_model = $this->main_model;
+
+			if($school_year != '' && $grade_level != '' && $section != '' && $student != ''){
+
+				$school_year = explode('-', $school_year);
+				$sy_start = $school_year[0];
+				$sy_end = $school_year[1];
+
+				$grade_level_id = $main_model->get_grade_level_id_by_detail($sy_start, $sy_end, $grade_level);
+				$exist = $this->enroll_student_exist($grade_level_id, $student);
+
+				if($exist){
+					$this->session->set_flashdata( 'error', 'No Grades Allocated.' );
+				}else{
+					var_dump($data);
+					$main_model->enroll_student($section, $student);
+					$this->session->set_flashdata( 'success', 'Student was successfully enrolled.' );
+				}
+
+			}else{
+				$this->session->set_flashdata( 'error', 'Please select schoolyear, grade level and section.' );
+			}
+
+			redirect('curiculum/manage-grades');	
+		}
+	}
+
+	/* adds */
+	public function assign_subject_defaults($subj_offerid){
+
+		for($i=1;$i<=4;$i++){
+
+			//exam
+			$exam_id = $main_model->add_exam($subj_offerid, '', $i);
+
+			//quiz
+			for($quiz_counter=1;$quiz_counter<=6;$quiz_counter++){
+				$main_model->add_quiz($subj_offerid, '', $i, 'Q'.$quiz_counter);
+			}
+
+			//recitation
+			for($recitation_counter=1;$recitation_counter<=4;$recitation_counter++){
+				$main_model->add_recitation($subj_offerid, '', $i, 'R'.$recitation_counter);
+			}
+
+			//assignment
+			for($assignment_counter=1;$assignment_counter<=5;$assignment_counter++){
+				$main_model->add_assignment($subj_offerid, '', $i, 'A'.$assignment_counter);
+			}
+
+			//project
+			for($project_counter=1;$project_counter<=2;$project_counter++){
+				$main_model->add_assignment($subj_offerid, '', $i, 'P'.$project_counter);
+			}
+			
+		}
+	}
+
+
+
 
 	/* validations */
 	public function school_year_exist($sy_start, $sy_end){
@@ -365,6 +543,19 @@ class Curiculum extends My_Controller {
 		$main_model = $this->main_model;
 
 		$count = $main_model->count_assigned_teachers($subj_offerid, $user_id);
+
+		if($count > 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	public function enroll_student_exist($grade_level_id, $user_id){
+
+		$main_model = $this->main_model;
+
+		$count = $main_model->count_enrolled_students($grade_level_id, $user_id);
 
 		if($count > 0){
 			return true;
@@ -533,15 +724,9 @@ class Curiculum extends My_Controller {
 			extract( $data, EXTR_SKIP );
 			$main_model = $this->main_model;
 
-			$school_year = explode('-', $school_year);
-			$sy_start = $school_year[0];
-			$sy_end = $school_year[1];
-
-			$grade_level_id = $main_model->get_grade_level_id_by_detail($sy_start, $sy_end, $grade_level);
-
 			$option = '<option value="">Select</option>';
 
-			$option .= $this->subjects_not_offered_by_detail_dropdown($grade_level_id, $section);
+			$option .= $this->subjects_offered_dropdown($section);
 
 			if($option == '<option value="">Select</option>'){
 				$success = false;
@@ -550,6 +735,7 @@ class Curiculum extends My_Controller {
 			}
 
 			$json_array = array(
+					'query' => $this->db->last_query(),
 					'success' => $success,
 					'html' => $option
 				);
@@ -706,31 +892,6 @@ class Curiculum extends My_Controller {
 
 	    return $option;
 	}
-	
-
-	
-
-
-	
-
-
-	
-
-
-	public function test(){
-
-		$main_model = $this->main_model;
-
-		$main_model->getSubjects();
-	}
-
-
-	/* TODO: validate schoolyear insert to be 1 + 1
-
-	SELECT DISTINCT(c.user_id),a.*,b.*,c.* FROM tbl_grade_section a, tbl_enroll_student b, tbl_user c WHERE a.`offer_id` = b.`offer_id` AND b.`user_id` = c.`user_id`
-
-SELECT * FROM tbl_subj_offering a, tbl_subject b, tbl_grade_section c WHERE a.`offer_id` = 1 AND c.offer_id = a.offer_id AND b.`subj_id` = a.`subj_id`
-	*/
 
 
 

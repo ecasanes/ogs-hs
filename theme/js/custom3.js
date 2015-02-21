@@ -25,6 +25,12 @@ function error_input_keyup(){
 	});
 }
 
+function select_enhancements(){
+
+    $('.select2-dropdown').select2();
+}
+
+select_enhancements();
 error_input_keyup();
 
 
@@ -108,7 +114,6 @@ Module.User = (function() {
 		});
 	}
 
-
 	function search_user(){
 
 		var $search_user = $('#search-user');
@@ -147,9 +152,7 @@ Module.User = (function() {
 			});
 
 		});
-		
 	}
-
 
 	function refresh_user_list(retain_height){
 
@@ -191,11 +194,7 @@ Module.User = (function() {
 				}
 
 			});
-
 	}
-
-
-
 
 	return {
 		add_user: add_user,
@@ -269,7 +268,6 @@ Module.Subject = (function() {
 		});
 	}
 
-
 	function refresh_subject_list(retain_height){
 
 		var retain_height = retain_height || false;
@@ -310,11 +308,7 @@ Module.Subject = (function() {
 				}
 
 			});
-
 	}
-
-
-
 
 	return {
 		add_subject: add_subject,
@@ -325,6 +319,111 @@ Module.Subject = (function() {
 
 
 Module.Curiculum = (function() {
+
+	function manage_grades(){
+
+		var $form = $('#manage-grade-form');
+		var $school_year = $form.find('[name=school_year]');
+		var $grade_level = $form.find('[name=grade_level]');
+		var $section = $form.find('[name=section]');
+		var $subject = $form.find('[name=subject]');
+		var $user = $form.find('[name=student]');
+
+		var $section_container = $form.find('.section');
+		var $subject_container = $form.find('.subject');
+
+		$school_year.change(function(e){
+
+			var $this = $(this);
+
+			var school_year = $this.val();
+			var grade_level = $grade_level.val();
+
+			if(grade_level != null && grade_level != null){
+
+				get_section_dropdown($section_container, school_year, grade_level);
+
+			}else{
+				get_section_dropdown($section_container);
+			}
+		});
+
+
+		$grade_level.change(function(e){
+
+			var $this = $(this);
+
+			var school_year = $school_year.val();
+			var grade_level = $this.val();
+
+			if(school_year != null && grade_level != null){
+
+				get_section_dropdown($section_container, school_year, grade_level);
+
+			}else{
+				get_section_dropdown($section_container);
+			}
+		});
+
+		$section.change(function(e){
+
+			var $this = $(this);
+
+			var section = $section.val();
+
+			if(section != null){
+
+				get_subject_dropdown($subject_container, section, null, null, "offered");
+
+			}else{
+				get_subject_dropdown($subject_container, null, null, null, "offered");
+			}
+		});
+	}
+
+	function enroll_student(){
+
+		var $form = $('#enroll-student-form');
+		var $school_year = $form.find('[name=school_year]');
+		var $grade_level = $form.find('[name=grade_level]');
+		var $section = $form.find('[name=section]');
+		var $user = $form.find('[name=student]');
+
+		var $section_container = $form.find('.section');
+
+		$school_year.change(function(e){
+
+			var $this = $(this);
+
+			var school_year = $this.val();
+			var grade_level = $grade_level.val();
+
+			if(grade_level != null && grade_level != null){
+
+				get_section_dropdown($section_container, school_year, grade_level);
+
+			}else{
+				get_section_dropdown($section_container);
+			}
+		});
+
+
+		$grade_level.change(function(e){
+
+			var $this = $(this);
+
+			var school_year = $school_year.val();
+			var grade_level = $this.val();
+
+			if(school_year != null && grade_level != null){
+
+				get_section_dropdown($section_container, school_year, grade_level);
+
+			}else{
+				get_section_dropdown($section_container);
+			}
+		});
+	}
 
 	function add_grade_level(){
 
@@ -510,10 +609,10 @@ Module.Curiculum = (function() {
 
 			if(section != null){
 
-				get_subject_dropdown($subject_container, section, school_year, grade_level,  "offered");
+				get_subject_dropdown($subject_container, section, school_year, grade_level,  "not_assigned");
 
 			}else{
-				get_subject_dropdown($subject_container, null, null, null, "offered");
+				get_subject_dropdown($subject_container, null, null, null, "not_assigned");
 			}
 		});
 
@@ -611,9 +710,14 @@ Module.Curiculum = (function() {
 				ajax_data = {"section": section };
 				break;
 
-			case "offered":
+			case "not_assigned":
 				ajax_url = base_url + "curiculum/subjects_not_assigned_dropdown_by_info";
 				ajax_data = {"section": section, "school_year": school_year, "grade_level": grade_level };
+				break;
+
+			case "offered":
+				ajax_url = base_url + "curiculum/subjects_offered_dropdown_by_info";
+				ajax_data = {"section": section };
 				break;
 		}
 
@@ -734,13 +838,12 @@ Module.Curiculum = (function() {
 		}
 	}
 
-
-
-
 	return {
 		add_grade_level: add_grade_level,
 		offer_subject: offer_subject,
-		assign_instructor: assign_instructor
+		assign_instructor: assign_instructor,
+		enroll_student: enroll_student,
+		manage_grades: manage_grades
 	}
 
 })();

@@ -29,6 +29,8 @@
 
 	<script src="<?php echo $base_url.'theme/js/plugins/jquery.cookie.js'; ?>"></script>
 
+	<script src="<?php echo $base_url.'theme/assets/plugins/jquery-select2/select2.min.js'; ?>"></script>
+
     <!-- icheck and select2 here-->
 	
 	<!-- float, dynatable, jquery.form here -->

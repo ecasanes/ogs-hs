@@ -173,11 +173,16 @@ class MY_Controller extends CI_Controller {
     return $option;
   }
 
-
-  public function user_dropdown(){
+  public function user_dropdown($new_user_type = null){
 
     $user_model = $this->user_model;
-    $user_type = $this->user_type;
+
+    if(isset($user_type) && $user_type != null){
+      $user_type = $this->user_type;
+    }else{
+      $user_type = $new_user_type;
+    }
+    
 
     if(empty($user_type)){
       $user_type = 1;
@@ -200,8 +205,6 @@ class MY_Controller extends CI_Controller {
     }
 
     return $option;
-
-
   }
 
   public function grade_level_dropdown($sy_start = null, $sy_end = null){

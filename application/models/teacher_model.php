@@ -120,66 +120,7 @@ class Teacher_Model extends MY_Model {
     /* end get */
 
     /* start add */
-    public function add_project($subj_offerid, $no_of_items, $term, $tag){
-
-    	$sql = "INSERT INTO tbl_project (subj_offerid, p_item, term, ptag) VALUES (?, ?, ?, ?)";
-
-    	$escaped_values = array($subj_offerid, $no_of_items, $term, $tag);
-
-    	$query = $this->db->query($sql, $escaped_values);
-
-    	return $this->db->insert_id();
-
-    }
-
-    public function add_quiz($subj_offerid, $no_of_items, $term, $tag){
-
-    	$sql = "INSERT INTO tbl_quiz (subj_offerid, q_item, term, qtag) VALUES (?, ?, ?, ?)";
-
-    	$escaped_values = array($subj_offerid, $no_of_items, $term, $tag);
-
-    	$query = $this->db->query($sql, $escaped_values);
-
-    	return $this->db->insert_id();
-
-    }
-
-    public function add_recitation($subj_offerid, $no_of_items, $term, $tag){
-
-    	$sql = "INSERT INTO tbl_recitation (subj_offerid, r_item, term, rtag) VALUES (?, ?, ?, ?)";
-
-    	$escaped_values = array($subj_offerid, $no_of_items, $term, $tag);
-
-    	$query = $this->db->query($sql, $escaped_values);
-
-    	return $this->db->insert_id();
-
-    }
-
-    public function add_assignment($subj_offerid, $no_of_items, $term, $tag){
-
-    	$sql = "INSERT INTO tbl_assignment (subj_offerid, a_item, term, atag) VALUES (?, ?, ?, ?)";
-
-    	$escaped_values = array($subj_offerid, $no_of_items, $term, $tag);
-
-    	$query = $this->db->query($sql, $escaped_values);
-
-    	return $this->db->insert_id();
-
-    }
-
-
-    public function add_exam($subj_offerid, $no_of_items, $term){
-
-    	$sql = "INSERT INTO tbl_exam (subj_offerid, e_item, term) VALUES (?, ?, ?)";
-
-    	$escaped_values = array($subj_offerid, $no_of_items, $term);
-
-    	$query = $this->db->query($sql, $escaped_values);
-
-    	return $this->db->insert_id();
-
-    }
+   
 
     /* end get */
 

@@ -5,13 +5,13 @@
 		<div class="panel panel-primary">
 			
 		  <div class="panel-heading">
-		    <h3 class="panel-title">Assign Instructor</h3>
+		    <h3 class="panel-title">Manage Grades</h3>
 		    <div class="panel-options">
-		    	
-		    </div>
+                <a href="#" data-rel="collapse" data-target="#sample-panel"><i class="fa fa-fw fa-minus"></i></a>
+            </div>
 		  </div>
-		  <?php echo form_open('curiculum/submit_assign_instructor', array('id'=>'assign-instructor-form')); ?>
-		  <div class="panel-body">
+		  <?php echo form_open('curiculum/submit_manage_grades', array('id'=>'manage-grade-form')); ?>
+		  <div id="sample-panel" class="panel-body">
 		  	<div class="form-horizontal">
 			  	<div class="row">
 			  		<div class="form-group">
@@ -58,16 +58,16 @@
 	                      </div>
                     </div>
 
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                     	<label for="subject" class="control-label col-sm-2 col-xs-12">Instructor Name</label>
-	                      <div class="user col-sm-2 col-xs-12">
-	                      	<div class="loading hidden"><i class="fa fa-loading fa-spin"></i> Loading Instructors...</div>
-	                      	<div class="not-found hidden">No Instructors Found</div>
-	                      	<div class="requirements">Please Select Subject</div>
-	                      	<select name="user" class="form-control hidden" required>
-	                      	</select>
-	                      </div>
-                    </div>
+                    	                      <div class="user col-sm-2 col-xs-12">
+                    	                      	<div class="loading hidden"><i class="fa fa-loading fa-spin"></i> Loading Instructors...</div>
+                    	                      	<div class="not-found hidden">No Instructors Found</div>
+                    	                      	<div class="requirements">Please Select Subject</div>
+                    	                      	<select name="user" class="form-control hidden" required>
+                    	                      	</select>
+                    	                      </div>
+                    </div> -->
 			  		
 			  	</div>
 		  	</div>
@@ -83,16 +83,85 @@
 		            <?php endif; ?>
 		  		</div>
 		  		<div class="col-sm-2">
-		  			<input type="submit" class="pull-right btn btn-success submit-form" value="Assign">
+		  			<input type="submit" class="pull-right btn btn-success submit-form" value="View Grades">
 		  		</div>
 		  	</div>
 		  </div>
 		  <?php echo form_close(); ?>
 		</div>
-
+		<!-- end panel -->
 
 		
+
+		<!-- start panel -->
+		<div class="panel panel-primary">
+			
+		  <div class="panel-heading">
+		    <h3 class="panel-title">Modify Grades</h3>
+		    <span class="pull-right">
+                <!-- Tabs -->
+                <ul class="nav panel-tabs">
+                    <li class="active"><a href="#quizzes" data-toggle="tab">Quizzes</a></li>
+                    <li><a href="#assignment" data-toggle="tab">Assignment</a></li>
+                    <li><a href="#recitation" data-toggle="tab">Recitation</a></li>
+                    <li><a href="#project" data-toggle="tab">Project</a></li>
+                    <li><a href="#exam" data-toggle="tab">Exam</a></li>
+                </ul>
+            </span>
+		  </div>
+		  <?php echo form_open('curiculum/submit_edit_grades', array('id'=>'edit-grades-form')); ?>
+		  <div class="panel-body">
+		  	<div class="tab-content">
+				<div class="tab-pane fade in active" id="quizzes">
+					a
+				</div>
+				<div class="tab-pane fade in" id="assignment">
+					b
+				</div>
+				<div class="tab-pane fade in" id="recitation">
+					c
+				</div>
+				<div class="tab-pane fade in" id="project">
+					d
+				</div>
+				<div class="tab-pane fade in" id="exam">
+					e
+				</div>
+			</div>
+		  </div>
+		  <div class="panel-footer">
+		  	<div class="row">
+		  		<div class="col-sm-10">
+		  			<?php if(isset($error)): ?>
+		              <span class="error-message"><?php echo $error; ?></span>
+		            <?php endif; ?>
+		            <?php if(isset($success)): ?>
+		              <span class="success-message"><?php echo $success; ?></span>
+		            <?php endif; ?>                                                                                                                                                                         
+		  		</div>
+		  		<div class="col-sm-2">
+		  			<input type="submit" class="pull-right btn btn-success submit-form" value="Save Grades">
+		  		</div>
+		  	</div>
+		  </div>
+		  <?php echo form_close(); ?>
+		</div>
 		<!-- end panel -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 		<!-- start panel -->
