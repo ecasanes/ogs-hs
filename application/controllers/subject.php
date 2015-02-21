@@ -14,13 +14,20 @@ class Subject extends My_Controller {
 	}
 
 	public function index() {
-		
+		redirect('subject/add');
+	}
+
+	/*pages*/
+	public function add(){
 		$this->is_logged_in();
 
 		$user_model = $this->user_model;
 
 		$header_data = array();
-		$model_data = array();
+		$model_data = array(
+				'grade_level_dropdown' => $this->grade_level_dropdown(),
+				'school_year_dropdown' => $this->school_year_dropdown()
+			);
 		$footer_data = array();
 		$footer_data['listeners'] = array(
 			'Module.Subject.add_subject()', 
@@ -28,12 +35,54 @@ class Subject extends My_Controller {
 		);
 
 		$this->load->view( 'layout/header', $header_data );
-		$this->load->view( 'subject/index', $model_data );
+		$this->load->view( 'subject/add', $model_data );
 		$this->load->view( 'layout/footer' , $footer_data);
+	}
 
+	public function assign_subject_grade_level(){
+
+		$this->is_logged_in();
+
+		$user_model = $this->user_model;
+
+		$header_data = array();
+		$model_data = array(
+				'no_grade_level_subject_dropdown' => $this->no_grade_level_subject_dropdown(),
+				'grade_level_dropdown' => $this->grade_level_dropdown(),
+				'school_year_dropdown' => $this->school_year_dropdown(),
+				'error' => $this->session->flashdata('error'),
+				'success' => $this->session->flashdata('success')
+			);
+		$footer_data = array();
+		$footer_data['listeners'] = array(
+			'Module.Subject.add_subject()', 
+			'Module.Subject.refresh_subject_list()'
+		);
+
+		$this->load->view( 'layout/header', $header_data );
+		$this->load->view( 'subject/assign-subject-grade-level', $model_data );
+		$this->load->view( 'layout/footer' , $footer_data);
 
 	}
 
+	/*validations*/
+	public function subject_code_grade_level_exist($sy_start, $sy_end, $grade_level, $subject_id){
+
+		$main_model = $this->main_model;
+
+		$count = $main_model->count_subject_by_grade_level($sy_start, $sy_end, $grade_level, $subject_id);
+
+		var_dump($this->db->last_query());
+		var_dump($count);
+
+		if($count > 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	/*submits*/
 	public function create_subject(){
 
 		$data = $this->input->post();
@@ -87,6 +136,51 @@ class Subject extends My_Controller {
 		}
 	}
 
+	public function submit_assign_grade_level(){
+
+		$data = $this->input->post();
+
+		if($data){
+
+			extract( $data, EXTR_SKIP );
+
+			$this->load->model('Curiculum_Model');
+			$curiculum_model = new Curiculum_Model;
+			$main_model = $this->main_model;
+
+			$school_year = explode('-', $school_year);
+			$sy_start = $school_year[0];
+			$sy_end = $school_year[1];
+
+			$exist = $this->subject_code_grade_level_exist($sy_start, $sy_end, $grade_level, $subject);
+
+			var_dump($exist);
+
+			if ( !$exist ) {
+
+				$grade_level_id = $curiculum_model->get_grade_level_id_by_detail($sy_start, $sy_end, $grade_level);
+				$main_model->add_subject_grade_level($subject, $grade_level_id);
+
+				var_dump($this->db->last_query());
+
+				$this->session->set_flashdata( 'success', 'Grade level successfully assigned to subject.' );
+
+			}else{
+
+				$this->session->set_flashdata( 'error', 'Subject already assigned to grade level.' );
+				
+			}
+
+			redirect('subject/assign-subject-grade-level');
+
+
+
+
+		}
+
+	}
+
+	/*lists*/
 	public function data_list(){
 
 		$main_model = $this->main_model;
@@ -117,6 +211,52 @@ class Subject extends My_Controller {
 			);
 
 		$this->load->view($controller.'/list', $model_data);
+	}
+
+	public function list_assigned_subjects_per_school_year($school_year){
+		//by grade level from school year
+		//then list subjects
+	}
+
+	/*dropdowns*/
+	public function no_grade_level_subject_dropdown(){
+
+		$main_model = $this->main_model;
+
+		$results = $main_model->get_subjects_with_no_grade_level();
+
+		$option = "";
+
+	    foreach($results as $result){
+
+	      $subj_id = $result->subj_id;
+	      $subj_code = $result->subj_code;
+	      $subj_desc = $result->subj_desc;
+
+	      $option .= '<option value="'.$subj_id.'">'.$subj_code.'</option>';
+	    }
+
+	    return $option;
+	}
+
+	public function with_grade_level_subject_dropdown(){
+
+		$main_model = $this->main_model;
+
+		$results = $main_model->get_subjects_with_grade_level();
+
+		$option = "";
+
+	    foreach($results as $result){
+
+	      $subj_id = $result->subj_id;
+	      $subj_code = $result->subj_code;
+	      $subj_desc = $result->subj_desc;
+
+	      $option .= '<option value="'.$subj_id.'">'.$subj_code.'</option>';
+	    }
+
+	    return $option;
 	}
 
 }

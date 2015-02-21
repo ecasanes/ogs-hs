@@ -152,6 +152,91 @@ class MY_Controller extends CI_Controller {
     $this->load->view($controller.'/list', $model_data);
   }
 
+  public function school_year_dropdown(){
+
+    $this->load->model('Curiculum_Model');
+    $main_model = new Curiculum_Model;
+
+    $results = $main_model->get_school_year();
+
+    $option = "";
+
+    foreach($results as $result){
+
+      $grade_level_id = $result->gl_id;
+      $sy_start = $result->sy_start;
+      $sy_end = $result->sy_end;
+
+      $option .= '<option value="'.$sy_start.'-'.$sy_end.'">'.$sy_start.' - '.$sy_end.'</option>';
+    }
+
+    return $option;
+  }
+
+
+  public function user_dropdown(){
+
+    $user_model = $this->user_model;
+    $user_type = $this->user_type;
+
+    if(empty($user_type)){
+      $user_type = 1;
+    }
+
+    $results = $user_model->get_users_by_type($user_type);
+
+    $option = "";
+
+    foreach($results as $result){
+
+      $user_id = $result->user_id;
+      $firstname = $result->fname;
+      $middlename = $result->mname;
+      $lastname = $result->lname;
+
+      $fullname = $firstname .' '. $middlename .' '. $lastname;
+
+      $option .= '<option value="'.$user_id.'">'.$fullname.'</option>';
+    }
+
+    return $option;
+
+
+  }
+
+  public function grade_level_dropdown($sy_start = null, $sy_end = null){
+
+    $option = "";
+
+    if($sy_start === null && $sy_end === null){
+
+      for($i=1;$i<=4;$i++){
+        $option .= '<option value="'.$i.'">'.$i.'</option>';
+      }
+
+    }else{
+
+      $this->load->model('Curiculum_Model');
+        $main_model = new Curiculum_Model;
+
+        $results = $main_model->get_available_year_level_by_school_year($sy_start, $sy_end);
+
+        foreach($results as $result){
+
+          $grade_level_id = $result->gl_id;
+          $grade_level = $result->grade_level;
+          $sy_start = $result->sy_start;
+          $sy_end = $result->sy_end;
+
+          $option .= '<option value="'.$grade_level_id.'">'.$grade_level.'</option>';
+        }
+
+    }
+
+      
+
+      return $option;
+  }
 
 
 

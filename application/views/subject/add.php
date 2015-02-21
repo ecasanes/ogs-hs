@@ -2,7 +2,7 @@
   <div class="col-xs-12">
 
     <!-- start panel -->
-    <div class="panel panel-default">
+    <div class="panel panel-primary">
       
       <div class="panel-heading">
         <h3 class="panel-title">Add Subject</h3>
@@ -14,6 +14,29 @@
       <div class="panel-body">
         <div class="form-horizontal">
           <div class="row">
+            <!-- <div class="form-group">
+              <label for="school_year" class="control-label col-sm-2 col-xs-12">School Year</label>
+              <div class="col-sm-3 col-xs-12">
+                <select name="school_year" id="" class="form-control" required>
+                  <option value="">Select</option>
+                  <?php echo $school_year_dropdown; ?>
+                </select>
+              </div>
+            
+             
+            </div>
+            
+            <div class="form-group">
+              <label for="school_year" class="control-label col-sm-2 col-xs-12">Grade Level</label>
+                <div class="col-sm-3 col-xs-12">
+                  <select name="grade_level" id="" class="form-control" required>
+                    <option value="">Select</option>
+                    <?php echo $grade_level_dropdown; ?>
+                  </select>
+                </div>
+            </div> -->
+
+
             <div class="form-group">
               <label for="username" class="control-label col-sm-2 col-xs-12">Subject Code</label>
               <div class="col-sm-3 col-xs-12">
@@ -25,7 +48,7 @@
               <label for="username" class="control-label col-sm-2 col-xs-12">Subject Unit</label>
               <div class="col-sm-3 col-xs-12">
                 <select name="subject_unit" class="form-control" required>
-                  <option value="">- Select - </option>
+                  <option value="">Select</option>
                   <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
@@ -60,7 +83,7 @@
 
 
     <!-- start panel -->
-    <div class="panel panel-default">
+    <div class="panel panel-primary">
       <div class="panel-heading">
         <h3 class="panel-title">List of Subjects</h3>
         <div class="panel-options">

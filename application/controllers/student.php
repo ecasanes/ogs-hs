@@ -35,6 +35,29 @@ class Student extends My_Controller {
 		$this->load->view( 'student/index', $model_data );
 		$this->load->view( 'layout/footer' , $footer_data);
 
+	}
+
+	public function scores(){
+
+	}
+
+	public function assignment(){
+
+	}
+
+	public function exam(){
+
+	}
+
+	public function project(){
+
+	}
+
+	public function quiz(){
+
+	}
+
+	public function recitation(){
 
 	}
 }

@@ -1518,3 +1518,42 @@ if ( !function_exists( 'year_dropdown' ) ) {
 
 	}
 }
+
+
+if ( !function_exists( 'display_loading' ) ) {
+	function display_loading() {
+
+		$output = "";
+
+		$output .= '<span class="loading">';
+		$output .= '<i class="fa fa-loading fa-spin></i> Loading...';
+		$output .= '</span>';
+
+
+
+		return $output;
+
+	}
+}
+
+
+if ( !function_exists( 'display_success_error_message' ) ) {
+	function display_success_error_message($error, $success) {
+
+		$output = "";
+
+		if(isset($error)):
+        	$output .= '<span class="error-message"><?php echo $error; ?></span>';
+        endif;
+
+        if(isset($success)):
+        	$output .= '<span class="success-message"><?php echo $success; ?></span>';
+        endif; 
+
+		return $output;
+
+	}
+}
+
+
+

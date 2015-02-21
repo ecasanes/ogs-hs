@@ -38,6 +38,40 @@ class Teacher extends My_Controller {
 
 	}
 
+
+	/*assign*/
+	
+
+	
+	public function assign_project(){
+
+	}
+
+	public function assign_quiz(){
+
+	}
+
+	public function assign_recitation(){
+		
+	}
+
+	public function assign_assignment(){
+
+	}
+
+	public function assign_exam(){
+
+	}
+
+
+
+
+	/*submit assign */
+	
+
+
+	
+
 }
 
 /* End of file instructor.php */

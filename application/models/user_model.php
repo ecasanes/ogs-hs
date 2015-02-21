@@ -5,6 +5,37 @@ class User_Model extends MY_Model {
     const DB_TABLE = 'tbl_user';
     const DB_TABLE_PK = 'user_id';
 
+
+    public function get_users(){
+
+        $db_table = $this::DB_TABLE;
+        $db_primary =$this::DB_TABLE_PK;
+
+        $sql  = "SELECT * FROM {$db_table}";
+
+        $query = $this->db->query($sql);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function get_users_by_type($user_type = 1){
+
+        $db_table = $this::DB_TABLE;
+        $db_primary =$this::DB_TABLE_PK;
+
+        $sql  = "SELECT * FROM {$db_table} WHERE user_type = ?";
+
+        $escaped_values = array($user_type);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
     /* start CRUD */
     public function create_user($username, $password, $fname, $lname, $age, $gender, $address, $user_type, $mname=''){
 

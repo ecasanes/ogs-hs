@@ -77,21 +77,62 @@ $search_data = $this->session->userdata( 'search_data' );
                 <li>
                   <a href="<?php echo base_url('user/profile'); ?>"><i class="fa fa-info-circle"></i> Profile</a>
                 </li>
-                <li>
-                  <a href="<?php echo base_url('subject'); ?>"><i class="fa fa-book"></i> Subjects</a>
+                <li class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="fa fa-book"></i> Subjects <span class="caret"></span>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a href="<?php echo base_url('subject'); ?>"><i class="fa fa-male"></i> Add Subject</a>
+                    </li>
+                    <li>
+                      <a href="<?php echo base_url('subject/assign-subject-grade-level'); ?>"><i class="fa fa-male"></i> Assign Subject to Grade Level</a>
+                    </li>
+                    <li>
+                      <a href="<?php echo base_url('curiculum/offer-subject'); ?>"><i class="fa fa-male"></i> Offer Subject</a>
+                    </li>
+                  </ul>
                 </li>
-                <li>
-                  <a href="<?php echo base_url('teacher'); ?>"><i class="fa fa-male"></i> Instructors</a>
-                </li>
-                <li>
-                  <a href="<?php echo base_url('teacher/assign'); ?>"><i class="fa fa-plus"></i> Assign Instructors</a>
+                <li class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="fa fa-male"></i> Instructors <span class="caret"></span>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a href="<?php echo base_url('teacher'); ?>"><i class="fa fa-male"></i> Add Instructor</a>
+                    </li>
+                    <li>
+                      <a href="<?php echo base_url('teacher/assign-project'); ?>"><i class="fa fa-male"></i> Assign Project</a>
+                    </li>
+                    <li>
+                      <a href="<?php echo base_url('teacher/assign-quiz'); ?>"><i class="fa fa-male"></i> Assign Quiz</a>
+                    </li>
+                    <li>
+                      <a href="<?php echo base_url('teacher/assign-recitation'); ?>"><i class="fa fa-male"></i> Assign Recitation</a>
+                    </li>
+                    <li>
+                      <a href="<?php echo base_url('curiculum/assign-instructor'); ?>"><i class="fa fa-male"></i> Assign Instructors</a>
+                    </li>
+                  </ul>
                 </li>
                 <li>
                   <a href="<?php echo base_url('student'); ?>"><i class="fa fa-users"></i> Students</a>
                 </li>
                 <li class="dropdown">
                   <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    Other Options <span class="caret"></span>
+                    <i class="fa fa-plus"></i> Assign <span class="caret"></span>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a href="<?php echo base_url('curiculum/add-section'); ?>"><i class="fa fa-male"></i> Add Section</a>
+                    </li>
+                  </ul>
+                </li>
+                
+                
+                <li class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="fa fa-cog"></i> Curiculum <span class="caret"></span>
                   </a>
                   <ul class="dropdown-menu">
                     <li><a href="<?php echo base_url('curiculum'); ?>">Manage Curiculum</a></li>

@@ -5,6 +5,15 @@ class Subject_Model extends MY_Model {
     const DB_TABLE = 'tbl_subject';
     const DB_TABLE_PK = 'subject_id';
 
+    /*
+
+    offer id -      tbl_grade_section ----- section
+    subj_id         tbl_subject
+    subj_offerid    tbl_subj_offering
+
+    */
+
+    /* get */
     public function get_subjects(){
 
         $db_table = $this::DB_TABLE;
@@ -19,6 +28,89 @@ class Subject_Model extends MY_Model {
         return $result;
     }
 
+    public function get_offered_subjects($offer_id){ //section
+
+        $sql = "SELECT * FROM tbl_subj_offering a, tbl_subject b WHERE a.offer_id = ? AND b.subj_id = a.subj_id";
+
+        $escaped_values = array($offer_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function get_subjects_with_no_grade_level(){
+
+        $sql = "SELECT 
+          * 
+        FROM
+          tbl_subject 
+        WHERE subj_id NOT IN 
+          (SELECT 
+            a.subj_id 
+          FROM
+            tbl_subject a,
+            tbl_grade_level b,
+            tbl_grade_subj c 
+          WHERE b.`gl_id` = c.`gl_id` 
+            AND a.`subj_id` = c.`subj_id`)";
+
+        $query = $this->db->query($sql);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function get_subjects_with_grade_level(){
+
+        $sql = "SELECT 
+            DISTINCT(a.subj_id),
+            a.*,
+            b.*,
+            c.* 
+          FROM
+            tbl_subject a,
+            tbl_grade_level b,
+            tbl_grade_subj c 
+          WHERE b.`gl_id` = c.`gl_id` 
+            AND a.`subj_id` = c.`subj_id`";
+
+        $query = $this->db->query($sql);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    /* count */
+    public function count_subject_by_grade_level($sy_start, $sy_end, $grade_level, $subj_id){
+
+        $sql = "SELECT 
+          COUNT(DISTINCT(c.subj_id)) AS count_subject
+        FROM
+          tbl_subject a,
+          tbl_grade_level b,
+          tbl_grade_subj c 
+        WHERE a.subj_id = ? 
+          AND b.grade_level = ? 
+          AND b.sy_start = ? 
+          AND b.`sy_end` = ? 
+          AND b.`gl_id` = c.`gl_id`
+          AND a.subj_id = c.`subj_id`";
+
+        $escaped_values = array($subj_id, $grade_level, $sy_start, $sy_end);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row()->count_subject;
+
+        return $result;
+    }
+
+    /* create */
     public function create_subject($subject_code, $subject_unit, $subject_description){
 
         $db_table = $this::DB_TABLE;
@@ -32,6 +124,18 @@ class Subject_Model extends MY_Model {
 
         return $this->db->insert_id();
     }
+
+    public function add_subject_grade_level($subj_id, $grade_level){
+
+        $sql = "INSERT INTO tbl_grade_subj (subj_id, gl_id) VALUES (?, ?)";
+
+        $escaped_values = array($subj_id, $grade_level);
+
+        $query = $this->db->query($sql, $escaped_values);
+    }
+
+
+    
 
 
 }

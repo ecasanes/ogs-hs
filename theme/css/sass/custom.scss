@@ -83,6 +83,14 @@ body{
 	background:#f39c12;
 	color:#fff;
 
+	.dropdown{
+		&.open{
+			.dropdown-toggle{
+				color:#fff;
+			}
+		}
+	}
+
 	a{
 		color:#000;
 		&:hover{
@@ -194,3 +202,16 @@ input, textarea, select{
 }
 
 /* end - panel tabs */
+
+
+
+
+
+
+
+
+.form-control{
+	.loading, .not-found, .requirements{
+		padding-top:10px;
+	}
+}

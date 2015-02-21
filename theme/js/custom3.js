@@ -354,7 +354,7 @@ Module.Curiculum = (function() {
 					var success_message = data.success_message;
 					var result = data.result;
 
-					var $grade_level = $this.find('[name=grade_level]');
+					//var $grade_level = $this.find('[name=grade_level]');
 					var $sy_start = $this.find('[name=sy_start]');
 					var $sy_end = $this.find('[name=sy_end]');
 
@@ -362,12 +362,12 @@ Module.Curiculum = (function() {
 					$this.find('.success-message').text('');
 
 					if(grade_level == 'failed'){
-						$grade_level.addClass('error');
+						//$grade_level.addClass('error');
 						$sy_start.addClass('error');
 						$sy_end.addClass('error');
 						$this.find('.error-message').append(grade_level_message);
 					}else{
-						$grade_level.removeClass('error');
+						//$grade_level.removeClass('error');
 						$sy_start.removeClass('error');
 						$sy_end.removeClass('error');
 					}
@@ -375,7 +375,7 @@ Module.Curiculum = (function() {
 					
 
 					if(result != 'failed'){
-						$this.find('.success-message').text(success_message).fadeOut(3000);
+						$this.find('.success-message').text(success_message).fadeOut(5000);
 						$this.find('input,select').not('[type=submit], input[type=hidden]').val('');
 					}
 
@@ -392,11 +392,355 @@ Module.Curiculum = (function() {
 		});
 	}
 
+	function offer_subject(){
+
+		var $form = $('#assign-subject-to-section-form');
+		var $school_year = $form.find('[name=school_year]');
+		var $grade_level = $form.find('[name=grade_level]');
+		var $section = $form.find('[name=section]');
+		var $subject = $form.find('[name=subject]');
+
+		var $section_container = $form.find('.section');
+		var $subject_container = $form.find('.subject');
+
+		$school_year.change(function(e){
+
+			var $this = $(this);
+
+			var school_year = $this.val();
+			var grade_level = $grade_level.val();
+
+			if(grade_level != null && grade_level != null){
+
+				get_section_dropdown($section_container, school_year, grade_level);
+
+			}else{
+				get_section_dropdown($section_container);
+			}
+		});
+
+
+		$grade_level.change(function(e){
+
+			var $this = $(this);
+
+			var school_year = $school_year.val();
+			var grade_level = $this.val();
+
+			if(school_year != null && grade_level != null){
+
+				get_section_dropdown($section_container, school_year, grade_level);
+
+			}else{
+				get_section_dropdown($section_container);
+			}
+		});
+
+
+		$section.change(function(e){
+
+			var $this = $(this);
+
+			var section = $section.val();
+
+			if(section != null){
+
+				get_subject_dropdown($subject_container, section);
+
+			}else{
+				get_subject_dropdown($subject_container);
+			}
+		});
+	}
+
+	function assign_instructor(){
+
+		var $form = $('#assign-instructor-form');
+		var $school_year = $form.find('[name=school_year]');
+		var $grade_level = $form.find('[name=grade_level]');
+		var $section = $form.find('[name=section]');
+		var $subject = $form.find('[name=subject]');
+		var $user = $form.find('[name=user]');
+
+		var $section_container = $form.find('.section');
+		var $subject_container = $form.find('.subject');
+		var $user_container = $form.find('.user');
+
+		$school_year.change(function(e){
+
+			var $this = $(this);
+
+			var school_year = $this.val();
+			var grade_level = $grade_level.val();
+
+			if(grade_level != null && grade_level != null){
+
+				get_section_dropdown($section_container, school_year, grade_level);
+
+			}else{
+				get_section_dropdown($section_container);
+			}
+		});
+
+
+		$grade_level.change(function(e){
+
+			var $this = $(this);
+
+			var school_year = $school_year.val();
+			var grade_level = $this.val();
+
+			if(school_year != null && grade_level != null){
+
+				get_section_dropdown($section_container, school_year, grade_level);
+
+			}else{
+				get_section_dropdown($section_container);
+			}
+		});
+
+
+		$section.change(function(e){
+
+			var $this = $(this);
+
+			var section = $this.val();
+			var school_year = $school_year.val();
+			var grade_level = $grade_level.val();
+
+			if(section != null){
+
+				get_subject_dropdown($subject_container, section, school_year, grade_level,  "offered");
+
+			}else{
+				get_subject_dropdown($subject_container, null, null, null, "offered");
+			}
+		});
+
+
+		$subject.change(function(e){
+
+			var $this = $(this);
+
+			var section = $section.val();
+			var subject = $this.val();
+
+			if(section != null && subject != null){
+
+				get_user_dropdown($user_container, section, subject);
+
+			}else{
+				get_user_dropdown($user_container);
+			}
+		});
+	} 
+
+	function get_section_dropdown($section_container, school_year, grade_level){
+
+		var school_year = school_year || null;
+		var grade_level = grade_level || null;
+
+		$loading = $section_container.find('.loading');
+		$requirements = $section_container.find('.requirements');
+		$not_found = $section_container.find('.not-found');
+		$select = $section_container.find('[name=section]');
+
+		if(school_year === null && grade_level === null){
+			$not_found.addClass('hidden');
+			$loading.addClass('hidden');
+			$requirements.removeClass('hidden');
+			$select.addClass('hidden');
+			$select.prop('disabled', true);
+		}else{
+			$.ajax({
+				url: base_url + 'curiculum/section_dropdown_by_info',
+				method: "get",
+				data: {"school_year": school_year, "grade_level":grade_level },
+				dataType: "json",
+				beforeSend: function(data){
+
+					$loading.removeClass('hidden');
+					$requirements.addClass('hidden');
+
+				},
+				success: function(data) {
+
+					console.log(data);
+
+					var content = data.html;
+					var success = data.success;
+
+					if(success){
+						$select.html(content);
+						$not_found.addClass('hidden');
+						$select.prop('disabled', false);
+						$select.removeClass('hidden');
+						$loading.addClass('hidden');
+						$requirements.addClass('hidden');
+					}else{
+						$not_found.removeClass('hidden');
+						$loading.addClass('hidden');
+						$requirements.addClass('hidden');
+						$select.addClass('hidden');
+						$select.prop('disabled', true);
+					}
+					
+				},
+				complete: function(data){
+					
+				},
+				error: function(error, data){
+					console.log(error.responseText);
+				}
+
+			});
+		}
+	}
+
+	function get_subject_dropdown($subject_container, section, school_year, grade_level, type){
+
+		var section = section || null;
+		var type = type || 'not_offered';
+
+		var ajax_url = "";
+		var ajax_data;
+
+		switch(type){
+			case "not_offered":
+				ajax_url = base_url + "curiculum/subjects_not_offered_dropdown_by_info";
+				ajax_data = {"section": section };
+				break;
+
+			case "offered":
+				ajax_url = base_url + "curiculum/subjects_not_assigned_dropdown_by_info";
+				ajax_data = {"section": section, "school_year": school_year, "grade_level": grade_level };
+				break;
+		}
+
+		$loading = $subject_container.find('.loading');
+		$requirements = $subject_container.find('.requirements');
+		$not_found = $subject_container.find('.not-found');
+		$select = $subject_container.find('[name=subject]');
+
+		if(section === null){
+			$not_found.addClass('hidden');
+			$loading.addClass('hidden');
+			$requirements.removeClass('hidden');
+			$select.addClass('hidden');
+			$select.prop('disabled', true);
+		}else{
+			$.ajax({
+				url: ajax_url,
+				method: "get",
+				data: ajax_data,
+				dataType: "json",
+				beforeSend: function(data){
+
+					$loading.removeClass('hidden');
+					$requirements.addClass('hidden');
+
+				},
+				success: function(data) {
+
+					var content = data.html;
+					var success = data.success;
+
+					if(success){
+						$select.html(content);
+						$not_found.addClass('hidden');
+						$select.prop('disabled', false);
+						$select.removeClass('hidden');
+						$loading.addClass('hidden');
+						$requirements.addClass('hidden');
+					}else{
+						$not_found.removeClass('hidden');
+						$loading.addClass('hidden');
+						$requirements.addClass('hidden');
+						$select.addClass('hidden');
+						$select.prop('disabled', true);
+					}
+					
+				},
+				complete: function(data){
+					
+				},
+				error: function(error, data){
+					console.log(error.responseText);
+				}
+
+			});
+		}
+	}
+
+	function get_user_dropdown($user_container, section, subject){
+
+		var section = section || null;
+		var subject = subject || null;
+
+		$loading = $user_container.find('.loading');
+		$requirements = $user_container.find('.requirements');
+		$not_found = $user_container.find('.not-found');
+		$select = $user_container.find('[name=user]');
+
+		if(section === null && subject === null){
+			$not_found.addClass('hidden');
+			$loading.addClass('hidden');
+			$requirements.removeClass('hidden');
+			$select.addClass('hidden');
+			$select.prop('disabled', true);
+		}else{
+			$.ajax({
+				url: base_url + 'curiculum/unassigned_instructors_dropdown_by_info',
+				method: "get",
+				data: {"section": section, "subject":subject },
+				dataType: "json",
+				beforeSend: function(data){
+
+					$loading.removeClass('hidden');
+					$requirements.addClass('hidden');
+
+				},
+				success: function(data) {
+
+					console.log(data);
+
+					var content = data.html;
+					var success = data.success;
+
+					if(success){
+						$select.html(content);
+						$not_found.addClass('hidden');
+						$select.prop('disabled', false);
+						$select.removeClass('hidden');
+						$loading.addClass('hidden');
+						$requirements.addClass('hidden');
+					}else{
+						$not_found.removeClass('hidden');
+						$loading.addClass('hidden');
+						$requirements.addClass('hidden');
+						$select.addClass('hidden');
+						$select.prop('disabled', true);
+					}
+					
+				},
+				complete: function(data){
+					
+				},
+				error: function(error, data){
+					console.log(error.responseText);
+				}
+
+			});
+		}
+	}
+
 
 
 
 	return {
-		add_grade_level: add_grade_level
+		add_grade_level: add_grade_level,
+		offer_subject: offer_subject,
+		assign_instructor: assign_instructor
 	}
 
 })();

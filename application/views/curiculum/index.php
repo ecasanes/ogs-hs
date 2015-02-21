@@ -24,7 +24,7 @@
 
                           <?php echo form_open('', array('id'=>'add-grade-level-form')); ?>
                           <div class="form-horizontal">
-                              <div class="form-group">
+                              <!-- <div class="form-group">
                                 <label for="username" class="control-label col-sm-2 col-xs-12">Grade Level</label>
                                 <div class="col-sm-2 col-xs-12">
                                   <select name="grade_level" id="" class="form-control" required>
@@ -35,7 +35,7 @@
                                     <option value="4">4</option>
                                   </select>
                                 </div>
-                              </div>
+                              </div> -->
 
                               <div class="form-group">
                                 <label for="username" class="control-label col-sm-2 col-xs-12">SY Start</label>
@@ -74,6 +74,32 @@
 
 
                         <div class="tab-pane fade" id="view-class-record">
+
+                          <!--
+                          
+                          School year
+                          grade level
+                          section
+                          class record
+  
+                          -->
+
+                          <div class="form-horizontal">
+                            <div class="form-group">
+                              <label for="school_year" class="control-label col-sm-2 col-xs-12">School Year</label>
+                              <div class="col-sm-2 col-xs-12">
+                                <select name="school_year" id="" class="form-control" required>
+                                  <?php echo $school_year_dropdown; ?>
+                                </select>
+                              </div>
+                              
+                              <div class="col-sm-1 col-xs-12">
+                                <input type="submit" value="Search" class="btn btn-success">
+                              </div>
+                            </div>
+                          </div>
+          
+
                           
                         </div>
 
