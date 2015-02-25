@@ -21,7 +21,6 @@
 				<?php $this->load->view('modals/'.$modal_name.'.php'); ?>
 	    	<?php endforeach; ?>
     	<?php endif; ?>
-        <?php $this->load->view('modals/new-document-modal.php'); ?>
 
 
         

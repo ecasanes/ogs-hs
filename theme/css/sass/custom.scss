@@ -1,21 +1,6 @@
-@import "variables";
-@import "mixins";
 
-@import "header";
-@import "navigation";
-@import "sidebar";
-@import "footer";
-
-@import "login";
-@import "table";
 @import "panel";
 @import "modal";
-@import "document";
-@import "buttons";
-
-@import "timeline";
-
-@import "classes";
 
 
 body{
@@ -211,7 +196,42 @@ input, textarea, select{
 
 
 .form-control{
-	.loading, .not-found, .requirements{
+	&.loading, 
+	&.not-found, 
+	&.requirements{
 		padding-top:10px;
 	}
+}
+
+.quiz-cell{
+
+	text-align:center;
+
+	&.compensate-padding{
+		padding:13px;
+	}
+
+	input{
+		width:50px;
+		text-align:center;
+		padding:3px;
+
+		&.no-border{
+			border:none;
+		}
+	}
+
+	table{
+		margin:auto;
+		padding:0;
+		border:0;
+	}
+}
+
+.no-padding{
+	padding:0 !important;
+}
+
+.hidden{
+	display:none;
 }

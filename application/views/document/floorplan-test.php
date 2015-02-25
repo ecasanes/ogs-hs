@@ -1,1 +1,0 @@
-<img id="image" class="floorplan-image img-responsive" src="<?php echo base_url('images/floorplans/floorplan.jpg'); ?>"/>

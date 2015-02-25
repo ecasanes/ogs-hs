@@ -94,9 +94,18 @@
                               </div>
                               
                               <div class="col-sm-1 col-xs-12">
-                                <input type="submit" value="Search" class="btn btn-success">
+                                <input id="search-class-record" type="submit" value="Search" class="btn btn-success">
                               </div>
                             </div>
+                          </div>
+
+                          <br>
+
+                          <div class="loading hidden">
+                            <i class="fa fa-spin fa-refresh"></i> Loading ...
+                          </div>
+                          <div id="class-record-container">
+
                           </div>
           
 

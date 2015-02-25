@@ -102,15 +102,6 @@ $search_data = $this->session->userdata( 'search_data' );
                       <a href="<?php echo base_url('teacher'); ?>"><i class="fa fa-male"></i> Add Instructor</a>
                     </li>
                     <li>
-                      <a href="<?php echo base_url('teacher/assign-project'); ?>"><i class="fa fa-male"></i> Assign Project</a>
-                    </li>
-                    <li>
-                      <a href="<?php echo base_url('teacher/assign-quiz'); ?>"><i class="fa fa-male"></i> Assign Quiz</a>
-                    </li>
-                    <li>
-                      <a href="<?php echo base_url('teacher/assign-recitation'); ?>"><i class="fa fa-male"></i> Assign Recitation</a>
-                    </li>
-                    <li>
                       <a href="<?php echo base_url('curiculum/assign-instructor'); ?>"><i class="fa fa-male"></i> Assign Instructors</a>
                     </li>
                   </ul>

@@ -64,6 +64,32 @@ class Curiculum_Model extends MY_Model {
         return $result;
     }
 
+    public function add_grade_system($subj_offerid, $term){
+
+        $sql = "INSERT INTO tbl_grade_system (subj_offerid, Term) VALUES (?, ?)";
+
+        $escaped_values = array($subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id();
+
+        return $result;
+    }
+
+    public function add_grade_column($subj_offerid, $term){
+
+        $sql = "INSERT INTO tbl_grade_column (subj_offerid, Term) VALUES (?,?)";
+
+        $escaped_values = array($subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id();
+
+        return $result;
+    }
+
     public function add_project($subj_offerid, $no_of_items, $term, $tag){
 
         $sql = "INSERT INTO tbl_project (subj_offerid, p_item, term, ptag) VALUES (?, ?, ?, ?)";
@@ -184,6 +210,138 @@ class Curiculum_Model extends MY_Model {
         return $result;
     }
 
+    /* update */
+
+    public function update_quiz($activity_id, $items){
+
+        $sql = "UPDATE tbl_quiz SET q_item = ? WHERE QID = ?";
+
+        $escaped_values = array($items, $activity_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id();
+
+        return $result;
+    }
+
+    public function update_recitation($activity_id, $items){
+
+        $sql = "UPDATE tbl_recitation SET r_item = ? WHERE RID = ?";
+
+        $escaped_values = array($items, $activity_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id();
+
+        return $result;
+    }
+
+    public function update_project($activity_id, $items){
+
+        $sql = "UPDATE tbl_project SET p_item = ? WHERE PID = ?";
+
+        $escaped_values = array($items, $activity_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id();
+
+        return $result;
+    }
+
+    public function update_assignment($activity_id, $items){
+
+        $sql = "UPDATE tbl_assignment SET a_item = ? WHERE AID = ?";
+
+        $escaped_values = array($items, $activity_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id();
+
+        return $result;
+    }
+
+    public function update_exam($activity_id, $items){
+
+        $sql = "UPDATE tbl_exam SET e_item = ? WHERE exam_id = ?";
+
+        $escaped_values = array($items, $activity_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id();
+
+        return $result;
+    }
+
+    public function update_student_quiz($activity_id, $user_id, $score){
+
+        $sql = "UPDATE tbl_student_quiz SET qscore = ? WHERE QID = ? AND user_id = ?";
+
+        $escaped_values = array($score, $activity_id, $user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id();
+
+        return $result;
+    }
+
+    public function update_student_recitation($activity_id, $user_id, $score){
+
+        $sql = "UPDATE tbl_student_recitation SET rscore = ? WHERE RID = ? AND user_id = ?";
+
+        $escaped_values = array($score, $activity_id, $user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id();
+
+        return $result;
+    }
+
+    public function update_student_project($activity_id, $user_id, $score){
+
+        $sql = "UPDATE tbl_student_project SET pscore = ? WHERE PID = ? AND user_id = ?";
+
+        $escaped_values = array($score, $activity_id, $user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id();
+
+        return $result;
+    }
+
+    public function update_student_assignment($activity_id, $user_id, $score){
+
+        $sql = "UPDATE tbl_student_assignment SET ascore = ? WHERE AID = ? AND user_id = ?";
+
+        $escaped_values = array($score, $activity_id, $user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id();
+
+        return $result;
+    }
+
+    public function update_student_exam($activity_id, $user_id, $score){
+
+        $sql = "UPDATE tbl_student_exam SET escore = ? WHERE exam_id = ? AND user_id = ?";
+
+        $escaped_values = array($score, $activity_id, $user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id();
+
+        return $result;
+    }
+
     /* count */
     public function count_school_year($sy_start, $sy_end){
 
@@ -272,6 +430,19 @@ class Curiculum_Model extends MY_Model {
         return $result;
     }
 
+    public function count_enrolled_students_in_section($section){
+
+        $sql = "SELECT count(*) as enroll_count FROM tbl_enroll_student a WHERE a.`offer_id` = ?";
+
+        $escaped_values = array($section);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row()->enroll_count;
+
+        return $result;
+    }
+
     /* get */
     public function get_school_year(){
 
@@ -299,6 +470,43 @@ class Curiculum_Model extends MY_Model {
         $result = $query->result();
 
         return $result;
+    }
+
+    public function get_section_info($offer_id){
+
+        $sql = "SELECT * FROM tbl_grade_section a, tbl_grade_level b WHERE a.`gl_id` = b.`gl_id` AND a.`offer_id` = ?";
+
+        $escaped_values = array($offer_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row();
+
+        return $result;
+    }
+
+    public function get_subject_info($subj_offerid){
+
+        $sql = "SELECT 
+              * 
+            FROM
+              tbl_subj_offering a,
+              tbl_subject b,
+              tbl_teacher_subj c,
+              tbl_user d
+            WHERE a.`subj_offerid` = ?
+              AND a.`subj_id` = b.`subj_id` 
+              AND c.`subj_offerid` = a.`subj_offerid`
+              AND d.user_id = c.`user_id`";
+
+        $escaped_values = array($subj_offerid);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row();
+
+        return $result;
+
     }
 
     public function get_sections_by_grade_level($grade_level_id){
@@ -333,9 +541,6 @@ class Curiculum_Model extends MY_Model {
         
 
         return $result;
-    }
-
-    public function get_subjects_by_offer_id($offer_id){
     }
 
     public function get_subjects_not_assigned_by_detail($grade_level_id, $section_id){ //gl_id, offer_id
@@ -522,11 +727,17 @@ class Curiculum_Model extends MY_Model {
         return $result;
     }
 
-    public function get_project_by_subj_offerid($subj_offerid){
+    public function get_enrolled_students_by_section($offer_id){
+        
+        $sql = "SELECT 
+              * 
+            FROM
+              tbl_enroll_student a,
+              tbl_user b
+            WHERE a.offer_id = ? 
+              AND b.user_id = a.user_id";
 
-        $sql = "SELECT * FROM tbl_assignment a, tbl_student_assignment b WHERE a.`AID` = b.`AID` AND a.subj_offerid = ?";
-
-        $escaped_values = array($subj_offerid);
+        $escaped_values = array($offer_id);
 
         $query = $this->db->query($sql, $escaped_values);
 
@@ -535,7 +746,1031 @@ class Curiculum_Model extends MY_Model {
         return $result;
     }
 
-    /*todo for others */
+    public function get_enrolled_students_by_section_and_subject($offer_id, $subj_id){
+
+        $sql = "SELECT 
+              * 
+            FROM
+              tbl_enroll_student a,
+              tbl_subj_offering b,
+              tbl_user c 
+            WHERE a.`offer_id` = ?
+              AND a.`offer_id` = b.`offer_id` 
+              AND a.`user_id` = c.user_id
+              AND b.`subj_id` = ?";
+
+        $escaped_values = array($offer_id, $subj_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function get_offered_subjects_by_section($offer_id){
+
+        $sql = "SELECT 
+              * 
+            FROM
+              tbl_subj_offering a,
+              tbl_grade_section b,
+              tbl_subject c
+            WHERE a.`offer_id` = b.`offer_id` 
+              AND b.`offer_id` = ?
+              AND c.`subj_id` = a.`subj_id`";
+
+        $escaped_values = array($offer_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function get_offered_subjects_for_student($offer_id, $user_id){
+
+        $sql = "SELECT 
+              * 
+            FROM
+              tbl_subj_offering a,
+              tbl_grade_section b,
+              tbl_subject c,
+              tbl_enroll_student d,
+              tbl_user e
+            WHERE a.`offer_id` = b.`offer_id` 
+              AND b.`offer_id` = ?
+              AND c.`subj_id` = a.`subj_id`
+              AND d.`user_id` = ?
+              AND d.`offer_id` = a.`offer_id`
+              AND d.`user_id` = e.user_id";
+
+        $escaped_values = array($offer_id, $user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function get_quiz_info_by_id($activity_id){
+
+        $sql = "SELECT * FROM tbl_quiz a WHERE a.`QID` = ?";
+
+        $escaped_values = array($activity_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row();
+
+        return $result;
+    }
+
+    public function get_recitation_info_by_id($activity_id){
+
+        $sql = "SELECT * FROM tbl_recitation a WHERE a.`RID` = ?";
+
+        $escaped_values = array($activity_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row();
+
+        return $result;
+    }
+
+    public function get_project_info_by_id($activity_id){
+
+        $sql = "SELECT * FROM tbl_project a WHERE a.`PID` = ?";
+
+        $escaped_values = array($activity_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row();
+
+        return $result;
+    }
+
+    public function get_assignment_info_by_id($activity_id){
+
+        $sql = "SELECT * FROM tbl_assignment a WHERE a.`AID` = ?";
+
+        $escaped_values = array($activity_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row();
+
+        return $result;
+    }
+
+    public function get_exam_info_by_id($activity_id){
+
+        $sql = "SELECT * FROM tbl_exam a WHERE a.`exam_id` = ?";
+
+        $escaped_values = array($activity_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row();
+
+        return $result;
+    }
+
+    public function get_project_by_subj_offerid($subj_offerid, $term){
+
+        $sql = "SELECT * FROM tbl_project a WHERE a.subj_offerid = ? and term = ?";
+
+        $escaped_values = array($subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function get_quiz_by_subj_offerid($subj_offerid, $term){
+
+        $sql = "SELECT * FROM tbl_quiz a WHERE a.subj_offerid = ? and term = ?";
+
+        $escaped_values = array($subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function get_recitation_by_subj_offerid($subj_offerid, $term){
+
+        $sql = "SELECT * FROM tbl_recitation a WHERE a.subj_offerid = ? and term = ?";
+
+        $escaped_values = array($subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function get_assignment_by_subj_offerid($subj_offerid, $term){
+
+        $sql = "SELECT * FROM tbl_assignment a WHERE a.subj_offerid = ? and term = ?";
+
+        $escaped_values = array($subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function get_exam_by_subj_offerid($subj_offerid, $term){
+
+        $sql = "SELECT * FROM tbl_exam a WHERE a.subj_offerid = ? and term = ?";
+
+        $escaped_values = array($subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function get_student_project($section, $user_id){
+
+        $sql = "SELECT 
+          DISTINCT(f.PID),
+          a.*,
+          b.*,
+          c.*,
+          d.*,
+          e.*,
+          f.*
+        FROM
+          tbl_subj_offering a,
+          tbl_grade_section b,
+          tbl_subject c,
+          tbl_enroll_student d,
+          tbl_user e,
+          tbl_project f
+        WHERE a.`offer_id` = b.`offer_id` 
+          AND b.`offer_id` = ?
+          AND c.`subj_id` = a.`subj_id`
+          AND d.`user_id` = ?
+          AND d.`offer_id` = a.`offer_id`
+          AND d.`user_id` = e.user_id
+          AND f.`subj_offerid` = a.`subj_offerid`";
+
+        $escaped_values = array($section, $user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function get_student_quiz($section, $user_id){
+
+        $sql = "SELECT 
+          DISTINCT(f.QID),
+          a.*,
+          b.*,
+          c.*,
+          d.*,
+          e.*,
+          f.*
+        FROM
+          tbl_subj_offering a,
+          tbl_grade_section b,
+          tbl_subject c,
+          tbl_enroll_student d,
+          tbl_user e,
+          tbl_quiz f
+        WHERE a.`offer_id` = b.`offer_id` 
+          AND b.`offer_id` = ?
+          AND c.`subj_id` = a.`subj_id`
+          AND d.`user_id` = ?
+          AND d.`offer_id` = a.`offer_id`
+          AND d.`user_id` = e.user_id
+          AND f.`subj_offerid` = a.`subj_offerid`";
+
+        $escaped_values = array($section, $user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function get_student_recitation($section, $user_id){
+
+        $sql = "SELECT 
+          DISTINCT(f.RID),
+          a.*,
+          b.*,
+          c.*,
+          d.*,
+          e.*,
+          f.*
+        FROM
+          tbl_subj_offering a,
+          tbl_grade_section b,
+          tbl_subject c,
+          tbl_enroll_student d,
+          tbl_user e,
+          tbl_recitation f
+        WHERE a.`offer_id` = b.`offer_id` 
+          AND b.`offer_id` = ?
+          AND c.`subj_id` = a.`subj_id`
+          AND d.`user_id` = ?
+          AND d.`offer_id` = a.`offer_id`
+          AND d.`user_id` = e.user_id
+          AND f.`subj_offerid` = a.`subj_offerid`";
+
+        $escaped_values = array($section, $user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function get_student_assignment($section, $user_id){
+
+        $sql = "SELECT 
+          DISTINCT(f.AID),
+          a.*,
+          b.*,
+          c.*,
+          d.*,
+          e.*,
+          f.*
+        FROM
+          tbl_subj_offering a,
+          tbl_grade_section b,
+          tbl_subject c,
+          tbl_enroll_student d,
+          tbl_user e,
+          tbl_assignment f
+        WHERE a.`offer_id` = b.`offer_id` 
+          AND b.`offer_id` = ?
+          AND c.`subj_id` = a.`subj_id`
+          AND d.`user_id` = ?
+          AND d.`offer_id` = a.`offer_id`
+          AND d.`user_id` = e.user_id
+          AND f.`subj_offerid` = a.`subj_offerid`";
+
+        $escaped_values = array($section, $user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function get_student_exam($section, $user_id){
+
+        $sql = "SELECT 
+          DISTINCT(f.exam_id),
+          a.*,
+          b.*,
+          c.*,
+          d.*,
+          e.*,
+          f.*
+        FROM
+          tbl_subj_offering a,
+          tbl_grade_section b,
+          tbl_subject c,
+          tbl_enroll_student d,
+          tbl_user e,
+          tbl_exam f
+        WHERE a.`offer_id` = b.`offer_id` 
+          AND b.`offer_id` = ?
+          AND c.`subj_id` = a.`subj_id`
+          AND d.`user_id` = ?
+          AND d.`offer_id` = a.`offer_id`
+          AND d.`user_id` = e.user_id
+          AND f.`subj_offerid` = a.`subj_offerid`";
+
+        $escaped_values = array($section, $user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function get_single_student_quiz($activity_id, $user_id){
+
+        $sql = "SELECT 
+              * 
+            FROM
+              tbl_quiz a,
+              tbl_student_quiz b 
+            WHERE a.`QID` = ?
+              AND b.`QID` = a.`QID`
+              AND b.`user_id` = ?";
+
+        $escaped_values = array($activity_id, $user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row();
+
+        return $result;
+    }
+
+    public function get_single_student_recitation($activity_id, $user_id){
+
+        $sql = "SELECT 
+              * 
+            FROM
+              tbl_recitation a,
+              tbl_student_recitation b 
+            WHERE a.`RID` = ?
+              AND b.`RID` = a.`RID`
+              AND b.`user_id` = ?";
+
+        $escaped_values = array($activity_id, $user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row();
+
+        return $result;
+    }
+
+    public function get_single_student_project($activity_id, $user_id){
+
+        $sql = "SELECT 
+              * 
+            FROM
+              tbl_project a,
+              tbl_student_project b 
+            WHERE a.`PID` = ?
+              AND b.`PID` = a.`PID`
+              AND b.`user_id` = ?";
+
+        $escaped_values = array($activity_id, $user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row();
+
+        return $result;
+    }
+
+    public function get_single_student_assignment($activity_id, $user_id){
+
+        $sql = "SELECT 
+              * 
+            FROM
+              tbl_assignment a,
+              tbl_student_assignment b 
+            WHERE a.`AID` = ?
+              AND b.`AID` = a.`AID`
+              AND b.`user_id` = ?";
+
+        $escaped_values = array($activity_id, $user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row();
+
+        return $result;
+    }
+
+    public function get_single_student_exam($activity_id, $user_id){
+
+        $sql = "SELECT 
+              * 
+            FROM
+              tbl_exam a,
+              tbl_student_exam b 
+            WHERE a.`exam_id` = ?
+              AND b.`exam_id` = a.`exam_id`
+              AND b.`user_id` = ?";
+
+        $escaped_values = array($activity_id, $user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row();
+
+        return $result;
+    }
+
+    public function get_student_quiz_by_subject($user_id, $subj_offerid, $term){
+
+        $sql = "SELECT 
+          * 
+        FROM
+          tbl_quiz a,
+          tbl_student_quiz b,
+          tbl_enroll_student c,
+          tbl_subj_offering d
+        WHERE a.`subj_offerid` = ?
+          AND a.term = ?
+          AND c.`user_id` = ?
+          AND a.`subj_offerid` = d.`subj_offerid`
+          AND d.`offer_id` = c.`offer_id`
+          AND a.`QID` = b.`QID`
+          AND c.`user_id` = b.`user_id`";
+
+        $escaped_values = array($subj_offerid, $term, $user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function get_student_assignment_by_subject($user_id, $subj_offerid, $term){
+
+        $sql = "SELECT 
+          * 
+        FROM
+          tbl_assignment a,
+          tbl_student_assignment b,
+          tbl_enroll_student c,
+          tbl_subj_offering d
+        WHERE a.`subj_offerid` = ?
+          AND a.term = ?
+          AND c.`user_id` = ?
+          AND a.`subj_offerid` = d.`subj_offerid`
+          AND d.`offer_id` = c.`offer_id`
+          AND a.`AID` = b.`AID`
+          AND c.`user_id` = b.`user_id`";
+
+        $escaped_values = array($subj_offerid, $term, $user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function get_student_recitation_by_subject($user_id, $subj_offerid, $term){
+
+        $sql = "SELECT 
+          * 
+        FROM
+          tbl_recitation a,
+          tbl_student_recitation b,
+          tbl_enroll_student c,
+          tbl_subj_offering d
+        WHERE a.`subj_offerid` = ?
+          AND a.term = ?
+          AND c.`user_id` = ?
+          AND a.`subj_offerid` = d.`subj_offerid`
+          AND d.`offer_id` = c.`offer_id`
+          AND a.`RID` = b.`RID`
+          AND c.`user_id` = b.`user_id`";
+
+        $escaped_values = array($subj_offerid, $term, $user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function get_student_project_by_subject($user_id, $subj_offerid, $term){
+
+        $sql = "SELECT 
+          * 
+        FROM
+          tbl_project a,
+          tbl_student_project b,
+          tbl_enroll_student c,
+          tbl_subj_offering d
+        WHERE a.`subj_offerid` = ?
+          AND a.term = ?
+          AND c.`user_id` = ?
+          AND a.`subj_offerid` = d.`subj_offerid`
+          AND d.`offer_id` = c.`offer_id`
+          AND a.`PID` = b.`PID`
+          AND c.`user_id` = b.`user_id`";
+
+        $escaped_values = array($subj_offerid, $term, $user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function get_student_exam_by_subject($user_id, $subj_offerid, $term){
+
+        $sql = "SELECT 
+          * 
+        FROM
+          tbl_exam a,
+          tbl_student_exam b,
+          tbl_enroll_student c,
+          tbl_subj_offering d
+        WHERE a.`subj_offerid` = ?
+          AND a.term = ?
+          AND c.`user_id` = ?
+          AND a.`subj_offerid` = d.`subj_offerid`
+          AND d.`offer_id` = c.`offer_id`
+          AND a.`exam_id` = b.`exam_id`
+          AND c.`user_id` = b.`user_id`";
+
+        $escaped_values = array($subj_offerid, $term, $user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    /*computations*/
+    public function get_quiz_items($subj_offerid, $term){
+
+        $sql = "SELECT sum(a.q_item) as sum FROM tbl_quiz a WHERE a.subj_offerid = ? and term = ?";
+
+        $escaped_values = array($subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row()->sum;
+
+        return $result;
+    }
+
+    public function get_assignment_items($subj_offerid, $term){
+
+        $sql = "SELECT sum(a.a_item) as sum FROM tbl_assignment a WHERE a.subj_offerid = ? and term = ?";
+
+        $escaped_values = array($subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row()->sum;
+
+        return $result;
+    }
+
+    public function get_project_items($subj_offerid, $term){
+
+        $sql = "SELECT sum(a.p_item) as sum FROM tbl_project a WHERE a.subj_offerid = ? and term = ?";
+
+        $escaped_values = array($subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row()->sum;
+
+        return $result;
+    }
+
+    public function get_recitation_items($subj_offerid, $term){
+
+        $sql = "SELECT sum(a.r_item) as sum FROM tbl_recitation a WHERE a.subj_offerid = ? and term = ?";
+
+        $escaped_values = array($subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row()->sum;
+
+        return $result;
+    }
+
+    public function get_exam_items($subj_offerid, $term){
+
+        $sql = "SELECT sum(a.e_item) as sum FROM tbl_exam a WHERE a.subj_offerid = ? and term = ?";
+
+        $escaped_values = array($subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row()->sum;
+
+        return $result;
+    }
+
+    public function get_student_quiz_computations($user_id, $subj_offerid, $term, $term_constant, $lowest_grade){
+
+        $sql = "SELECT 
+              semi_final.user_id,
+              semi_final.rate * semi_final.activity_weight AS term_activity_score,
+              semi_final.average * 100 AS average_display,
+              semi_final.* 
+            FROM
+              (SELECT 
+                computations.*,
+                gs.QW / 100 AS activity_weight 
+              FROM
+                (SELECT 
+                  b.average * ?+? AS rate,
+                  b.* 
+                FROM
+                  (SELECT 
+                    a.total_score / a.total_items AS average,
+                    a.* 
+                  FROM
+                    (SELECT 
+                      SUM(b.`qscore`) AS total_score,
+                      SUM(c.`q_item`) AS total_items,
+                      c.term,
+                      c.subj_offerid AS subject_offerid,
+                      a.user_id 
+                    FROM
+                      tbl_enroll_student a,
+                      tbl_student_quiz b,
+                      tbl_quiz c 
+                    WHERE a.`user_id` = ?
+                      AND a.`user_id` = b.`user_id` 
+                      AND c.`QID` = b.`QID` 
+                      AND c.`subj_offerid` = ? 
+                      AND c.term = ?) AS a) AS b) AS computations,
+                tbl_grade_system gs 
+              WHERE gs.`Term` = computations.term 
+                AND gs.`subj_offerid` = computations.subject_offerid) AS semi_final ";
+
+        $escaped_values = array($term_constant, $lowest_grade, $user_id, $subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row();
+
+        return $result;
+    }
+
+    public function get_student_assignment_computations($user_id, $subj_offerid, $term, $term_constant, $lowest_grade){
+
+        $sql = "SELECT 
+              semi_final.user_id,
+              semi_final.rate * semi_final.activity_weight AS term_activity_score,
+              semi_final.average * 100 AS average_display,
+              semi_final.* 
+            FROM
+              (SELECT 
+                computations.*,
+                gs.AW / 100 AS activity_weight 
+              FROM
+                (SELECT 
+                  b.average * ?+? AS rate,
+                  b.* 
+                FROM
+                  (SELECT 
+                    a.total_score / a.total_items AS average,
+                    a.* 
+                  FROM
+                    (SELECT 
+                      SUM(b.`ascore`) AS total_score,
+                      SUM(c.`a_item`) AS total_items,
+                      c.term,
+                      c.subj_offerid AS subject_offerid,
+                      a.user_id 
+                    FROM
+                      tbl_enroll_student a,
+                      tbl_student_assignment b,
+                      tbl_assignment c 
+                    WHERE a.`user_id` = ?
+                      AND a.`user_id` = b.`user_id` 
+                      AND c.`AID` = b.`AID` 
+                      AND c.`subj_offerid` = ? 
+                      AND c.term = ?) AS a) AS b) AS computations,
+                tbl_grade_system gs 
+              WHERE gs.`Term` = computations.term 
+                AND gs.`subj_offerid` = computations.subject_offerid) AS semi_final";
+
+        $escaped_values = array($term_constant, $lowest_grade, $user_id, $subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row();
+
+        return $result;
+    }
+
+    public function get_student_project_computations($user_id, $subj_offerid, $term, $term_constant, $lowest_grade){
+
+        $sql = "SELECT 
+              semi_final.user_id,
+              semi_final.rate * semi_final.activity_weight AS term_activity_score,
+              semi_final.average * 100 AS average_display,
+              semi_final.* 
+            FROM
+              (SELECT 
+                computations.*,
+                gs.PW / 100 AS activity_weight 
+              FROM
+                (SELECT 
+                  b.average * ?+? AS rate,
+                  b.* 
+                FROM
+                  (SELECT 
+                    a.total_score / a.total_items AS average,
+                    a.* 
+                  FROM
+                    (SELECT 
+                      SUM(b.`pscore`) AS total_score,
+                      SUM(c.`p_item`) AS total_items,
+                      c.term,
+                      c.subj_offerid AS subject_offerid,
+                      a.user_id 
+                    FROM
+                      tbl_enroll_student a,
+                      tbl_student_project b,
+                      tbl_project c 
+                    WHERE a.`user_id` = ?
+                      AND a.`user_id` = b.`user_id` 
+                      AND c.`PID` = b.`PID` 
+                      AND c.`subj_offerid` = ? 
+                      AND c.term = ?) AS a) AS b) AS computations,
+                tbl_grade_system gs 
+              WHERE gs.`Term` = computations.term 
+                AND gs.`subj_offerid` = computations.subject_offerid) AS semi_final";
+
+        $escaped_values = array($term_constant, $lowest_grade, $user_id, $subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row();
+
+        return $result;
+    }
+
+    public function get_student_recitation_computations($user_id, $subj_offerid, $term, $term_constant, $lowest_grade){
+
+        $sql = "SELECT 
+              semi_final.user_id,
+              semi_final.rate * semi_final.activity_weight AS term_activity_score,
+              semi_final.average * 100 AS average_display,
+              semi_final.* 
+            FROM
+              (SELECT 
+                computations.*,
+                gs.RW / 100 AS activity_weight 
+              FROM
+                (SELECT 
+                  b.average * ?+? AS rate,
+                  b.* 
+                FROM
+                  (SELECT 
+                    a.total_score / a.total_items AS average,
+                    a.* 
+                  FROM
+                    (SELECT 
+                      SUM(b.`rscore`) AS total_score,
+                      SUM(c.`r_item`) AS total_items,
+                      c.term,
+                      c.subj_offerid AS subject_offerid,
+                      a.user_id 
+                    FROM
+                      tbl_enroll_student a,
+                      tbl_student_recitation b,
+                      tbl_recitation c 
+                    WHERE a.`user_id` = ?
+                      AND a.`user_id` = b.`user_id` 
+                      AND c.`RID` = b.`RID` 
+                      AND c.`subj_offerid` = ? 
+                      AND c.term = ?) AS a) AS b) AS computations,
+                tbl_grade_system gs 
+              WHERE gs.`Term` = computations.term 
+                AND gs.`subj_offerid` = computations.subject_offerid) AS semi_final";
+
+        $escaped_values = array($term_constant, $lowest_grade, $user_id, $subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row();
+
+        return $result;
+    }
+
+    public function get_student_exam_computations($user_id, $subj_offerid, $term, $term_constant, $lowest_grade){
+
+        $sql = "SELECT 
+              semi_final.user_id,
+              semi_final.rate * semi_final.activity_weight AS term_activity_score,
+              semi_final.average * 100 AS average_display,
+              semi_final.* 
+            FROM
+              (SELECT 
+                computations.*,
+                gs.EW / 100 AS activity_weight 
+              FROM
+                (SELECT 
+                  b.average * ?+? AS rate,
+                  b.* 
+                FROM
+                  (SELECT 
+                    a.total_score / a.total_items AS average,
+                    a.* 
+                  FROM
+                    (SELECT 
+                      SUM(b.`escore`) AS total_score,
+                      SUM(c.`e_item`) AS total_items,
+                      c.term,
+                      c.subj_offerid AS subject_offerid,
+                      a.user_id 
+                    FROM
+                      tbl_enroll_student a,
+                      tbl_student_exam b,
+                      tbl_exam c 
+                    WHERE a.`user_id` = ?
+                      AND a.`user_id` = b.`user_id` 
+                      AND c.`exam_id` = b.`exam_id` 
+                      AND c.`subj_offerid` = ? 
+                      AND c.term = ?) AS a) AS b) AS computations,
+                tbl_grade_system gs 
+              WHERE gs.`Term` = computations.term 
+                AND gs.`subj_offerid` = computations.subject_offerid) AS semi_final";
+
+        $escaped_values = array($term_constant, $lowest_grade, $user_id, $subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row();
+
+        return $result;
+    }
+
+    public function get_quiz_weight($subj_offerid, $term){
+
+        $sql = "SELECT QW as weight from tbl_grade_system  WHERE subj_offerid = ? AND Term =?";
+
+        $escaped_values = array($subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row()->weight;
+
+        return $result;
+    }
+
+    public function get_assignment_weight($subj_offerid, $term){
+
+        $sql = "SELECT AW as weight from tbl_grade_system  WHERE subj_offerid = ? AND Term =?";
+
+        $escaped_values = array($subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row()->weight;
+
+        return $result;
+    }
+
+    public function get_project_weight($subj_offerid, $term){
+
+        $sql = "SELECT PW as weight from tbl_grade_system  WHERE subj_offerid = ? AND Term =?";
+
+        $escaped_values = array($subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row()->weight;
+
+        return $result;
+    }
+
+    public function get_recitation_weight($subj_offerid, $term){
+
+        $sql = "SELECT RW as weight from tbl_grade_system  WHERE subj_offerid = ? AND Term =?";
+
+        $escaped_values = array($subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row()->weight;
+
+        return $result;
+    }
+
+    public function get_exam_weight($subj_offerid, $term){
+
+        $sql = "SELECT EW as weight from tbl_grade_system  WHERE subj_offerid = ? AND Term =?";
+
+        $escaped_values = array($subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row()->weight;
+
+        return $result;
+    }
+
+    public function get_quiz_column($subj_offerid, $term){
+
+        $sql = "SELECT QC as columns from tbl_grade_column  WHERE subj_offerid = ? AND Term =?";
+
+        $escaped_values = array($subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row()->columns;
+
+        return $result;
+    }
+
+    public function get_project_column($subj_offerid, $term){
+
+        $sql = "SELECT PC as columns from tbl_grade_column  WHERE subj_offerid = ? AND Term =?";
+
+        $escaped_values = array($subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row()->columns;
+
+        return $result;
+    }
+
+    public function get_recitation_column($subj_offerid, $term){
+
+        $sql = "SELECT RC as columns from tbl_grade_column  WHERE subj_offerid = ? AND Term =?";
+
+        $escaped_values = array($subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row()->columns;
+
+        return $result;
+    }
+
+    public function get_assignment_column($subj_offerid, $term){
+
+        $sql = "SELECT AC as columns from tbl_grade_column  WHERE subj_offerid = ? AND Term =?";
+
+        $escaped_values = array($subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row()->columns;
+
+        return $result;
+    }
+
+    /*
+    TODO: get subjects from section/grade level id/if subject belong to that grade level
+    */
 
 
 

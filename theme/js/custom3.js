@@ -30,8 +30,76 @@ function select_enhancements(){
     $('.select2-dropdown').select2();
 }
 
+function numberEffects() {
+
+    $(document).on('keydown', ".number-only", function(e) {
+        // Allow: backspace, delete, tab, escape, enter and .
+        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+            // Allow: Ctrl+A
+            (e.keyCode == 65 && e.ctrlKey === true) ||
+            // Allow: home, end, left, right
+            (e.keyCode >= 35 && e.keyCode <= 39)) {
+            // let it happen, don't do anything
+        return;
+    }
+        // Ensure that it is a number and stop the keypress
+        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+            e.preventDefault();
+        }
+    });
+
+
+    $(document).on('keydown', ".decimal-only", function() {
+
+
+        if (event.shiftKey == true) {
+            event.preventDefault();
+        }
+
+        if ((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105) || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 37 || event.keyCode == 39 || event.keyCode == 46 || event.keyCode == 190) {
+
+        } else {
+            event.preventDefault();
+        }
+
+        if ($(this).val().indexOf('.') !== -1 && event.keyCode == 190)
+            event.preventDefault();
+
+    });
+
+    $(document).on('keydown', ".less-hundred", function() {
+
+        var number_value = parseFloat($(this).val());
+
+
+
+        var number_absolute = Math.abs(number_value - 100);
+
+        console.log(number_absolute);
+
+        var number_check = number_value + number_absolute;
+
+        if (number_value > 99.99) {
+            if (event.keyCode != 8) {
+                $(this).val(100);
+                return false;
+            }
+        }
+
+        if (number_check > 100) {
+            if (event.keyCode != 8) {
+                return false;
+            }
+        }
+
+
+
+    });
+}
+
 select_enhancements();
 error_input_keyup();
+numberEffects();
 
 
 
@@ -320,9 +388,342 @@ Module.Subject = (function() {
 
 Module.Curiculum = (function() {
 
+	function view_class_record(){
+
+		var $container = $('#class-record-container');
+		var $tab = $('#view-class-record');
+
+		var $school_year = $tab.find('[name=school_year]');
+		var $loading = $tab.find('.loading');
+
+		var $search_class_record = $('#search-class-record');
+
+		//school year select
+		$search_class_record.click(function(e){
+
+			var school_year = $school_year.val();
+
+			$.ajax({
+				url: base_url + controller + '/view_all_sections_per_grade_level/',
+				method: "get",
+				dataType: "html",
+				data: {"school_year": school_year},
+				beforeSend: function(data){
+					$loading.removeClass('hidden');
+					$container.html('');
+				},
+				success: function(data) {
+
+					$container.html(data);
+
+				},
+				complete: function(data){
+					$loading.addClass('hidden');
+				},
+				error: function(error, data){
+					console.log(error.responseText);
+				}
+
+			});
+		});
+
+		$(document).on('click', '.view-section-record', function(e){
+
+			e.preventDefault();
+
+			var $this = $(this);
+			var offer_id = $this.data('id');
+
+			$.ajax({
+				url: base_url + controller + '/display_student_grades/'+offer_id,
+				method: "get",
+				dataType: "html",
+				beforeSend: function(data){
+					$loading.removeClass('hidden');
+					$container.html('');
+				},
+				success: function(data) {
+
+					$container.html(data);
+
+				},
+				complete: function(data){
+					$loading.addClass('hidden');
+				},
+				error: function(error, data){
+					console.log(error.responseText);
+				}
+
+			});
+		});
+
+		$(document).on('click', '.view-section-subject-record', function(e){
+
+			e.preventDefault();
+
+			var $this = $(this);
+			var subj_offerid = $this.data('subject');
+			var offer_id = $this.data('section')
+
+			$.ajax({
+				url: base_url + controller + '/display_student_grade_per_subject_term',
+				method: "get",
+				dataType: "html",
+				data: {"subj_offerid": subj_offerid, "offer_id": offer_id},
+				beforeSend: function(data){
+					$loading.removeClass('hidden');
+					$container.html('');
+				},
+				success: function(data) {
+
+					$container.html(data);
+
+				},
+				complete: function(data){
+					$loading.addClass('hidden');
+				},
+				error: function(error, data){
+					console.log(error.responseText);
+				}
+
+			});
+		});
+	}
+
+	function refresh_grades(){
+
+		//e.preventDefault();
+		//var $this = $(this);
+		var $activity_form = $('#activity-form');
+		var $loading = $activity_form.find('.loading');
+
+		var school_year = $activity_form.find('input[name=school_year]').val();
+		var grade_level = $activity_form.find('input[name=grade_level]').val();
+		var section = $activity_form.find('input[name=section]').val();
+		var subject = $activity_form.find('input[name=subject]').val();
+		var term = $activity_form.find('input[name=term]').val();
+
+		var activity_id = $activity_form.find('.tab-pane.active').attr('id');
+		var activity_type = $activity_form.find('.tab-pane.active').data('id');
+
+		console.log(school_year);
+		console.log(activity_id);
+		console.log(activity_type);
+
+		var post_data = {
+			"school_year": school_year,
+			"grade_level": grade_level,
+			"section": section,
+			"subject": subject,
+			"term": term
+		};
+
+		console.log(post_data);
+
+
+		$.ajax({
+			url: base_url + controller + '/submit_manage_grades_ajax/'+activity_type,
+			method: "get",
+			dataType: "json",
+			data: post_data,
+			beforeSend: function(data){
+				$loading.removeClass('hidden');
+				$('#'+activity_id).html('');
+			},
+			success: function(data) {
+
+				var content = data.content
+				var school_year = data.school_year;
+				var grade_level = data.grade_level;
+				var section = data.section;
+				var subject = data.subject;
+				var term = data.term;
+				
+				console.log(data);
+				$('#'+activity_id).html(content);
+
+			},
+			complete: function(data){
+				$loading.addClass('hidden');
+			},
+			error: function(error, data){
+				console.log('error');
+				console.log(error.responseText);
+			}
+
+		});
+	}
+
+	function modify_grades(){
+
+		console.log('modify grades');
+
+		var $form = $('#activity-form');
+		var $modify_grades_modal = $('#activity-modal');
+		
+		var $edit_activity_container = $('#edit-activity-container');
+		var $edit_activity_form = $('#edit-activity-form');
+		var $activity_tab = $form.find('.activity-tab');
+
+		var $no_of_items = $form.find('.activity-toggle');
+
+		//click on items to popup modal
+		$(document).on('click', '#activity-form .activity-toggle', function(e){
+
+			
+
+			e.preventDefault();
+			var activity_type = $form.find('.tab-pane.active').data('id');
+			var $this = $(this);
+			var activity_id = $this.data('id');
+			var section = $this.data('section');
+			var subject = $this.data('subject');
+			
+			$modify_grades_modal.modal();
+			var $edit_activity_form = $edit_activity_container.closest('form');
+
+			$.ajax({
+				url: base_url + controller + '/get_single_activity_form/'+activity_type,
+				method: "get",
+				dataType: "html",
+				data: {"activity_id":activity_id, "section":section, "subject":subject},
+				beforeSend: function(data){
+					//$loading.removeClass('hidden');
+					$edit_activity_container.html('');
+				},
+				success: function(data) {
+					
+					console.log(data);
+					$edit_activity_container.html(data);
+					//console.log($edit_activity_form.find('input[name=activity_id]'));
+					$edit_activity_form.find('input[name=activity_id]').val(activity_id);
+					$edit_activity_form.find('input[name=activity_type]').val(activity_type);
+				},
+				complete: function(data){
+					$loading.addClass('hidden');
+				},
+				error: function(error, data){
+					console.log(error.responseText);
+				}
+
+			});
+		});
+
+		//click on individual tab
+		$('.activity-tab').click(function(e){
+
+			e.preventDefault();
+			var $this = $(this);
+			var $activity_form = $form;
+			var $loading = $activity_form.find('.loading');
+
+			var school_year = $activity_form.find('input[name=school_year]').val();
+			var grade_level = $activity_form.find('input[name=grade_level]').val();
+			var section = $activity_form.find('input[name=section]').val();
+			var subject = $activity_form.find('input[name=subject]').val();
+			var term = $activity_form.find('input[name=term]').val();
+
+			var activity_id = $this.attr('href');
+			var activity_type = $this.data('id');
+
+			var post_data = {
+				"school_year": school_year,
+				"grade_level": grade_level,
+				"section": section,
+				"subject": subject,
+				"term": term
+			};
+
+			console.log(post_data);
+
+
+			$.ajax({
+				url: base_url + controller + '/submit_manage_grades_ajax/'+activity_type,
+				method: "get",
+				dataType: "json",
+				data: post_data,
+				beforeSend: function(data){
+					$loading.removeClass('hidden');
+					$(activity_id).html('');
+				},
+				success: function(data) {
+
+					var content = data.content
+					var school_year = data.school_year;
+					var grade_level = data.grade_level;
+					var section = data.section;
+					var subject = data.subject;
+					var term = data.term;
+
+					var activity_weight = data.activity_weight;
+					var activity_column = data.activity_column;
+					var activity_type = data.activity_type;
+					if(activity_column == 0){
+						activity_column = '';
+					}
+
+					$activity_form.find('input[name=activity_weight]').val(activity_weight);
+					if(activity_type == 'exam'){
+						$activity_form.find('select[name=activity_column]')
+						.prop('disabled',true)
+						.val(activity_column);
+					}else{
+						$activity_form.find('select[name=activity_column]').val(activity_column);
+					}
+					
+					
+					console.log(data);
+					$(activity_id).html(content);
+
+				},
+				complete: function(data){
+					$loading.addClass('hidden');
+				},
+				error: function(error, data){
+					console.log(error.responseText);
+				}
+
+			});
+		});
+
+		//click submit on modal
+		$edit_activity_form.submit(function(e){
+
+			e.preventDefault();
+			var $this = $(this);
+			var post_data = $this.serializeArray();
+
+			var $activity_form = $('#activity-form');
+			var $loading = $activity_form.find('.loading');
+
+			var activity_id = $activity_form.find('.tab-pane.active').attr('id');
+			var activity_type = $activity_form.find('.tab-pane.active').data('id');
+
+			$.ajax({
+				url: base_url + controller + '/update_activity',
+				method: "post",
+				dataType: "html",
+				data: post_data,
+				beforeSend: function(data){
+				},
+				success: function(data) {
+					refresh_grades();
+
+				},
+				complete: function(data){
+				},
+				error: function(error, data){
+					console.log(error.responseText);
+				}
+
+			});
+		});
+	}
+
 	function manage_grades(){
 
 		var $form = $('#manage-grade-form');
+
 		var $school_year = $form.find('[name=school_year]');
 		var $grade_level = $form.find('[name=grade_level]');
 		var $section = $form.find('[name=section]');
@@ -332,6 +733,7 @@ Module.Curiculum = (function() {
 		var $section_container = $form.find('.section');
 		var $subject_container = $form.find('.subject');
 
+		//school year select
 		$school_year.change(function(e){
 
 			var $this = $(this);
@@ -349,6 +751,7 @@ Module.Curiculum = (function() {
 		});
 
 
+		//grade level select
 		$grade_level.change(function(e){
 
 			var $this = $(this);
@@ -365,6 +768,7 @@ Module.Curiculum = (function() {
 			}
 		});
 
+		//section select
 		$section.change(function(e){
 
 			var $this = $(this);
@@ -378,6 +782,90 @@ Module.Curiculum = (function() {
 			}else{
 				get_subject_dropdown($subject_container, null, null, null, "offered");
 			}
+		});
+
+		//submit form
+		$form.submit(function(e){
+
+			e.preventDefault();
+			var $this = $(this);
+			var $activity_form = $('#activity-form');
+			var $loading = $activity_form.find('.loading');
+
+			var activity_id = $activity_form.find('.tab-pane.active').attr('id');
+			var activity_type = $activity_form.find('.tab-pane.active').data('id');
+
+			var post_data = $this.serialize();
+			console.log(post_data);
+
+			$.ajax({
+				url: base_url + controller + '/submit_manage_grades_ajax/'+activity_type,
+				method: "get",
+				dataType: "json",
+				data: post_data,
+				beforeSend: function(data){
+					$loading.removeClass('hidden');
+					$('#'+activity_id).html('');
+				},
+				success: function(data) {
+
+					var content = data.content
+					var school_year = data.school_year;
+					var grade_level = data.grade_level;
+					var section = data.section;
+					var subject = data.subject;
+					var term = data.term;
+
+					var activity_weight = data.activity_weight;
+					var activity_column = data.activity_column;
+					var activity_type = data.activity_type;
+					if(activity_column == 0){
+						activity_column = '';
+					}
+
+					$activity_form.find('input[name=activity_weight]').val(activity_weight);
+					if(activity_type == 'exam'){
+						$activity_form.find('select[name=activity_column]')
+						.prop('disabled',true)
+						.val(activity_column);
+					}else{
+						$activity_form.find('select[name=activity_column]').val(activity_column);
+					}
+					
+					//console.log(data);
+					$('#'+activity_id).html(content);
+					$activity_form.find('input[name=school_year]').val(school_year);
+					$activity_form.find('input[name=grade_level]').val(grade_level);
+					$activity_form.find('input[name=section]').val(section);
+					$activity_form.find('input[name=subject]').val(subject);
+					$activity_form.find('input[name=term]').val(term);
+
+				},
+				complete: function(data){
+					$loading.addClass('hidden');
+				},
+				error: function(error, data){
+					console.log(error.responseText);
+				}
+
+			});
+		});
+
+		$(document).on('click', '#submit-activity-settings', function(e){
+
+			e.preventDefault();
+			var $this = $(this);
+
+			var $form = $this.closest('form');
+
+			var $activity_weight = $form.find('input[name=activity_weight]');
+			var $activity_column = $form.find('select[name=activity_column]');
+
+			var activity_weight = $activity_weight.val();
+			var activity_column = $activity_column.val();
+
+			console.log(activity_weight);
+			console.log(activity_column);
 		});
 	}
 
@@ -843,7 +1331,9 @@ Module.Curiculum = (function() {
 		offer_subject: offer_subject,
 		assign_instructor: assign_instructor,
 		enroll_student: enroll_student,
-		manage_grades: manage_grades
+		manage_grades: manage_grades,
+		modify_grades: modify_grades,
+		view_class_record: view_class_record
 	}
 
 })();
