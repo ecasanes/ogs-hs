@@ -1,20 +1,18 @@
-[NEEDS CHECKING]
-tooltip - where should this be put? (icons as selection is now implemented)
-filter status - not yet working, needs fixing
-criticality criteria - needs confirmation on additional column
+[TODO]
+1. login for teacher student admin
+2. when qtag or items is 0 or empty we can remove row for activity
 
 
-[COMPLETED]
-data input - status icon select
-homepage - changes in menu color
-performance dashboard header navigation - completed, needs checking
+[STEPS]
+1. add student
+2. add subject
+3. add instructor
+4. add schoolyear
+5. add section
 
-
-[IN PROGRESS]
-tooltip for status in data input
-single index - multiple status filter
-criticality criteria - new column for option value
-
-
-[FUTURE DEVELOPMENT]
-graph and charts
+1. offer subject
+2. assign grade level
+3. assign teacher
+4. enroll student
+5. manage grade
+6. view grades
