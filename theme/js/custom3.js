@@ -654,6 +654,7 @@ Module.Curiculum = (function() {
 					var section = data.section;
 					var subject = data.subject;
 					var term = data.term;
+					var subj_offerid = data.subj_offerid;
 
 					var activity_weight = data.activity_weight;
 					var activity_column = data.activity_column;
@@ -668,8 +669,12 @@ Module.Curiculum = (function() {
 						.prop('disabled',true)
 						.val(activity_column);
 					}else{
-						$activity_form.find('select[name=activity_column]').val(activity_column);
+						$activity_form.find('select[name=activity_column]')
+						.prop('disabled',false)
+						.val(activity_column);
 					}
+
+					$activity_form.find('input[name=subj_offerid]').val(subj_offerid);
 					
 					
 					console.log(data);
@@ -815,6 +820,7 @@ Module.Curiculum = (function() {
 					var section = data.section;
 					var subject = data.subject;
 					var term = data.term;
+					var subj_offerid = data.subj_offerid;
 
 					var activity_weight = data.activity_weight;
 					var activity_column = data.activity_column;
@@ -829,7 +835,9 @@ Module.Curiculum = (function() {
 						.prop('disabled',true)
 						.val(activity_column);
 					}else{
-						$activity_form.find('select[name=activity_column]').val(activity_column);
+						$activity_form.find('select[name=activity_column]')
+						.prop('disabled',false)
+						.val(activity_column);
 					}
 					
 					//console.log(data);
@@ -839,6 +847,7 @@ Module.Curiculum = (function() {
 					$activity_form.find('input[name=section]').val(section);
 					$activity_form.find('input[name=subject]').val(subject);
 					$activity_form.find('input[name=term]').val(term);
+					$activity_form.find('input[name=subj_offerid]').val(subj_offerid);
 
 				},
 				complete: function(data){
@@ -856,8 +865,10 @@ Module.Curiculum = (function() {
 			e.preventDefault();
 			var $this = $(this);
 
-			var $form = $this.closest('form');
+			var $form = $this.closest('form'); //activity-form
+			//var $activity_form = $('#activity-form');
 
+			var activity_type = $form.find('.tab-pane.active').data('id');
 			var $activity_weight = $form.find('input[name=activity_weight]');
 			var $activity_column = $form.find('select[name=activity_column]');
 
@@ -866,6 +877,43 @@ Module.Curiculum = (function() {
 
 			console.log(activity_weight);
 			console.log(activity_column);
+
+			var post_data = $form.serializeArray();
+
+			var activity_id = $form.find('.tab-pane.active').attr('id');
+			var activity_type = $form.find('.tab-pane.active').data('id');
+
+			$settings_success = $('#settings-success');
+
+			console.log(post_data);
+
+			$.ajax({
+				url: base_url + controller + '/process_activity_settings/'+activity_type,
+				method: "get",
+				dataType: "json",
+				data: post_data,
+				beforeSend: function(data){
+					//$loading.removeClass('hidden');
+					//$('#'+activity_id).html('');
+					//console.log(post_data);
+					$settings_success.text('');
+				},
+				success: function(data) {
+
+					console.log(data);
+					$settings_success.text(data.message).fadeOut(4000);
+					
+					
+
+				},
+				complete: function(data){
+					$loading.addClass('hidden');
+				},
+				error: function(error, data){
+					console.log(error.responseText);
+				}
+
+			});
 		});
 	}
 

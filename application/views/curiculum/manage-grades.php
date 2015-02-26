@@ -129,6 +129,7 @@
 		  echo form_hidden('section', '');
 		  echo form_hidden('subject', '');
 		  echo form_hidden('term', '');
+		  echo form_hidden('subj_offerid', '');
 		  ?>
 		  <div class="panel-body">
 		  	<div class="tab-content">
@@ -183,7 +184,7 @@
 								<div class="col-xs-12 col-sm-2">
 								</div>
 								<div class="col-xs-12 col-sm-3">
-									<div class="success">Weight and columns are saved.</div>
+									<div id="settings-success" class="success text-success"></div>
 								</div>
 							</div>
 						</div>

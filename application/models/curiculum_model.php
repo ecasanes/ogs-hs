@@ -77,11 +77,11 @@ class Curiculum_Model extends MY_Model {
         return $result;
     }
 
-    public function add_grade_column($subj_offerid, $term){
+    public function add_grade_column($quiz, $assignment, $recitation, $project, $subj_offerid, $term){
 
-        $sql = "INSERT INTO tbl_grade_column (subj_offerid, Term) VALUES (?,?)";
+        $sql = "INSERT INTO tbl_grade_column (QC, AC, RC, PC, subj_offerid, Term) VALUES (?,?,?,?,?,?)";
 
-        $escaped_values = array($subj_offerid, $term);
+        $escaped_values = array($quiz, $assignment, $recitation, $project, $subj_offerid, $term);
 
         $query = $this->db->query($sql, $escaped_values);
 
@@ -338,6 +338,123 @@ class Curiculum_Model extends MY_Model {
         $query = $this->db->query($sql, $escaped_values);
 
         $result = $this->db->insert_id();
+
+        return $result;
+    }
+
+    public function update_quiz_weight($activity_weight, $subj_offerid, $term){
+
+        $sql = "UPDATE tbl_grade_system SET QW = ? WHERE subj_offerid = ? AND Term = ?";
+
+        $escaped_values = array($activity_weight, $subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id(); 
+
+        return $result;
+    }
+
+    public function update_assignment_weight($activity_weight, $subj_offerid, $term){
+
+        $sql = "UPDATE tbl_grade_system SET AW = ? WHERE subj_offerid = ? AND Term = ?";
+
+        $escaped_values = array($activity_weight, $subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id(); 
+
+        return $result;
+    }
+
+    public function update_project_weight($activity_weight, $subj_offerid, $term){
+
+        $sql = "UPDATE tbl_grade_system SET PW = ? WHERE subj_offerid = ? AND Term = ?";
+
+        $escaped_values = array($activity_weight, $subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id(); 
+
+        return $result;
+    }
+
+    public function update_recitation_weight($activity_weight, $subj_offerid, $term){
+
+        $sql = "UPDATE tbl_grade_system SET RW = ? WHERE subj_offerid = ? AND Term = ?";
+
+        $escaped_values = array($activity_weight, $subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id(); 
+
+        return $result;
+    }
+
+    public function update_exam_weight($activity_weight, $subj_offerid, $term){
+
+        $sql = "UPDATE tbl_grade_system SET EW = ? WHERE subj_offerid = ? AND Term = ?";
+
+        $escaped_values = array($activity_weight, $subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id(); 
+
+        return $result;
+    }
+
+    public function update_quiz_column($activity_column, $subj_offerid, $term){
+
+        $sql = "UPDATE tbl_grade_column SET QC = ? WHERE subj_offerid = ? AND Term = ?";
+
+        $escaped_values = array($activity_column, $subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id(); 
+
+        return $result;
+    }
+
+    public function update_assignment_column($activity_column, $subj_offerid, $term){
+
+        $sql = "UPDATE tbl_grade_column SET AC = ? WHERE subj_offerid = ? AND Term = ?";
+
+        $escaped_values = array($activity_column, $subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id(); 
+
+        return $result;
+    }
+
+    public function update_project_column($activity_column, $subj_offerid, $term){
+
+        $sql = "UPDATE tbl_grade_column SET PC = ? WHERE subj_offerid = ? AND Term = ?";
+
+        $escaped_values = array($activity_column, $subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id(); 
+
+        return $result;
+    }
+
+    public function update_recitation_column($activity_column, $subj_offerid, $term){
+
+        $sql = "UPDATE tbl_grade_column SET RC = ? WHERE subj_offerid = ? AND Term = ?";
+
+        $escaped_values = array($activity_column, $subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $this->db->insert_id(); 
 
         return $result;
     }
@@ -768,6 +885,31 @@ class Curiculum_Model extends MY_Model {
         return $result;
     }
 
+    public function get_enrolled_students_by_offered_subject($subj_offerid){
+
+        $sql = "SELECT 
+              * 
+            FROM
+              tbl_enroll_student a,
+              tbl_subj_offering b,
+              tbl_user c,
+              tbl_grade_section d,
+              tbl_subject e
+            WHERE a.`offer_id` = b.`offer_id` 
+              AND b.`subj_offerid` = ?
+              AND c.`user_id` = a.`user_id`
+              AND d.`offer_id` = b.`offer_id`
+              AND e.`subj_id` = b.`subj_id`";
+
+        $escaped_values = array($subj_offerid);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
     public function get_offered_subjects_by_section($offer_id){
 
         $sql = "SELECT 
@@ -878,6 +1020,62 @@ class Curiculum_Model extends MY_Model {
         $result = $query->row();
 
         return $result;
+    }
+
+    public function get_max_quiz_tag_by_subj_offerid($subj_offerid, $term){
+
+        $sql = "SELECT MAX(qtag) AS tag FROM tbl_quiz a WHERE a.subj_offerid = ? and term = ?";
+
+        $escaped_values = array($subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row()->tag;
+
+        return $result;
+
+    }
+
+    public function get_max_project_tag_by_subj_offerid($subj_offerid, $term){
+
+        $sql = "SELECT MAX(ptag) AS tag FROM tbl_project a WHERE a.subj_offerid = ? and term = ?";
+
+        $escaped_values = array($subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row()->tag;
+
+        return $result;
+
+    }
+
+    public function get_max_assignment_tag_by_subj_offerid($subj_offerid, $term){
+
+        $sql = "SELECT MAX(atag) AS tag FROM tbl_assignment a WHERE a.subj_offerid = ? and term = ?";
+
+        $escaped_values = array($subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row()->tag;
+
+        return $result;
+
+    }
+
+    public function get_max_recitation_tag_by_subj_offerid($subj_offerid, $term){
+
+        $sql = "SELECT MAX(rtag) AS tag FROM tbl_recitation a WHERE a.subj_offerid = ? and term = ?";
+
+        $escaped_values = array($subj_offerid, $term);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row()->tag;
+
+        return $result;
+
     }
 
     public function get_project_by_subj_offerid($subj_offerid, $term){
@@ -1768,368 +1966,94 @@ class Curiculum_Model extends MY_Model {
         return $result;
     }
 
-    /*
-    TODO: get subjects from section/grade level id/if subject belong to that grade level
-    */
+    /* delete */
+    public function select_quiz_columns($subj_offerid, $term, $no_of_columns){
 
+        $sql = "SELECT QID as activity_id FROM tbl_quiz WHERE subj_offerid = ? AND term = ? ORDER BY QID desc limit ?";
 
+        $escaped_values = array($subj_offerid, $term, $no_of_columns);
 
+        $query = $this->db->query($sql, $escaped_values);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /*function getTermGrade($offer_id,$stud_id,$term){
-    
-        $sql = "SELECT * FROM tbl_grade_system WHERE offer_id='$offer_id' limit 1";
-
-        $query = $this->db->query($sql);
-
-        $r = $query->row();
-    
-        $this->pa=$r->wassign/100;
-        $this->pd=$r->wattendance/100;
-        $this->pr=$r->wrecite/100;
-        $this->pe=$r->wtexam/100;
-        $this->pq=$r->wquiz/100;
-        
-        $subjID=$this->getSubjID($offer_id);//get subj_id
-        $subj_id=$subjID->subj_id;
-
-        $subjTag=$this->getSubjTag($subj_id);//get subj_tag
-        $subj_tag=$subjTag->subj_tag;
-        
-        if($subj_tag==0) {
-            
-        $this->qTscr=$this->getQuizTotal($offer_id,$stud_id,$term); 
-        $this->qTitem=$this->getQuizItems($offer_id,$term);
-        $this->qgrade=$this->ComputeGrade($this->qTscr,$this->qTitem);
-                
-        $this->aTscr=$this->getAssignTotal($offer_id,$stud_id,$term); 
-        $this->aTitem=$this->getAssignItems($offer_id,$term);
-        $this->agrade=$this->ComputeGrade($this->aTscr,$this->aTitem);
-            
-            
-        $this->dTscr=$this->getDeptTotal($offer_id,$stud_id,$term); 
-        $this->dTitem=$this->getDeptItems($offer_id,$term);
-        $this->dgrade=$this->ComputeGrade($this->dTscr,$this->dTitem);
-            
-        $this->rTscr=$this->getRecTotal($offer_id,$stud_id,$term); 
-        $this->rTitem=$this->getRecItems($offer_id,$term);
-        $this->rgrade=$this->ComputeGrade($this->rTscr,$this->rTitem);
-            
-        $this->eTscr=$this->getExamTotal($offer_id,$stud_id,$term); 
-        $this->eTitem=$this->getExamItems($offer_id,$term);
-        $this->egrade=$this->ComputeGradeExam($this->eTscr,$this->eTitem);
-        
-        $pqg=$this->qgrade * $this->pq;
-        $pag=$this->agrade * $this->pa;
-        $pdg=$this->dgrade * $this->pd;
-        $prg=$this->rgrade * $this->pr;
-        $peg=$this->egrade * $this->pe;
-        
-        $tgrade=$pqg+$pag+$pdg+$prg+$peg;
-        
-        return ($tgrade);
-        
-        }
-        
-        elseif($subj_tag==1) {
-            
-        $this->qTscr=$this->getQuizTotal($offer_id,$stud_id,$term); 
-        $this->qTitem=$this->getQuizItems($offer_id,$term);
-        $this->qgrade=$this->ComputeGrade($this->qTscr,$this->qTitem);
-            
-        $this->dTscr=$this->getDeptTotal($offer_id,$stud_id,$term); 
-        $this->dTitem=$this->getDeptItems($offer_id,$term);
-        $this->dgrade=$this->ComputeGrade($this->dTscr,$this->dTitem);
-            
-        $this->rTscr=$this->getRecTotal($offer_id,$stud_id,$term); 
-        $this->rTitem=$this->getRecItems($offer_id,$term);
-        $this->rgrade=$this->ComputeGrade($this->rTscr,$this->rTitem);
-            
-        $this->eTscr=$this->getExamTotal($offer_id,$stud_id,$term); 
-        $this->eTitem=$this->getExamItems($offer_id,$term);
-        $this->egrade=$this->ComputeGradeExam($this->eTscr,$this->eTitem);
-        
-        $pqg=$this->qgrade * $this->pq;
-        $pdg=$this->dgrade * $this->pd;
-        $prg=$this->rgrade * $this->pr;
-        $peg=$this->egrade * $this->pe;
-        
-        $tgrade=$pqg+$pdg+$prg+$peg;
-        
-        return ($tgrade);
-        
-        }
-        
-        elseif($subj_tag==2) {
-            
-        $this->qTscr=$this->getQuizTotal($offer_id,$stud_id,$term); 
-        $this->qTitem=$this->getQuizItems($offer_id,$term);
-        $this->qgrade=$this->ComputeGrade($this->qTscr,$this->qTitem);
-                
-        $this->aTscr=$this->getAssignTotal($offer_id,$stud_id,$term); 
-        $this->aTitem=$this->getAssignItems($offer_id,$term);
-        $this->agrade=$this->ComputeGrade($this->aTscr,$this->aTitem);
-            
-            
-        $this->dTscr=$this->getDeptTotal($offer_id,$stud_id,$term); 
-        $this->dTitem=$this->getDeptItems($offer_id,$term);
-        $this->dgrade=$this->ComputeGrade($this->dTscr,$this->dTitem);
-            
-        $this->rTscr=$this->getObserveTotal($offer_id,$stud_id,$term); 
-        $this->rTitem=$this->getObserveItems($offer_id,$term);
-        $this->rgrade=$this->ComputeGrade($this->rTscr,$this->rTitem);
-        
-        $pqg=$this->qgrade * $this->pq;
-        $pag=$this->agrade * $this->pa;
-        $pdg=$this->dgrade * $this->pd;
-        $prg=$this->rgrade * $this->pr;
-        
-        $tgrade=$pqg+$pag+$pdg+$prg;
-        
-        return ($tgrade);
-        
-    }*/
-
-
-
-    function getQuizTotal($offer_id,$stud_id,$term){
-        
-        $sql = "SELECT SUM(qscr) AS ttl FROM tbl_record_quiz WHERE offer_id='$offer_id' AND sid='$stud_id' AND qterm='$term' GROUP BY sid";
-
-        $query = $this->db->query($sql);
-
-        $result = $query->row()->tt1;
+        $result = $query->result();
 
         return $result;
     }
-    
-    function getQuizItems($offer_id,$term){
 
-        $sql = "SELECT SUM(qitems) AS titems FROM tbl_grade_quiz WHERE offer_id='$offer_id' AND term='$term' GROUP BY offer_id";
+    public function select_assignment_columns($subj_offerid, $term, $no_of_columns){
 
+        $sql = "SELECT AID as activity_id FROM tbl_assignment WHERE subj_offerid = ? AND term = ? ORDER BY AID desc limit ?";
 
-        $query = $this->db->query($sql);
+        $escaped_values = array($subj_offerid, $term, $no_of_columns);
 
-        $result = $query->row()->titems;   
+        $query = $this->db->query($sql, $escaped_values);
 
-        return $result; 
-    }
-    
-    function getAssignTotal($offer_id,$stud_id,$term){
-
-        $sql = "SELECT SUM(ascr) AS ttl FROM tbl_record_assign WHERE offer_id='$offer_id' AND sid='$stud_id' AND aterm='$term' GROUP BY sid";
-        
-        $query = $this->db->query($sql);
-
-        $result = $query->row()->ttl;
-
-        return $result; 
-    }
-    
-    function getAssignItems($offer_id,$term){
-
-        $sql = "SELECT SUM(aitems) AS titems FROM tbl_grade_assign WHERE offer_id='$offer_id' AND term='$term' GROUP BY offer_id";
-        
-        $query = $this->db->query($sql);
-
-        $num_rows = $query->num_rows();
-
-        if ( $num_rows > 0 ) {
-            $result = $query->row()->titems;
-        }else {
-            $result = 1;
-        }
-
-         
-
-        return $result;         
-    }
-    
-    function getObserveTotal($offer_id,$stud_id,$term){
-
-        $sql = "SELECT scr AS ttl FROM tbl_record_observe WHERE offer_id='$offer_id' AND sid='$stud_id' AND term='$term' GROUP BY sid";
-
-        $query = $this->db->query($sql);
-
-        $result = $query->row()->ttl; 
-
-        return $result;
-    }
-    
-    function getObserveItems($offer_id,$term){
-
-        $sql = "SELECT items AS titems FROM tbl_grade_observe WHERE offer_id='$offer_id' AND term='$term'";
-
-        $num_rows = $query->num_rows();
-
-        if ( $num_rows > 0 ) {
-            $result = $query->row()->titems;
-        }else {
-            $result = 1;
-        }       
-    }
-    
-    function getRecTotal($offer_id,$stud_id,$term){
-
-        $sql = "SELECT SUM(rscr) AS ttl FROM tbl_record_recite WHERE offer_id='$offer_id' AND sid='$stud_id' AND rterm='$term' GROUP BY sid";
-
-        $query = $this->db->query($sql);
-
-        $result = $query->row()->ttl; 
-
-        return $result;
-    }   
-    
-    function getRecItems($offer_id,$term){
-
-        $sql = "SELECT SUM(ritems) AS titems FROM tbl_grade_recite WHERE offer_id='$offer_id' AND term='$term' GROUP BY offer_id ";
-
-
-        $num_rows = $query->num_rows();
-
-        if ( $num_rows > 0 ) {
-            $result = $query->row()->titems;
-        }else {
-            $result = 1;
-        }         
-        
-    }
-    
-    function getDeptTotal($offer_id,$stud_id,$term){
-
-        $sql = "SELECT scr AS ttl FROM tbl_record_deportment WHERE offer_id='$offer_id' AND sid='$stud_id' AND term='$term' GROUP BY sid";
-
-        $query = $this->db->query($sql);
-
-        $result = $query->row()->ttl; 
-
-        return $result;
-    }                                                                                               
-    
-    function getDeptItems($offer_id,$term){
-
-        $sql = "SELECT items AS titems FROM tbl_grade_deportment WHERE offer_id='$offer_id' AND term='$term'";
-
-
-        $num_rows = $query->num_rows();
-
-        if ( $num_rows > 0 ) {
-            $result = $query->row()->titems;
-        }else {
-            $result = 1;
-        }      
-    }
-    
-    function getExamTotal($offer_id,$stud_id,$term){
-        switch($term) {
-        case 1: $sql = "SELECT  t1exam AS ttl FROM tbl_record_exam WHERE offer_id='$offer_id' AND sid='$stud_id'"; break;
-        case 2: $sql = "SELECT  t2exam AS ttl FROM tbl_record_exam WHERE offer_id='$offer_id' AND sid='$stud_id'"; break;
-        case 3: $sql = "SELECT  t3exam AS ttl FROM tbl_record_exam WHERE offer_id='$offer_id' AND sid='$stud_id'"; break;
-        case 4: $sql = "SELECT  t4exam AS ttl FROM tbl_record_exam WHERE offer_id='$offer_id' AND sid='$stud_id'"; break;
-        }
-        
-        $query = $this->db->query($sql);
-
-        $result = $query->row()->ttl; 
-
-        return $result;
-    }
-    
-    function getExamItems($offer_id,$term){
-
-        $sql = "SELECT eitems AS titems FROM tbl_grade_exam WHERE offer_id='$offer_id' AND eterm='$term'";
-
-
-        $num_rows = $query->num_rows();
-
-        if ( $num_rows > 0 ) {
-            $result = $query->row()->titems;
-        }else {
-            $result = 1;
-        }        
-    }
-    
-    
-    function ComputeGrade($Tscr,$Titem){
-
-        if ($Tscr==0)
-            $grade=0;
-        else    
-            $grade=($Tscr/$Titem)*40+60;
-        
-        return($grade);
-    }
-    
-    function ComputeGradeExam($Tscr,$Titem){
-
-        if ($Tscr==0)
-            $grade=0;
-        else    
-            $grade=($Tscr/$Titem)*30+70;
-        
-        return($grade);
-    }
-    
-    function getSubjID($offer_id){
-
-        $sql = "SELECT subj_id FROM tbl_subject_schedule WHERE offer_id = '$offer_id'";
-
-        $query = $this->db->query($sql);
-
-        $result = $query->row(); 
-
-        return $result;
-    }
-    
-    function getSubjTag($subj_id){
-
-        $sql = "SELECT subj_tag FROM tbl_subject WHERE subj_id = '$subj_id'";
-
-        $query = $this->db->query($sql);
-
-        $result = $query->row(); 
+        $result = $query->result();
 
         return $result;
     }
 
-    
+    public function select_recitation_columns($subj_offerid, $term, $no_of_columns){
+
+        $sql = "SELECT RID as activity_id FROM tbl_recitation WHERE subj_offerid = ? AND term = ? ORDER BY RID desc limit ?";
+
+        $escaped_values = array($subj_offerid, $term, $no_of_columns);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function select_project_columns($subj_offerid, $term, $no_of_columns){
+
+        $sql = "SELECT PID as activity_id FROM tbl_project WHERE subj_offerid = ? AND term = ? ORDER BY PID desc limit ?";
+
+        $escaped_values = array($subj_offerid, $term, $no_of_columns);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function delete_quiz_columns($id_string){
+
+        $sql_student = "DELETE FROM tbl_student_quiz WHERE QID IN ({$id_string})";
+        $sql_main = "DELETE FROM tbl_quiz WHERE QID IN ({$id_string})";
+
+        $query_student = $this->db->query($sql_student);
+        $query_main = $this->db->query($sql_main);
+    }
+
+    public function delete_assignment_columns($id_string){
+
+        $sql_student = "DELETE FROM tbl_student_assignment WHERE AID IN ({$id_string})";
+        $sql_main = "DELETE FROM tbl_assignment WHERE AID IN ({$id_string})";
+
+        $query_student = $this->db->query($sql_student);
+        $query_main = $this->db->query($sql_main);
+    }
+
+    public function delete_recitation_columns($id_string){
+
+        $sql_student = "DELETE FROM tbl_student_recitation WHERE RID IN ({$id_string})";
+        $sql_main = "DELETE FROM tbl_recitation WHERE RID IN ({$id_string})";
+
+        $query_student = $this->db->query($sql_student);
+        $query_main = $this->db->query($sql_main);
+    }
+
+    public function delete_project_columns($id_string){
+
+        $sql_student = "DELETE FROM tbl_student_project WHERE PID IN ({$id_string})";
+        $sql_main = "DELETE FROM tbl_project WHERE PID IN ({$id_string})";
+
+        $query_student = $this->db->query($sql_student);
+        $query_main = $this->db->query($sql_main);
+    }
 
 
 }

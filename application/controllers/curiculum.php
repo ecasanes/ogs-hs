@@ -567,6 +567,184 @@ class Curiculum extends My_Controller {
 		}
 	}
 
+	public function update_column_rows($previous_column_count, $new_column_count, $subj_offerid, $term, $activity_type){
+
+		$main_model = $this->main_model;
+
+		$remove_count = 0;
+		$add_count = 0;
+
+		if($previous_column_count > $new_column_count){ //delete column
+
+			/*for($i=$new_column_count+1;$i<=$previous_column_count;$i++){
+				$remove_count++;
+			}*/
+			$remove_count = $previous_column_count - $new_column_count;
+
+			switch($activity_type){
+
+				case "quiz":
+						$ids = $main_model->select_quiz_columns($subj_offerid, $term, $remove_count);
+						$new_ids = array();
+						foreach($ids as $id){
+							$new_ids[] = $id->activity_id;
+						}
+						$column_ids = implode(',', $new_ids);
+						$main_model->delete_quiz_columns($column_ids);
+						break;
+					case "project":
+						$ids = $main_model->select_project_columns($subj_offerid, $term, $remove_count);
+						$new_ids = array();
+						foreach($ids as $id){
+							$new_ids[] = $id->activity_id;
+						}
+						$column_ids = implode(',', $new_ids);
+						$main_model->delete_project_columns($column_ids);
+						break;
+					case "assignment":
+						$ids = $main_model->select_assignment_columns($subj_offerid, $term, $remove_count);
+						$new_ids = array();
+						foreach($ids as $id){
+							$new_ids[] = $id->activity_id;
+						}
+						$column_ids = implode(',', $new_ids);
+						$main_model->delete_assignment_columns($column_ids);
+						break;
+					case "recitation":
+						$ids = $main_model->select_recitation_columns($subj_offerid, $term, $remove_count);
+						$new_ids = array();
+						foreach($ids as $id){
+							$new_ids[] = $id->activity_id;
+						}
+						$column_ids = implode(',', $new_ids);
+						$main_model->delete_recitation_columns($column_ids);
+						break;
+					case "exam":
+						//$main_model->delete_quiz_columns($remove_count);
+						//only 4 columns
+						break;
+			}
+
+
+		}else if($previous_column_count == $new_column_count){ //no action
+
+		}else{ //add columns
+
+			$add_count = $new_column_count - $previous_column_count;
+
+			$students = $main_model->get_enrolled_students_by_offered_subject($subj_offerid);
+
+			switch($activity_type){
+
+				case "quiz":
+						for($i=1;$i<=$add_count;$i++){
+							$tag = $main_model->get_max_quiz_tag_by_subj_offerid($subj_offerid, $term);
+							$activity_id = $main_model->add_quiz($subj_offerid, 0, $term, $tag+1);
+							
+							foreach($students as $student){
+								$user_id = $student->user_id;
+								$main_model->assign_student_quiz($user_id, $activity_id);
+							}
+						}
+					break;
+				case "project":
+						for($i=1;$i<=$add_count;$i++){
+							$tag = $main_model->get_max_project_tag_by_subj_offerid($subj_offerid, $term);
+							$activity_id = $main_model->add_project($subj_offerid, 0, $term, $tag+1);
+
+							foreach($students as $student){
+								$user_id = $student->user_id;
+								$main_model->assign_student_project($user_id, $activity_id);
+							}
+						}
+					break;
+				case "assignment":
+						for($i=1;$i<=$add_count;$i++){
+							$tag = $main_model->get_max_assignment_tag_by_subj_offerid($subj_offerid, $term);
+							$activity_id = $main_model->add_assignment($subj_offerid, 0, $term, $tag+1);
+
+							foreach($students as $student){
+								$user_id = $student->user_id;
+								$main_model->assign_student_assignment($user_id, $activity_id);
+							}
+						}
+					break;
+				case "recitation":
+						for($i=1;$i<=$add_count;$i++){
+							$tag = $main_model->get_max_recitation_tag_by_subj_offerid($subj_offerid, $term);
+							$activity_id = $main_model->add_recitation($subj_offerid, 0, $term, $tag+1);
+
+							foreach($students as $student){
+								$user_id = $student->user_id;
+								$main_model->assign_student_recitation($user_id, $activity_id);
+							}
+						}
+					break;
+				case "exam":
+					//$main_model->delete_quiz_columns($remove_count);
+					//only 4 columns
+					break;
+			}
+
+		}
+
+		return $this->db->last_query();
+
+		
+	}
+
+	public function process_activity_settings($activity_type){
+
+		$data = $this->input->get();
+
+		if($data){
+			extract( $data, EXTR_SKIP );
+			$main_model = $this->main_model;
+
+			switch($activity_type){
+
+				case "quiz":
+						$main_model->update_quiz_weight($activity_weight, $subj_offerid, $term);
+						$column_count = $main_model->get_quiz_column($subj_offerid, $term);
+						$last_query = $this->update_column_rows($column_count, $activity_column, $subj_offerid, $term, $activity_type);
+						$main_model->update_quiz_column($activity_column, $subj_offerid, $term);
+						break;
+					case "project":
+						$main_model->update_project_weight($activity_weight, $subj_offerid, $term);
+						$column_count = $main_model->get_project_column($subj_offerid, $term);
+						$last_query = $this->update_column_rows($column_count, $activity_column, $subj_offerid, $term, $activity_type);
+						$main_model->update_project_column($activity_column, $subj_offerid, $term);
+						break;
+					case "assignment":
+						$main_model->update_assignment_weight($activity_weight, $subj_offerid, $term);
+						$column_count = $main_model->get_assignment_column($subj_offerid, $term);
+						$last_query = $this->update_column_rows($column_count, $activity_column, $subj_offerid, $term, $activity_type);
+						$main_model->update_assignment_column($activity_column, $subj_offerid, $term);
+						break;
+					case "recitation":
+						$main_model->update_recitation_weight($activity_weight, $subj_offerid, $term);
+						$column_count = $main_model->get_recitation_column($subj_offerid, $term);
+						$last_query = $this->update_column_rows($column_count, $activity_column, $subj_offerid, $term, $activity_type);
+						$main_model->update_recitation_column($activity_column, $subj_offerid, $term);
+						break;
+					case "exam":
+						$main_model->update_exam_weight($activity_weight, $subj_offerid, $term);
+						//only 4 columns
+						$last_query = '';
+						break;
+			}
+
+			$json_result = array(
+				'last_query' => $last_query,
+				'message' => 'Settings successfully saved.',
+				);
+
+			echo json_encode($json_result);
+		}
+	
+	}
+
+
 	/* ajax content */
 	public function get_single_activity_form($activity_type = "quiz"){
 
@@ -663,10 +841,10 @@ class Curiculum extends My_Controller {
 				$output .= '<table class="table table-bordered table-hover">';
 				$output .= '<tr><td class="quiz-cell">';
 				$output .= $tag_letter.$tag;
-				$output .= '<input name="activity_id[]" type="hidden" value="'.$activity_id.'" class="">';
+				$output .= '<input type="hidden" value="'.$activity_id.'" class="">';
 				$output .='</td></tr>';
 				
-				$output .= '<tr><td class="quiz-cell"><input data-id="'.$activity_id.'" data-section="'.$offer_id.'" data-subject="'.$subj_id.'" name="items[]" type="text" value="'.$items.'" class="activity-toggle"></td></tr>';
+				$output .= '<tr><td class="quiz-cell"><input data-id="'.$activity_id.'" data-section="'.$offer_id.'" data-subject="'.$subj_id.'" type="text" value="'.$items.'" class="activity-toggle"></td></tr>';
 				$output .= '</table>';
 				$output .= '</td>';
 			}
@@ -793,34 +971,40 @@ class Curiculum extends My_Controller {
 
 		$main_model = $this->main_model;
 
+		$quiz_limit = 6;
+		$recitation_limit = 4;
+		$assignment_limit = 5;
+		$project_limit = 2;
+		$exam_limit = 1;
+
 		for($i=1;$i<=4;$i++){
 
 			//grade system
 			$main_model->add_grade_system($subj_offerid, $i);
 
 			//grade column
-			$main_model->add_grade_column($subj_offerid, $i);
+			$main_model->add_grade_column($quiz_limit, $assignment_limit, $recitation_limit, $project_limit, $subj_offerid, $i);
 
 			//exam
 			$exam_id = $main_model->add_exam($subj_offerid, '', $i);
 
 			//quiz
-			for($quiz_counter=1;$quiz_counter<=6;$quiz_counter++){
+			for($quiz_counter=1;$quiz_counter<=$quiz_limit;$quiz_counter++){
 				$main_model->add_quiz($subj_offerid, '', $i, $quiz_counter);
 			}
 
 			//recitation
-			for($recitation_counter=1;$recitation_counter<=4;$recitation_counter++){
+			for($recitation_counter=1;$recitation_counter<=$recitation_limit;$recitation_counter++){
 				$main_model->add_recitation($subj_offerid, '', $i, $recitation_counter);
 			}
 
 			//assignment
-			for($assignment_counter=1;$assignment_counter<=5;$assignment_counter++){
+			for($assignment_counter=1;$assignment_counter<=$assignment_limit;$assignment_counter++){
 				$main_model->add_assignment($subj_offerid, '', $i, $assignment_counter);
 			}
 
 			//project
-			for($project_counter=1;$project_counter<=2;$project_counter++){
+			for($project_counter=1;$project_counter<=$project_limit;$project_counter++){
 				$main_model->add_project($subj_offerid, '', $i, $project_counter);
 			}
 
@@ -1667,28 +1851,26 @@ class Curiculum extends My_Controller {
 
 	public function get_student_final_subject_term_grade($user_id, $subj_offerid, $term){
 
-		
+		//quiz score
+		$quiz_score = $this->get_student_subject_activity_term_score($user_id, $subj_offerid, $term, 'quiz');
 
-			//quiz score
-			$quiz_score = $this->get_student_subject_activity_term_score($user_id, $subj_offerid, $term, 'quiz');
+		//assignment score
+		$assignment_score = $this->get_student_subject_activity_term_score($user_id, $subj_offerid, $term, 'assignment');
 
-			//assignment score
-			$assignment_score = $this->get_student_subject_activity_term_score($user_id, $subj_offerid, $term, 'assignment');
+		//project score
+		$project_score = $this->get_student_subject_activity_term_score($user_id, $subj_offerid, $term, 'project');
 
-			//project score
-			$project_score = $this->get_student_subject_activity_term_score($user_id, $subj_offerid, $term, 'project');
+		//recitation score
+		$recitation_score = $this->get_student_subject_activity_term_score($user_id, $subj_offerid, $term, 'recitation');
 
-			//recitation score
-			$recitation_score = $this->get_student_subject_activity_term_score($user_id, $subj_offerid, $term, 'recitation');
+		//exam score
+		$exam_score = $this->get_student_subject_activity_term_score($user_id, $subj_offerid, $term, 'exam');
 
-			//exam score
-			$exam_score = $this->get_student_subject_activity_term_score($user_id, $subj_offerid, $term, 'exam');
+		//total score = grade
+		$total_score = $quiz_score + $assignment_score + $project_score + $recitation_score + $exam_score;
+		$total_score = number_format($total_score, 2);
 
-			//total score = grade
-			$total_score = $quiz_score + $assignment_score + $project_score + $recitation_score + $exam_score;
-			$total_score = number_format($total_score, 2);
-
-			return $total_score;
+		return $total_score;
 	}
 
 	public function get_student_final_grade($user_id, $offer_id){
@@ -1944,9 +2126,6 @@ class Curiculum extends My_Controller {
 
 			echo $output;
 		}
-
-		
-
 	}
 
 
