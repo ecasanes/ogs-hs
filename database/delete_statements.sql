@@ -1,0 +1,15 @@
+DELETE FROM tbl_student_exam;
+DELETE FROM tbl_student_assignment;
+DELETE FROM tbl_student_project;
+DELETE FROM tbl_student_quiz;
+DELETE FROM tbl_student_recitation;
+DELETE FROM tbl_exam;
+DELETE FROM tbl_assignment;
+DELETE FROM tbl_project;
+DELETE FROM tbl_quiz;
+DELETE FROM tbl_recitation;
+DELETE FROM tbl_enroll_student;
+DELETE FROM tbl_teacher_subj;
+DELETE FROM tbl_grade_column;
+DELETE FROM tbl_grade_system;
+DELETE FROM tbl_subj_offering;

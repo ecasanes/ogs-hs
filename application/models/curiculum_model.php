@@ -134,11 +134,11 @@ class Curiculum_Model extends MY_Model {
         return $this->db->insert_id();
     }
 
-    public function add_exam($subj_offerid, $no_of_items, $term){
+    public function add_exam($subj_offerid, $no_of_items, $term, $tag){
 
-        $sql = "INSERT INTO tbl_exam (subj_offerid, e_item, term) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO tbl_exam (subj_offerid, e_item, term, etag) VALUES (?, ?, ?, ?)";
 
-        $escaped_values = array($subj_offerid, $no_of_items, $term);
+        $escaped_values = array($subj_offerid, $no_of_items, $term, $tag);
 
         $query = $this->db->query($sql, $escaped_values);
 

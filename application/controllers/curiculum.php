@@ -986,7 +986,7 @@ class Curiculum extends My_Controller {
 			$main_model->add_grade_column($quiz_limit, $assignment_limit, $recitation_limit, $project_limit, $subj_offerid, $i);
 
 			//exam
-			$exam_id = $main_model->add_exam($subj_offerid, '', $i);
+			$exam_id = $main_model->add_exam($subj_offerid, '', $i, $i);
 
 			//quiz
 			for($quiz_counter=1;$quiz_counter<=$quiz_limit;$quiz_counter++){
