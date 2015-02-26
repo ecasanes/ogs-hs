@@ -24,5 +24,3 @@ uploads/*.txt
 
 
 application/third_party/mpdf/tmp/*
-
-.htaccess
