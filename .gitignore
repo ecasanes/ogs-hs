@@ -22,7 +22,6 @@ uploads/*.txt
 *.rar
 *.gz
 
-application/config/database.php
 
 application/third_party/mpdf/tmp/*
 
