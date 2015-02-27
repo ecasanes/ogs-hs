@@ -134,20 +134,6 @@ class User extends My_Controller {
 			if ( $status == 1 ) {
 
 				$uploads_folder = $this->uploads_folder;
-				
-				/*$user_photo_id = $user_model->get_value( $id, 'user_photo' );
-				
-				// Get user photo if there is.
-				$user_photo_name = '';
-
-				// Get photodetails.
-				$user_photo_details = $user_model->get_file_item_name($user_photo_id);
-
-				// Isolate index value if there is.
-				if( isset($user_photo_details['filename']) ) { $user_photo_name = $user_photo_details['filename']; }
-
-				// Build into exact location.
-				$user_photo = base_url($uploads_folder.'/'.$user_photo_name);*/
 
 				$user_type = $user_model->get_value($id, 'user_type');
 				$username = $user_model->get_value($id, 'username');
@@ -159,12 +145,14 @@ class User extends My_Controller {
 				}
 				else if($user_type == 2)// teacher
 				{
-					$full_name = $user_model->get_teacher_fullname($id);
+					$user_type = $user_model->get_value($id, 'user_type');
+					$username = $user_model->get_value($id, 'username');
 					$role = 'teacher';
 				}
 				else if($user_type == 3)// student
 				{
-					$full_name = $user_model->get_student_fullname($id);
+					$user_type = $user_model->get_value($id, 'user_type');
+					$username = $user_model->get_value($id, 'username');
 					$role = 'student';
 					
 				}

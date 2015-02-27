@@ -9,25 +9,25 @@ $session_photo = $this->session->userdata('user_photo');
 $uploads_folder = 'uploads';
 $session_full_name = $this->session->userdata('session_full_name');
 $data = array(
-    'session_photo' => $session_photo,
-    'uploads_folder' => $uploads_folder, 
+  'session_photo' => $session_photo,
+  'uploads_folder' => $uploads_folder, 
     //'user_photo_url' => $session_photo,
-    'full_name' => $session_full_name,
-    'role' => $role,
-    'controller' => $controller,
-    'method' => $method,
-    );
+  'full_name' => $session_full_name,
+  'role' => $role,
+  'controller' => $controller,
+  'method' => $method,
+  );
 
 if($method == 'edit'){
-    $edit_method = true;
+  $edit_method = true;
 }else{
-    $edit_method = false;
+  $edit_method = false;
 }
 
 if($method == 'view'){
-    $view_method = true;
+  $view_method = true;
 }else{
-    $view_method = false;
+  $view_method = false;
 }
 
 $document_type = $controller;
@@ -37,6 +37,7 @@ $view_url = base_url($document_type.'/view/'.$id);
 $current_url = current_url();
 
 $search_data = $this->session->userdata( 'search_data' );
+$user_type = $this->session->userdata('user_type');
 ?>
 
 
@@ -57,104 +58,68 @@ $search_data = $this->session->userdata( 'search_data' );
    <link rel="icon" type="image/png" href="<?php echo base_url('theme/assets/img/favicon.ico'); ?>">
 
    <?php $this->load->view('layout/header-scripts'); ?>
-</head>
+ </head>
 
 
-<body class="<?php echo $sidebar_state; ?>">
+ <body class="<?php echo $sidebar_state; ?>">
 
-    <header>
-        <div id="banner" class="container-fluid-md">
-            <div class="row">
-                <div class="col-xs-12">
-                    <h2 class="banner-title">SPC Online Grading System</h2>
-                </div>
-            </div>
+  <header>
+    <div id="banner" class="container-fluid-md">
+      <div class="row">
+        <div class="col-xs-12">
+          <h2 class="banner-title">SPC Online Grading System</h2>
         </div>
-        <div id="navbar-hs" class="navbar navbar-default">
-          <div class="container">
-            <div class="navbar-collapse collapse" id="navbar-main">
-              <ul class="nav navbar-nav">
-                <li>
-                  <a href="<?php echo base_url('user/profile'); ?>"><i class="fa fa-info-circle"></i> Profile</a>
-                </li>
-                <li class="dropdown">
-                  <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fa fa-book"></i> Subjects <span class="caret"></span>
-                  </a>
-                  <ul class="dropdown-menu">
-                    <li>
-                      <a href="<?php echo base_url('subject'); ?>"><i class="fa fa-male"></i> Add Subject</a>
-                    </li>
-                    <li>
-                      <a href="<?php echo base_url('subject/assign-subject-grade-level'); ?>"><i class="fa fa-male"></i> Assign Subject to Grade Level</a>
-                    </li>
-                    <li>
-                      <a href="<?php echo base_url('curiculum/offer-subject'); ?>"><i class="fa fa-male"></i> Offer Subject</a>
-                    </li>
-                  </ul>
-                </li>
-                <li class="dropdown">
-                  <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fa fa-male"></i> Instructors <span class="caret"></span>
-                  </a>
-                  <ul class="dropdown-menu">
-                    <li>
-                      <a href="<?php echo base_url('teacher'); ?>"><i class="fa fa-male"></i> Add Instructor</a>
-                    </li>
-                    <li>
-                      <a href="<?php echo base_url('curiculum/assign-instructor'); ?>"><i class="fa fa-male"></i> Assign Instructors</a>
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  <a href="<?php echo base_url('student'); ?>"><i class="fa fa-users"></i> Students</a>
-                </li>
-                <li class="dropdown">
-                  <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fa fa-plus"></i> Assign <span class="caret"></span>
-                  </a>
-                  <ul class="dropdown-menu">
-                    <li>
-                      <a href="<?php echo base_url('curiculum/add-section'); ?>"><i class="fa fa-male"></i> Add Section</a>
-                    </li>
-                  </ul>
-                </li>
-                
-                
-                <li class="dropdown">
-                  <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fa fa-cog"></i> Curiculum <span class="caret"></span>
-                  </a>
-                  <ul class="dropdown-menu">
-                    <li><a href="<?php echo base_url('curiculum'); ?>">Manage Curiculum</a></li>
-                    <li><a href="<?php echo base_url('curiculum/enroll-student'); ?>">Enroll Student</a></li>
-                    <li><a href="<?php echo base_url('curiculum/manage-grades'); ?>">Manage Grades</a></li>
-                  </ul>
-                </li>
-              </ul>
-
-              <ul class="nav navbar-nav navbar-right">
-                <li>
-                  <a href="<?php echo base_url('user/profile'); ?>"><i class="fa fa-user"></i> Welcome <?php echo $username; ?></a>
-                </li>
-                <li class="divider"></li>
-                <li>
-                  <a href="<?php echo base_url('user/logout'); ?>"><i class="fa fa-power-off"></i> Logout</a>
-                </li>
-              </ul>
-
-            </div>
-          </div>
-        </div>
-    </header>
+      </div>
+    </div>
+    <div id="navbar-hs" class="navbar navbar-default">
+      <div class="container">
+        <div class="navbar-collapse collapse" id="navbar-main">
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="<?php echo base_url('user/profile'); ?>"><i class="fa fa-user"></i> Profile</a>
+            </li>
 
 
-            <div class="page-wrapper">
+            <?php
 
-                <?php //$this->load->view('layout/sidebar', $data); ?>
+            switch($user_type){
+              case 1:
+                $this->load->view('layout/navigation/admin');
+                break;
+              case 2:
+                $this->load->view('layout/navigation/teacher');
+                break;
+              case 3:
+                $this->load->view('layout/navigation/student');
+                break;
+            }
 
-                <div class="page-content">
+            ?>
 
-                    <div class="container">
+        </ul>
+
+    <ul class="nav navbar-nav navbar-right">
+      <li>
+        <a href="<?php echo base_url('user/profile'); ?>"><i class="fa fa-user"></i> Welcome <?php echo $username; ?></a>
+      </li>
+      <li class="divider"></li>
+      <li>
+        <a href="<?php echo base_url('user/logout'); ?>"><i class="fa fa-power-off"></i> Logout</a>
+      </li>
+    </ul>
+
+  </div>
+</div>
+</div>
+</header>
+
+
+<div class="page-wrapper">
+
+  <?php //$this->load->view('layout/sidebar', $data); ?>
+
+  <div class="page-content">
+
+    <div class="container">
 
 

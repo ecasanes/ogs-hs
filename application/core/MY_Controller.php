@@ -50,6 +50,9 @@ class MY_Controller extends CI_Controller {
     $this->controller = $controller;
     $this->method = $method;
 
+    $this->user_type = $this->session->userdata('user_type');
+    $this->user_id = $this->session->userdata('session');
+
     
   }
 

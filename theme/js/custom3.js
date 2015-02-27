@@ -273,6 +273,208 @@ Module.User = (function() {
 })();
 
 
+Module.Teacher = (function(){
+
+
+	function manage_grades(){
+
+		var $form = $('#manage-grade-form');
+
+		var $school_year = $form.find('[name=school_year]');
+		var $grade_level = $form.find('[name=grade_level]');
+		var $section = $form.find('[name=section]');
+		var $subject = $form.find('[name=subject]');
+		var $user = $form.find('[name=student]');
+
+		var $section_container = $form.find('.section');
+		var $subject_container = $form.find('.subject');
+
+		//school year select
+		$school_year.change(function(e){
+
+			var $this = $(this);
+
+			var school_year = $this.val();
+			var grade_level = $grade_level.val();
+
+			if(grade_level != null && grade_level != null){
+
+				get_section_dropdown($section_container, school_year, grade_level);
+
+			}else{
+				get_section_dropdown($section_container);
+			}
+		});
+
+
+		//grade level select
+		$grade_level.change(function(e){
+
+			var $this = $(this);
+
+			var school_year = $school_year.val();
+			var grade_level = $this.val();
+
+			if(school_year != null && grade_level != null){
+
+				get_section_dropdown($section_container, school_year, grade_level);
+
+			}else{
+				get_section_dropdown($section_container);
+			}
+		});
+
+		//section select
+		$section.change(function(e){
+
+			var $this = $(this);
+
+			var section = $section.val();
+
+			if(section != null){
+
+				get_subject_dropdown($subject_container, section, null, null, "offered");
+
+			}else{
+				get_subject_dropdown($subject_container, null, null, null, "offered");
+			}
+		});
+
+		//submit form
+		$form.submit(function(e){
+
+			e.preventDefault();
+			var $this = $(this);
+			var $activity_form = $('#activity-form');
+			var $loading = $activity_form.find('.loading');
+
+			var activity_id = $activity_form.find('.tab-pane.active').attr('id');
+			var activity_type = $activity_form.find('.tab-pane.active').data('id');
+
+			var post_data = $this.serialize();
+			console.log(post_data);
+
+			$.ajax({
+				url: base_url + controller + '/submit_manage_grades_ajax/'+activity_type,
+				method: "get",
+				dataType: "json",
+				data: post_data,
+				beforeSend: function(data){
+					$loading.removeClass('hidden');
+					$('#'+activity_id).html('');
+				},
+				success: function(data) {
+
+					var content = data.content
+					var school_year = data.school_year;
+					var grade_level = data.grade_level;
+					var section = data.section;
+					var subject = data.subject;
+					var term = data.term;
+					var subj_offerid = data.subj_offerid;
+
+					var activity_weight = data.activity_weight;
+					var activity_column = data.activity_column;
+					var activity_type = data.activity_type;
+					if(activity_column == 0){
+						activity_column = '';
+					}
+
+					$activity_form.find('input[name=activity_weight]').val(activity_weight);
+					if(activity_type == 'exam'){
+						$activity_form.find('select[name=activity_column]')
+						.prop('disabled',true)
+						.val(activity_column);
+					}else{
+						$activity_form.find('select[name=activity_column]')
+						.prop('disabled',false)
+						.val(activity_column);
+					}
+					
+					//console.log(data);
+					$('#'+activity_id).html(content);
+					$activity_form.find('input[name=school_year]').val(school_year);
+					$activity_form.find('input[name=grade_level]').val(grade_level);
+					$activity_form.find('input[name=section]').val(section);
+					$activity_form.find('input[name=subject]').val(subject);
+					$activity_form.find('input[name=term]').val(term);
+					$activity_form.find('input[name=subj_offerid]').val(subj_offerid);
+
+				},
+				complete: function(data){
+					$loading.addClass('hidden');
+				},
+				error: function(error, data){
+					console.log(error.responseText);
+				}
+
+			});
+		});
+
+		$(document).on('click', '#submit-activity-settings', function(e){
+
+			e.preventDefault();
+			var $this = $(this);
+
+			var $form = $this.closest('form'); //activity-form
+			//var $activity_form = $('#activity-form');
+
+			var activity_type = $form.find('.tab-pane.active').data('id');
+			var $activity_weight = $form.find('input[name=activity_weight]');
+			var $activity_column = $form.find('select[name=activity_column]');
+
+			var activity_weight = $activity_weight.val();
+			var activity_column = $activity_column.val();
+
+			console.log(activity_weight);
+			console.log(activity_column);
+
+			var post_data = $form.serializeArray();
+
+			var activity_id = $form.find('.tab-pane.active').attr('id');
+			var activity_type = $form.find('.tab-pane.active').data('id');
+
+			$settings_success = $('#settings-success');
+
+			console.log(post_data);
+
+			$.ajax({
+				url: base_url + controller + '/process_activity_settings/'+activity_type,
+				method: "get",
+				dataType: "json",
+				data: post_data,
+				beforeSend: function(data){
+					//$loading.removeClass('hidden');
+					//$('#'+activity_id).html('');
+					//console.log(post_data);
+					$settings_success.text('');
+				},
+				success: function(data) {
+
+					console.log(data);
+					$settings_success.text(data.message).fadeOut(4000);
+					
+					
+
+				},
+				complete: function(data){
+					$loading.addClass('hidden');
+				},
+				error: function(error, data){
+					console.log(error.responseText);
+				}
+
+			});
+		});
+	}
+
+	return {
+		manage_grades: manage_grades
+	}
+
+})();
+
+
 Module.Subject = (function() {
 
 	function add_subject(){

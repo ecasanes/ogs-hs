@@ -576,11 +576,46 @@ class Curiculum_Model extends MY_Model {
         return $result;
     }
 
-    public function get_available_year_level_by_school_year($sy_start, $sy_end){
+    public function get_student_school_year($user_id){
 
-        $sql = "SELECT * FROM tbl_grade_level WHERE sy_start = ? AND sy_end = ? ORDER BY grade_level";
+        $sql = "SELECT DISTINCT(a.sy_start),
+              a.* 
+            FROM
+              tbl_grade_level a 
+             GROUP BY sy_start ORDER BY sy_start";
 
-        $escaped_values = array($sy_start, $sy_end);
+        $query = $this->db->query($sql);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function get_available_year_level_by_school_year($sy_start, $sy_end, $user_id = null){
+
+       
+
+        if($user_id !== null){
+
+            $sql = "SELECT 
+              * 
+            FROM
+              tbl_grade_level a,
+              tbl_grade_section b,
+              tbl_enroll_student c
+            WHERE a.sy_start = ? 
+              AND a.sy_end = ?
+              AND a.`gl_id` = b.`gl_id`
+              AND c.`offer_id` = b.`offer_id`
+              AND c.`user_id` = ?";
+
+            $escaped_values = array($sy_start, $sy_end, $user_id);
+
+        }else{
+
+             $sql = "SELECT * FROM tbl_grade_level WHERE sy_start = ? AND sy_end = ? ORDER BY grade_level";
+            $escaped_values = array($sy_start, $sy_end);
+        }
 
         $query = $this->db->query($sql, $escaped_values);
 
@@ -626,11 +661,38 @@ class Curiculum_Model extends MY_Model {
 
     }
 
-    public function get_sections_by_grade_level($grade_level_id){
+    public function get_sections_by_grade_level($grade_level_id, $user_id = null){
 
-        $sql = "SELECT * FROM tbl_grade_section WHERE gl_id = ?";
+        if($user_id !== null){
+            $sql = "SELECT * FROM tbl_grade_section a, tbl_enroll_student b WHERE a.gl_id = ? AND b.`user_id` = ? AND b.`offer_id` = a.`offer_id`";
+            $escaped_values = array($grade_level_id, $user_id);
+        }else{
+            $sql = "SELECT * FROM tbl_grade_section WHERE gl_id = ?";
+            $escaped_values = array($grade_level_id);
+        }
 
-        $escaped_values = array($grade_level_id);
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function get_sections_by_teacher_detail($grade_level_id, $user_id){
+
+        $sql = "SELECT 
+              DISTINCT(a.offer_id),
+              a.*
+            FROM
+              tbl_grade_section a,
+              tbl_teacher_subj b,
+              tbl_subj_offering c 
+            WHERE a.`gl_id` = ?
+            AND b.`user_id` = ?
+            AND c.`subj_offerid` = b.`subj_offerid`
+            AND a.`offer_id` = c.`offer_id`";
+
+        $escaped_values = array($grade_level_id, $user_id);
 
         $query = $this->db->query($sql, $escaped_values);
 
@@ -758,6 +820,28 @@ class Curiculum_Model extends MY_Model {
         return $result;
     }
 
+    public function get_subjects_assigned_by_teacher($section_id, $user_id){ //gl_id, offer_id
+
+        $sql = "SELECT 
+              * 
+            FROM
+              `tbl_subj_offering` a,
+              tbl_subject b,
+              tbl_teacher_subj c
+            WHERE a.`offer_id` = ?
+              AND b.`subj_id` = a.`subj_id` 
+              AND c.`subj_offerid` = a.`subj_offerid`
+              AND c.`user_id` = ?";
+
+        $escaped_values = array($section_id, $user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
     public function get_unassigned_instructors_by_subject_offering($section, $subject, $user_type = 2){
 
         $sql = "SELECT 
@@ -844,7 +928,7 @@ class Curiculum_Model extends MY_Model {
         return $result;
     }
 
-    public function get_enrolled_students_by_section($offer_id){
+    public function get_enrolled_students_by_section($offer_id, $user_id = null){
         
         $sql = "SELECT 
               * 
@@ -854,7 +938,14 @@ class Curiculum_Model extends MY_Model {
             WHERE a.offer_id = ? 
               AND b.user_id = a.user_id";
 
-        $escaped_values = array($offer_id);
+        if($user_id !== null){
+            $sql .= " AND b.user_id = ?";
+            $escaped_values = array($offer_id, $user_id);
+            
+        }else{
+            $escaped_values = array($offer_id);
+        }
+        
 
         $query = $this->db->query($sql, $escaped_values);
 

@@ -193,6 +193,31 @@ class Curiculum extends My_Controller {
 		$this->load->view( 'layout/footer' , $footer_data);
 	}
 
+	public function view_grades(){
+
+		$this->is_logged_in();
+
+		$user_id = $this->session->userdata('session');
+
+		$user_model = $this->user_model;
+
+		$header_data = array();
+
+		$model_data = array(
+				'school_year_dropdown' => $this->student_school_year_dropdown($user_id)
+			);
+
+		$footer_data = array();
+		$footer_data['listeners'] = array(
+			'Module.Curiculum.view_class_record()',		
+		);
+
+		$this->load->view( 'layout/header', $header_data );
+		$this->load->view( 'curiculum/view-grades', $model_data );
+		$this->load->view( 'layout/footer' , $footer_data);
+
+	}
+
 	/* submits */
 	public function create_grade_level(){
 
@@ -1220,6 +1245,7 @@ class Curiculum extends My_Controller {
 
 		$data = $this->input->get();
 
+
 		if($data){
 
 			extract( $data, EXTR_SKIP );
@@ -1327,6 +1353,7 @@ class Curiculum extends My_Controller {
 
 		$data = $this->input->get();
 
+
 		if($data){
 
 			extract( $data, EXTR_SKIP );
@@ -1386,7 +1413,15 @@ class Curiculum extends My_Controller {
 	    $this->load->model('Curiculum_Model');
 	    $main_model = new Curiculum_Model;
 
-	    $results = $main_model->get_sections_by_grade_level($grade_level_id);
+	    $user_type = $this->user_type;
+		$user_id = $this->user_id;
+
+		if($user_type == 1){
+			$results = $main_model->get_sections_by_grade_level($grade_level_id);
+		}else if($user_type == 2){
+			$results = $main_model->get_sections_by_grade_level($grade_level_id, $user_id);
+		}
+	    
 
 	    $option = "";
 
@@ -1466,7 +1501,15 @@ class Curiculum extends My_Controller {
 		$this->load->model('Curiculum_Model');
 	    $main_model = new Curiculum_Model;
 
-	    $results = $main_model->get_subjects_offered($section_id);
+	    $user_type = $this->user_type;
+		$user_id = $this->user_id;
+
+		if($user_type == 1){
+			$results = $main_model->get_subjects_offered($section_id);
+		}else if($user_type == 2){
+			$results = $main_model->get_subjects_assigned_by_teacher($section_id, $user_id);
+		}
+	    
 
 	    $option = "";
 
@@ -1500,6 +1543,27 @@ class Curiculum extends My_Controller {
 
 	    return $option;
 	}
+
+	public function student_school_year_dropdown($user_id){
+
+	    $this->load->model('Curiculum_Model');
+	    $main_model = new Curiculum_Model;
+
+	    $results = $main_model->get_school_year();
+
+	    $option = "";
+
+	    foreach($results as $result){
+
+	      $grade_level_id = $result->gl_id;
+	      $sy_start = $result->sy_start;
+	      $sy_end = $result->sy_end;
+
+	      $option .= '<option value="'.$sy_start.'-'.$sy_end.'">'.$sy_start.' - '.$sy_end.'</option>';
+	    }
+
+	    return $option;
+	  }
 
 	/*get*/
 	public function get_all_projects($subj_offerid){
@@ -1879,6 +1943,8 @@ class Curiculum extends My_Controller {
 	public function display_student_grade_per_subject_term(){
 
 		$data = $this->input->get();
+		$user_type = $this->user_type;
+		$student_user_id = $this->user_id;
 
 		if($data){
 
@@ -1940,7 +2006,13 @@ class Curiculum extends My_Controller {
 
 			$output .= '</tr>';
 
-			$students = $main_model->get_enrolled_students_by_section($offer_id);
+			if($user_type == 1){
+				$students = $main_model->get_enrolled_students_by_section($offer_id);
+			}else if($user_type == 3){
+				$students = $main_model->get_enrolled_students_by_section($offer_id, $student_user_id);
+			}
+
+			
 
 			foreach($students as $student_info){
 				$user_id = $student_info->user_id;
@@ -1986,14 +2058,20 @@ class Curiculum extends My_Controller {
 
 		$main_model = $this->main_model;
 
+		$user_type = $this->user_type;
+		$student_user_id = $this->user_id;
+
 		$section_info = $main_model->get_section_info($offer_id);
 		$section_name = $section_info->section;
 		$grade_level = $section_info->grade_level;
 		$sy_start = $section_info->sy_start;
 		$sy_end = $section_info->sy_end;
 
+		
 		$output = '<h3>SY ' . $sy_start . ' - ' . $sy_end . '</h3>';
 		$output .= '<h3> Grade ' . $grade_level . ' - ' . $section_name . '</h3>';
+		
+		
 
 		$output .= '<table class="table table-bordered table-hover">';
 
@@ -2023,7 +2101,12 @@ class Curiculum extends My_Controller {
 
 		$output .= '</tr>';
 
-		$students = $main_model->get_enrolled_students_by_section($offer_id);
+		if($user_type == 1){
+			$students = $main_model->get_enrolled_students_by_section($offer_id);
+		}else if($user_type == 3){
+			$students = $main_model->get_enrolled_students_by_section($offer_id, $student_user_id);
+		}
+		
 
 		foreach($students as $student_info){
 			$user_id = $student_info->user_id;
@@ -2068,6 +2151,9 @@ class Curiculum extends My_Controller {
 
 		$data = $this->input->get();
 
+		$user_type = $this->user_type;
+		$student_user_id = $this->user_id;
+
 		if($data){
 
 			extract( $data, EXTR_SKIP );
@@ -2079,50 +2165,67 @@ class Curiculum extends My_Controller {
 			$sy_start = $school_year[0];
 			$sy_end = $school_year[1];
 
-			$grade_levels = $main_model->get_available_year_level_by_school_year($sy_start, $sy_end);
-
-			$output = "<h3> Class Offerings SY: " . $sy_start . ' - ' . $sy_end . "</h3>";
-
-
-
-			foreach($grade_levels as $grade_level){
-
-				$grade_level_tag = $grade_level->grade_level;
-				$grade_level_id = $grade_level->gl_id;
-
-				$output .= "<h3> Grade" . $grade_level_tag . "</h3>";
-
-				$sections = $main_model->get_sections_by_grade_level($grade_level_id);
-
-				$output .= '<table class="table table-bordered table-hover">';
-
-				$output .= '<tr>';
-				$output .= '<td>Section</td>';
-				$output .= '<td>Action</td>';
-				$output .= '</tr>';
-
-				if(empty($sections)){
-						$output .= '<tr><td colspan="2">No Sections Allocated</td></tr>';
-				}else{
-					foreach($sections as $section){
-
-						$offer_id = $section->offer_id;
-						$section_name = $section->section;
-
-						$output .= '<tr>';
-						$output .= '<td>'.$section_name.'</td>';
-						$output .= '<td><a class="view-section-record" href="#" data-id="'.$offer_id.'">View</a></td>';
-						$output .= '</tr>';
-
-						
-
-					}
-				}
-
-
-
-				$output .= '</table>';
+			if($user_type == 1){
+				$grade_levels = $main_model->get_available_year_level_by_school_year($sy_start, $sy_end);
+			}else if($user_type == 3){
+				$grade_levels = $main_model->get_available_year_level_by_school_year($sy_start, $sy_end, $student_user_id);
 			}
+			
+
+			if($user_type == 1){
+				$output = "<h3> Class Offerings SY: " . $sy_start . ' - ' . $sy_end . "</h3>";
+			}else if($user_type == 3){
+				$output = "<h3> SY: " . $sy_start . ' - ' . $sy_end . "</h3>";
+			}
+			
+			if(empty($grade_levels)){
+				$output .= '<h3> You are not enrolled in this school year </h3>';
+			}else{
+				foreach($grade_levels as $grade_level){
+
+					$grade_level_tag = $grade_level->grade_level;
+					$grade_level_id = $grade_level->gl_id;
+
+					$output .= "<h3> Grade" . $grade_level_tag . "</h3>";
+
+					if($user_type == 1){
+						$sections = $main_model->get_sections_by_grade_level($grade_level_id);
+					}else if($user_type == 3){	
+						$sections = $main_model->get_sections_by_grade_level($grade_level_id, $student_user_id);
+					}
+					
+
+					$output .= '<table class="table table-bordered table-hover">';
+
+					$output .= '<tr>';
+					$output .= '<td>Section</td>';
+					$output .= '<td>Action</td>';
+					$output .= '</tr>';
+
+					if(empty($sections)){
+							$output .= '<tr><td colspan="2">No Sections Allocated</td></tr>';
+					}else{
+						foreach($sections as $section){
+
+							$offer_id = $section->offer_id;
+							$section_name = $section->section;
+
+							$output .= '<tr>';
+							$output .= '<td>'.$section_name.'</td>';
+							$output .= '<td><a class="view-section-record" href="#" data-id="'.$offer_id.'">View</a></td>';
+							$output .= '</tr>';
+
+							
+
+						}
+					}
+
+
+
+					$output .= '</table>';
+				}
+			}
+				
 
 			echo $output;
 		}
