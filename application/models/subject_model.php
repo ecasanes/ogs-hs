@@ -134,6 +134,49 @@ class Subject_Model extends MY_Model {
         $query = $this->db->query($sql, $escaped_values);
     }
 
+    public function get_subj_offerid_by_subject($subj_id){
+
+         $sql = "SELECT subj_offerid FROM subj_offering WHERE subj_id = ?";
+
+         $escaped_values = array($subj_id);
+
+         $query = $this->db->query($sql, $escaped_values);
+
+         $num_rows = $query->num_rows();
+
+        if ( $num_rows > 0 ) {
+            $result = $query->row()->subj_offerid;
+        }else {
+            $result = 0;
+        }
+
+        return $result;
+    }
+
+    //delete
+
+
+    public function remove_subject($id){
+
+        $sql = "DELETE FROM tbl_subject WHERE subj_id = ?";
+
+        $escaped_values = array($id);
+
+        $query = $this->db->query($sql, $escaped_values);
+    }
+
+    //update
+    public function update_subject($id, $subj_code, $subj_desc, $unit){
+
+        $sql = "UPDATE tbl_subject SET subj_code = ?, subj_desc = ?, unit = ? WHERE subj_id = ?";
+
+        $escaped_values = array($subj_code, $subj_desc, $unit, $id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        return $id;
+    }
+
 
     
 

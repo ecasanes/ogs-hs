@@ -477,6 +477,11 @@ Module.Teacher = (function(){
 
 Module.Subject = (function() {
 
+	var $search_subject = $('#search-subject');
+	var $search_results = $search_subject.find('.search-results');
+	
+	var $loading = $search_subject.find('.loading');
+
 	function add_subject(){
 
 		var $form = $('#add-subject-form');
@@ -538,14 +543,63 @@ Module.Subject = (function() {
 		});
 	}
 
+	function edit_subject(){
+
+		$search_results.on('click', '.btn-edit', function(e){
+			e.preventDefault();
+			console.log('edit');
+		});
+
+
+		$search_results.on('click', '.btn-delete', function(e){
+
+			e.preventDefault();
+
+			var $this = $(this);
+			var id = $this.data('id');
+
+			$('#delete-subject-modal').modal();
+			$('#delete-subject-modal').find('input[name=id]').val(id);
+
+		});
+
+		$('#delete-subject-form').submit(function(e){
+
+			e.preventDefault();
+
+			var $this = $(this);
+			var id = $this.find('input[name=id]').val();
+
+			$this.closest('.modal').modal('hide');
+
+			$.ajax({
+				url: base_url + controller + '/remove',
+				method: "post",
+				dataType: "json",
+				data: {"id":id},
+				beforeSend: function(data){
+				},
+				success: function(data) {
+					console.log(data);
+					refresh_subject_list(true);
+				},
+				complete: function(data){
+				},
+				error: function(error, data){
+					console.log(error.responseText);
+				}
+
+			});
+
+		});
+
+
+		
+	}
+
 	function refresh_subject_list(retain_height){
 
 		var retain_height = retain_height || false;
-
-		var $search_subject = $('#search-subject');
-		var $search_results = $search_subject.find('.search-results');
-		
-		var $loading = $search_subject.find('.loading');
 		
 		if(retain_height){
 			var height = $search_results.height();
@@ -582,7 +636,8 @@ Module.Subject = (function() {
 
 	return {
 		add_subject: add_subject,
-		refresh_subject_list: refresh_subject_list
+		refresh_subject_list: refresh_subject_list,
+		edit_subject: edit_subject
 	}
 
 })();

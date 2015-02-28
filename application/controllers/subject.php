@@ -31,7 +31,8 @@ class Subject extends My_Controller {
 		$footer_data = array();
 		$footer_data['listeners'] = array(
 			'Module.Subject.add_subject()', 
-			'Module.Subject.refresh_subject_list()'
+			'Module.Subject.refresh_subject_list()',
+			'Module.Subject.edit_subject()'
 		);
 
 		$this->load->view( 'layout/header', $header_data );
@@ -177,7 +178,53 @@ class Subject extends My_Controller {
 
 
 		}
+	}
 
+	public function remove(){
+
+		$data = $this->input->post();
+
+		if($data){
+
+			$main_model = $this->main_model;
+
+			$id = $this->input->post('id');
+
+			//$subj_offerid = $main_model->get_subj_offerid_by_subject($id);
+
+			//$main_model->delete_all_with_subj_offerid($subj_offerid);
+
+			$main_model->remove_subject($id);
+
+			$json_result = array(
+					'success' => true,
+					'message' => "Subject successfully removed."
+				);
+
+			echo json_encode($json_result);
+		}
+	}
+
+	public function update(){
+
+		$data = $this->input->post();
+
+		if($data){
+
+			$main_model = $this->main_model;
+
+			extract( $data, EXTR_SKIP );
+
+			$main_model->update_subject($id, $subj_code, $subj_desc, $unit);
+
+			$json_result = array(
+					'success' => true,
+					'id' => $id,
+					'message' => "Subject successfully updated."
+				);
+
+			echo json_encode($json_result);
+		}
 	}
 
 	/*lists*/
