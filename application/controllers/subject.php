@@ -215,7 +215,7 @@ class Subject extends My_Controller {
 
 			extract( $data, EXTR_SKIP );
 
-			$main_model->update_subject($id, $subj_code, $subj_desc, $unit);
+			$main_model->update_subject($id, $subj_code, $subj_desc, $subj_unit);
 
 			$json_result = array(
 					'success' => true,

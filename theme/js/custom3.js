@@ -558,8 +558,30 @@ Module.Subject = (function() {
 			var $this = $(this);
 			var id = $this.data('id');
 
+
 			$('#delete-subject-modal').modal();
 			$('#delete-subject-modal').find('input[name=id]').val(id);
+
+		});
+
+
+		$search_results.on('click', '.btn-edit', function(e){
+
+			e.preventDefault();
+
+			var $this = $(this);
+			var id = $this.data('id');
+			var code = $this.data('code');
+			var name = $this.data('name');
+			var unit = $this.data('unit');
+
+			var $modal = $('#edit-subject-modal');
+
+			$modal.modal();
+			$modal.find('input[name=id]').val(id);
+			$modal.find('input[name=subj_code]').val(code);
+			$modal.find('input[name=subj_desc]').val(name);
+			$modal.find('input[name=subj_unit]').val(unit);
 
 		});
 
@@ -577,6 +599,38 @@ Module.Subject = (function() {
 				method: "post",
 				dataType: "json",
 				data: {"id":id},
+				beforeSend: function(data){
+				},
+				success: function(data) {
+					console.log(data);
+					refresh_subject_list(true);
+				},
+				complete: function(data){
+				},
+				error: function(error, data){
+					console.log(error.responseText);
+				}
+
+			});
+
+		});
+
+
+		$('#edit-subject-form').submit(function(e){
+
+			e.preventDefault();
+
+			var $this = $(this);
+			
+			var post_data = $this.serializeArray();
+
+			$this.closest('.modal').modal('hide');
+
+			$.ajax({
+				url: base_url + controller + '/update',
+				method: "post",
+				dataType: "json",
+				data: post_data,
 				beforeSend: function(data){
 				},
 				success: function(data) {

@@ -168,7 +168,7 @@ class Subject_Model extends MY_Model {
     //update
     public function update_subject($id, $subj_code, $subj_desc, $unit){
 
-        $sql = "UPDATE tbl_subject SET subj_code = ?, subj_desc = ?, unit = ? WHERE subj_id = ?";
+        $sql = "UPDATE tbl_subject SET subj_code = ?, subj_desc = ?, subj_unit = ? WHERE subj_id = ?";
 
         $escaped_values = array($subj_code, $subj_desc, $unit, $id);
 

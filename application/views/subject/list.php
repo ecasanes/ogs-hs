@@ -28,7 +28,7 @@ else:
 				<td><?php echo $name; ?></td>
 				<td><?php echo $unit; ?></td>
 				<td>
-					<a href="#" data-id="<?php echo $id; ?>" class="btn btn-primary btn-edit" title="Edit">
+					<a href="#" data-id="<?php echo $id; ?>" data-code="<?php echo $code; ?>" data-name="<?php echo $name; ?>" data-unit="<?php echo $unit; ?>" class="btn btn-primary btn-edit" title="Edit">
 						<span class="glyphicon glyphicon-edit"></span>
 					</a>
 					<a href="#" data-id="<?php echo $id; ?>" class="btn btn-danger btn-delete" title="Delete">
