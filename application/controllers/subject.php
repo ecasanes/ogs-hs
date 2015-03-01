@@ -73,8 +73,8 @@ class Subject extends My_Controller {
 
 		$count = $main_model->count_subject_by_grade_level($sy_start, $sy_end, $grade_level, $subject_id);
 
-		var_dump($this->db->last_query());
-		var_dump($count);
+		/*var_dump($this->db->last_query());
+		var_dump($count);*/
 
 		if($count > 0){
 			return true;
@@ -92,6 +92,8 @@ class Subject extends My_Controller {
 
 			extract( $data, EXTR_SKIP );
 
+			$this->load->model('Curiculum_Model');
+			$curiculum_model = new Curiculum_Model;
 			$main_model = $this->main_model;
 
 			$this->load->library( 'form_validation' );
@@ -101,38 +103,46 @@ class Subject extends My_Controller {
 
 			$this->form_validation->set_rules( 'subject_code', 'Subject Code', 'is_unique[tbl_subject.subj_code]' );
 
-			if ( $this->form_validation->run() ) {
+			$school_year = explode('-', $school_year);
+			$sy_start = $school_year[0];
+			$sy_end = $school_year[1];
 
-				$subject_id = $main_model->create_subject($subject_code, $subject_unit, $subject_description);
-				$success_message = "Subject was added successfully. ";
+			$subject_code_unique = $this->form_validation->run();
+			$grade_level_exist = $this->subject_code_grade_level_exist($sy_start, $sy_end, $grade_level, $subject_code);
 
-				if($subject_id){
+			if( $subject_code_unique == false && $grade_level_exist == true){
 
-					$json_result = array(
-						'subject_id' => $subject_id,
-						'result' => 'success',
-						'success_message' => $success_message
-						);
-				}else{
-					$json_result = array(
-						'result' => 'failed'
-						);
-				}
+				$message ="Subject was already assigned to Year Level";
+				$result = "failed";
+				$field_group = "school_year";
 
-				$json_result['subject_code'] = 'success';      
+			}else if(($subject_code_unique == false && $grade_level_exist == false) || ($subject_code_unique == true && $grade_level_exist == false)){
 
-			}else{
-				$json_result = array(
-					'subject_code' => form_error('subject_code'),
-					'subject_code_message' => 'Subject Code already exist. ',
-					'result' => 'failed'
-					);
+				$subj_id = $main_model->create_subject($subject_code, $subject_unit, $subject_description);
+				$grade_level_id = $curiculum_model->get_grade_level_id_by_detail($sy_start, $sy_end, $grade_level);
+				$main_model->add_subject_grade_level($subj_id, $grade_level_id);
+
+				$message = "Subject was added successfully. ";
+				$result = "success";
+				$field_group = "";
+
+			}else if($subject_code_unique == false){
+
+				$message = "Subject Code already exist.";
+				$result = "failed";
+				$field_group = "subject_code";
+				
 			}
 
+			$json_result = array(
+				'result' => $result,
+				'message' => $message,
+				'field_group' => $field_group,
+				'subject_code_unique' => $subject_code_unique,
+				'grade_level_exist' => $grade_level_exist
+			);
+
 			echo json_encode($json_result);
-
-
-
 
 		}
 	}
@@ -251,7 +261,7 @@ class Subject extends My_Controller {
 
 		$search_key = $this->input->get('search');
 
-		$results = $user_model->search_list($search_key, $user_type);
+		$results = $main_model->search_list($search_key, $user_type);
 
 		$model_data = array(
 			'results' => $results

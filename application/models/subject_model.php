@@ -19,7 +19,17 @@ class Subject_Model extends MY_Model {
         $db_table = $this::DB_TABLE;
         $db_primary =$this::DB_TABLE_PK;
 
-        $sql  = "SELECT * FROM {$db_table}";
+        $sql  = "SELECT DISTINCT 
+              (a.subj_id),
+              a.*,
+              b.*,
+              c.* 
+            FROM
+              tbl_subject a,
+              tbl_grade_subj b,
+              tbl_grade_level c 
+            WHERE a.subj_id = b.`subj_id` 
+              AND b.`gl_id` = c.`gl_id` ";
 
         $query = $this->db->query($sql);
 
@@ -86,7 +96,7 @@ class Subject_Model extends MY_Model {
     }
 
     /* count */
-    public function count_subject_by_grade_level($sy_start, $sy_end, $grade_level, $subj_id){
+    public function count_subject_by_grade_level($sy_start, $sy_end, $grade_level, $subj_code){
 
         $sql = "SELECT 
           COUNT(DISTINCT(c.subj_id)) AS count_subject
@@ -94,14 +104,14 @@ class Subject_Model extends MY_Model {
           tbl_subject a,
           tbl_grade_level b,
           tbl_grade_subj c 
-        WHERE a.subj_id = ? 
+        WHERE a.subj_code LIKE '%{$subj_code}%'
           AND b.grade_level = ? 
           AND b.sy_start = ? 
           AND b.`sy_end` = ? 
           AND b.`gl_id` = c.`gl_id`
           AND a.subj_id = c.`subj_id`";
 
-        $escaped_values = array($subj_id, $grade_level, $sy_start, $sy_end);
+        $escaped_values = array($grade_level, $sy_start, $sy_end);
 
         $query = $this->db->query($sql, $escaped_values);
 

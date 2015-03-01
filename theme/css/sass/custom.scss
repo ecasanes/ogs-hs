@@ -102,33 +102,7 @@ body{
 
 
 
-.panel{
-	/*margin-bottom:0px;*/
 
-	.panel-heading{
-		position:relative;
-		.panel-options{
-			position:absolute;
-			top:10px;
-			right:15px;
-		}
-	}
-
-
-	.panel-footer{
-		.error-message{
-			position:absolute;
-			top:10px;
-			
-		}
-		.success-message{
-			position:absolute;
-			top:10px;
-		}
-	}
-
-	
-}
 
 
 input, textarea, select{
@@ -144,49 +118,6 @@ input, textarea, select{
 
 
 
-/* start - panel tabs */
-
-/*Panel tabs*/
-.panel-tabs {
-    position: relative;
-    bottom: 26px;
-    clear:both;
-    border-bottom: 1px solid transparent;
-}
-
-.panel-tabs > li {
-    float: left;
-    margin-bottom: -1px;
-}
-
-.panel-tabs > li > a {
-    margin-right: 2px;
-    margin-top: 4px;
-    line-height: .85;
-    border: 1px solid transparent;
-    border-radius: 0;
-    color: #fff;
-}
-
-.panel-tabs > li > a:hover {
-    border-color: transparent;
-    color: #ffffff;
-    background-color: transparent;
-}
-
-.panel-tabs > li.active > a,
-.panel-tabs > li.active > a:hover,
-.panel-tabs > li.active > a:focus {
-    color: #000;
-    cursor: default;
-    -webkit-border-radius: 0px;
-    -moz-border-radius: 0px;
-    border-radius: 0px;
-    background-color: #fff;
-    border-bottom-color: transparent;
-}
-
-/* end - panel tabs */
 
 
 

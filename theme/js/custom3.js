@@ -384,11 +384,13 @@ Module.Teacher = (function(){
 					if(activity_type == 'exam'){
 						$activity_form.find('select[name=activity_column]')
 						.prop('disabled',true)
-						.val(activity_column);
+						.val(activity_column)
+						.data('id', activity_column);
 					}else{
 						$activity_form.find('select[name=activity_column]')
 						.prop('disabled',false)
-						.val(activity_column);
+						.val(activity_column)
+						.data('id', activity_column);
 					}
 					
 					//console.log(data);
@@ -494,6 +496,16 @@ Module.Subject = (function() {
 
 			console.log(post_data);
 
+			//start - before ajax
+
+			var $subject_code = $this.find('[name=subject_code]');
+			var $school_year = $this.find('[name=school_year]');
+			var $year_level = $this.find('[name=grade_level]');
+
+			var $submit_message = $('.submit-message');
+
+			//end - before ajax
+
 			$.ajax({
 				url: base_url + controller + '/create_subject',
 				method: "post",
@@ -505,30 +517,37 @@ Module.Subject = (function() {
 				success: function(data) {
 					console.log(data);
 
-					var subject_code = data.subject_code;
-					var subject_code_message = data.subject_code_message;
-					var success_message = data.success_message;
+					var message = data.message;
 					var result = data.result;
-
-					var $subject_code = $this.find('[name=subject_code]');
-
-					$this.find('.error-message').text('');
-					$this.find('.success-message').text('');
-
-					if(subject_code == 'failed'){
-						$subject_code.addClass('error');
-						$this.find('.error-message').append(subject_code_message);
-					}else{
-						$subject_code.removeClass('error');
-					}
+					var field_group = data.field_group;
 
 					
+					
 
-					if(result != 'failed'){
-						$this.find('.success-message').text(success_message).fadeOut(3000);
+					if(result == 'success'){
+						$this.find('input,select').removeClass('error');
 						$this.find('input,select').not('[type=submit], input[type=hidden]').val('');
+						$submit_message.removeClass('error-message');
+						$submit_message.addClass('success-message');
 						refresh_subject_list(true);
+					}else{
+						switch(field_group){
+							case "subject_code":
+								$subject_code.addClass('error');
+								break;
+							case "school_year":
+								$school_year.addClass('error');
+								$year_level.addClass('error');
+								break;
+						}
+						$submit_message.addClass('error-message');
+						$submit_message.removeClass('success-message');
 					}
+
+					$submit_message
+					.show()
+					.text(message)
+					.fadeOut(10000);
 
 
 				},
@@ -646,9 +665,6 @@ Module.Subject = (function() {
 			});
 
 		});
-
-
-		
 	}
 
 	function refresh_subject_list(retain_height){
@@ -978,11 +994,13 @@ Module.Curiculum = (function() {
 					if(activity_type == 'exam'){
 						$activity_form.find('select[name=activity_column]')
 						.prop('disabled',true)
-						.val(activity_column);
+						.val(activity_column)
+						.data('id', activity_column);
 					}else{
 						$activity_form.find('select[name=activity_column]')
 						.prop('disabled',false)
-						.val(activity_column);
+						.val(activity_column)
+						.data('id', activity_column);
 					}
 
 					$activity_form.find('input[name=subj_offerid]').val(subj_offerid);
@@ -1144,11 +1162,13 @@ Module.Curiculum = (function() {
 					if(activity_type == 'exam'){
 						$activity_form.find('select[name=activity_column]')
 						.prop('disabled',true)
-						.val(activity_column);
+						.val(activity_column)
+						.data('id', activity_column);
 					}else{
 						$activity_form.find('select[name=activity_column]')
 						.prop('disabled',false)
-						.val(activity_column);
+						.val(activity_column)
+						.data('id', activity_column);
 					}
 					
 					//console.log(data);

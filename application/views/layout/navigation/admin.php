@@ -5,10 +5,7 @@
               </a>
               <ul class="dropdown-menu">
                 <li>
-                  <a href="<?php echo base_url('subject'); ?>"><i class="fa fa-male"></i> Add Subject</a>
-                </li>
-                <li>
-                  <a href="<?php echo base_url('subject/assign-subject-grade-level'); ?>"><i class="fa fa-male"></i> Assign Subject to Grade Level</a>
+                  <a href="<?php echo base_url('subject'); ?>"><i class="fa fa-male"></i> Add and Modify Subjects</a>
                 </li>
                 <li>
                   <a href="<?php echo base_url('curiculum/offer-subject'); ?>"><i class="fa fa-male"></i> Offer Subject</a>
