@@ -9,8 +9,9 @@
     <div class="form-horizontal filter">
       <div class="row">
         <div class="col-sm-12 col-xs-12">
+          <?php echo form_open('', array('id' => 'filter-subject-form')); ?>
           School Year: 
-          <select name="grade_level" id="">
+          <select name="school_year" id="">
             <option value="">All</option>
             <?php echo $school_year_dropdown; ?>
           </select>
@@ -22,6 +23,8 @@
             <option value="3">3</option>
             <option value="4">4</option>
           </select>
+          <input type="submit" value="Filter">
+          <?php echo form_close(); ?>
         </div>
       </div>
     </div>

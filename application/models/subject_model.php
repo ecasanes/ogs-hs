@@ -38,6 +38,47 @@ class Subject_Model extends MY_Model {
         return $result;
     }
 
+    public function get_subjects_by_school_year_and_grade_level($sy_start, $sy_end, $grade_level){
+
+      $sql = "SELECT DISTINCT 
+          (a.subj_id),
+          a.*,
+          b.*,
+          c.* 
+        FROM
+          tbl_subject a,
+          tbl_grade_subj b,
+          tbl_grade_level c 
+        WHERE a.subj_id = b.`subj_id` 
+          AND b.`gl_id` = c.`gl_id`";
+
+        if(($sy_start != null) && ($sy_end != null)){
+          $sql .= " AND c.`sy_start` = ?
+          AND c.`sy_end` = ? ";
+        }
+
+        if($grade_level != null && $grade_level != ''){
+          $sql .= " AND c.`grade_level` = ?";
+        }
+
+
+        if($sy_start != '' && $sy_end != '' && $grade_level != ''){
+          $escaped_values = array($sy_start, $sy_end, $grade_level);
+        }else if($grade_level == null || $grade_level == ''){
+          $escaped_values = array($sy_start, $sy_end);
+        }else{
+          $escaped_values = array($grade_level);
+        }
+          
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+
+    }
+
     public function get_offered_subjects($offer_id){ //section
 
         $sql = "SELECT * FROM tbl_subj_offering a, tbl_subject b WHERE a.offer_id = ? AND b.subj_id = a.subj_id";

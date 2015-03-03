@@ -704,10 +704,60 @@ Module.Subject = (function() {
 			});
 	}
 
+	function filter_subject(){
+
+		var $form = $('#filter-subject-form');
+
+		$form.submit(function(e){
+			e.preventDefault();
+			var $this = $(this);
+
+			//console.log('test');
+			var school_year = $this.find('select[name=school_year]').val();
+			var year_level = $this.find('select[name=grade_level]').val();
+			var post_data = $this.serializeArray();
+
+			//console.log(post_data);
+
+			if(school_year == '' && year_level == ''){
+				console.log('refresh');
+				refresh_subject_list(true);
+			}else{
+				console.log('filter');
+				//filter
+				$.ajax({
+					url: base_url + controller + '/filter_subject',
+					method: "get",
+					dataType: "html",
+					data: post_data,
+					beforeSend: function(data){
+						
+						$search_results.html('');
+						$loading.removeClass('hidden');
+					},
+					success: function(data) {
+						$search_results.html(data);
+					},
+					complete: function(data){
+						$loading.addClass('hidden');
+					},
+					error: function(error, data){
+						console.log(error.responseText);
+					}
+
+				});
+			}
+		});
+
+		
+
+	}
+
 	return {
 		add_subject: add_subject,
 		refresh_subject_list: refresh_subject_list,
-		edit_subject: edit_subject
+		edit_subject: edit_subject,
+		filter_subject: filter_subject
 	}
 
 })();

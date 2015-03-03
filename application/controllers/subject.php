@@ -19,6 +19,7 @@ class Subject extends My_Controller {
 
 	/*pages*/
 	public function add(){
+
 		$this->is_logged_in();
 
 		$user_model = $this->user_model;
@@ -32,7 +33,8 @@ class Subject extends My_Controller {
 		$footer_data['listeners'] = array(
 			'Module.Subject.add_subject()', 
 			'Module.Subject.refresh_subject_list()',
-			'Module.Subject.edit_subject()'
+			'Module.Subject.edit_subject()',
+			'Module.Subject.filter_subject()'
 		);
 
 		$this->load->view( 'layout/header', $header_data );
@@ -244,6 +246,33 @@ class Subject extends My_Controller {
 		$controller = $this->controller;
 
 		$results = $main_model->get_subjects();
+
+		$model_data = array(
+			'results' => $results
+			);
+
+		$this->load->view($controller.'/list', $model_data);
+	}
+
+	public function filter_subject(){
+
+		$main_model = $this->main_model;
+		$controller = $this->controller;
+
+		$school_year = $this->input->get('school_year');
+		$year_level = $this->input->get('grade_level');
+
+		if(isset($school_year) && $school_year != ''){
+			$school_year = explode('-', $school_year);
+			$sy_start = $school_year[0];
+			$sy_end = $school_year[1];
+		}else{
+			$sy_start = null;
+			$sy_end = null;
+		}
+		
+
+		$results = $main_model->get_subjects_by_school_year_and_grade_level($sy_start, $sy_end, $year_level);
 
 		$model_data = array(
 			'results' => $results
