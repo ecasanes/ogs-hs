@@ -6,8 +6,7 @@
 
 	<!-- header scripts -->
 	<script data-pace-options='{ "ajax": false }' src="<?php echo $base_url.'theme/assets/plugins/pace/pace.min.js'; ?>"></script>
-    <script src="<?php /*echo $base_url.'theme/assets/libs/jquery/jquery.min.js';*/ ?>"></script>
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.2.js"></script>
+    <script src="<?php echo $base_url.'theme/assets/libs/jquery/jquery.min.js'; ?>"></script>
     <!--theme/js/plugins/modernizr.js-->
 
 	<link rel="stylesheet" href="<?php echo $base_url.'theme/css/bootstrap-cosmo.css'; ?>">

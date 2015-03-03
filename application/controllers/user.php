@@ -17,7 +17,13 @@ class User extends My_Controller {
 
 	public function index() {
 		if ( $this->session->userdata( 'session' ) ) {
-			redirect( 'user/profile' );
+			$user_type = $this->session->userdata('user_type');
+			if($user_type == 3){
+				redirect('curiculum/view-grades');
+			}else{
+				redirect( 'user/profile' );
+			}
+			
 		}else {
 			$this->login();
 		}
@@ -48,9 +54,6 @@ class User extends My_Controller {
 		$footer_data = array();
 		//$footer_data['modals'] = array('new-document-modal');
 		$footer_data['listeners'] = array(
-			'Module.Instructor.add_instructor()', 
-			'Module.Instructor.search_instructor()',
-			'Module.Instructor.refresh_instructor_list()'
 		);
 
 		$this->load->view( 'layout/header', $header_data );

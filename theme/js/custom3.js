@@ -1755,6 +1755,47 @@ Module.Curiculum = (function() {
 		}
 	}
 
+	function manage_grading_system(){
+
+		$sy_search_button = $('#search-grade-system');
+		$search_results = $('#grade-system-container');
+		$loading = $('.loading');
+
+		$sy_search_button.click(function(e){
+			e.preventDefault();
+			var $this = $(this);
+
+			var school_year = $this.closest('.form-group').find('select[name=school_year]').val();
+
+			$.ajax({
+				url: base_url + controller + '/display_grading_system',
+				method: "get",
+				data: {"school_year": school_year},
+				dataType: "html",
+				beforeSend: function(data){
+					
+					$search_results.html('');
+
+					$loading.removeClass('hidden');
+				},
+				success: function(data) {
+					$search_results.html(data);
+				},
+				complete: function(data){
+					$loading.addClass('hidden');
+				},
+				error: function(error, data){
+					console.log(error.responseText);
+				}
+
+			});
+		});
+
+		$(document).on('click', '.view-subject-grade-system', function(e){
+			alert('test');
+		});
+	}
+
 	return {
 		add_grade_level: add_grade_level,
 		offer_subject: offer_subject,
@@ -1762,7 +1803,8 @@ Module.Curiculum = (function() {
 		enroll_student: enroll_student,
 		manage_grades: manage_grades,
 		modify_grades: modify_grades,
-		view_class_record: view_class_record
+		view_class_record: view_class_record,
+		manage_grading_system: manage_grading_system
 	}
 
 })();

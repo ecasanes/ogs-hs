@@ -5,7 +5,7 @@
     <div class="panel panel-primary">
       
       <div class="panel-heading">
-        <h3 class="panel-title">Assign Subjects to Grade Level</h3>
+        <h3 class="panel-title">Assign Subjects to Year Level</h3>
         <div class="panel-options">
           
         </div>
@@ -27,7 +27,7 @@
             </div> 
             
             <div class="form-group">
-              <label for="school_year" class="control-label col-sm-2 col-xs-12">Grade Level</label>
+              <label for="school_year" class="control-label col-sm-2 col-xs-12">Year Level</label>
                 <div class="col-sm-3 col-xs-12">
                   <select name="grade_level" id="" class="form-control" required>
                     <option value="">Select</option>
@@ -72,7 +72,7 @@
     <!-- start panel -->
     <div class="panel panel-primary">
       <div class="panel-heading">
-        <h3 class="panel-title">List of Subjects with Grade Level Assigned</h3>
+        <h3 class="panel-title">List of Subjects with Year Level Assigned</h3>
         <div class="panel-options">
           
         </div>

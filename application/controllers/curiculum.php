@@ -215,7 +215,37 @@ class Curiculum extends My_Controller {
 		$this->load->view( 'layout/header', $header_data );
 		$this->load->view( 'curiculum/view-grades', $model_data );
 		$this->load->view( 'layout/footer' , $footer_data);
+	}
 
+	public function manage_grading_system(){
+
+		$this->is_logged_in();
+		
+		$main_model = $this->main_model;
+		$user_model = $this->user_model;
+		$student_user_type = 3;
+		$user_dropdown = $this->user_dropdown(3);
+
+		$header_data = array();
+
+		$model_data = array(
+				'grade_level_dropdown' => $this->grade_level_dropdown(),
+				'school_year_dropdown' => $this->school_year_dropdown(),
+				'student_dropdown' => $user_dropdown,
+				'error' => $this->session->flashdata('error'),
+				'success' => $this->session->flashdata('success')
+			);
+
+		//$manage_grade_info = $this->submit_manage_grades();
+
+		$footer_data = array();
+		$footer_data['listeners'] = array(
+			'Module.Curiculum.manage_grading_system()'
+		);
+
+		$this->load->view( 'layout/header', $header_data );
+		$this->load->view( 'curiculum/manage-grading-system', $model_data );
+		$this->load->view( 'layout/footer' , $footer_data);
 	}
 
 	/* submits */
@@ -1507,7 +1537,7 @@ class Curiculum extends My_Controller {
 		if($user_type == 1){
 			$results = $main_model->get_subjects_offered($section_id);
 		}else if($user_type == 2){
-			$results = $main_model->get_subjects_assigned_by_teacher($section_id, $user_id);
+			$results = $main_model->get_subjects_assigned_by_teacher($user_id, $section_id);
 		}
 	    
 
@@ -2186,7 +2216,7 @@ class Curiculum extends My_Controller {
 					$grade_level_tag = $grade_level->grade_level;
 					$grade_level_id = $grade_level->gl_id;
 
-					$output .= "<h3> Grade" . $grade_level_tag . "</h3>";
+					$output .= "<h3> Year Leve: " . $grade_level_tag . "</h3>";
 
 					if($user_type == 1){
 						$sections = $main_model->get_sections_by_grade_level($grade_level_id);
@@ -2225,6 +2255,85 @@ class Curiculum extends My_Controller {
 					$output .= '</table>';
 				}
 			}
+				
+
+			echo $output;
+		}
+	}
+
+	public function display_grading_system(){
+
+		$data = $this->input->get();
+
+		$user_type = $this->user_type;
+		$user_id = $this->user_id;
+
+		if($data){
+
+			$output = "";
+
+			extract( $data, EXTR_SKIP );
+
+			$main_model = $this->main_model;
+
+			$school_year = explode('-', $school_year);
+
+			$sy_start = $school_year[0];
+			$sy_end = $school_year[1];
+			
+
+			if($user_type == 2){
+				$output .= "<h3> Subjects Assigned for SY: " . $sy_start . ' - ' . $sy_end . "</h3>";
+			}
+
+
+			for($year_level = 1; $year_level <= 4; $year_level++){
+
+				$output .= "<h3> Year Level: " . $year_level . "</h3>";
+
+				$assigned_subjects = $main_model->get_subjects_assigned_by_teacher_and_year($user_id, $sy_start, $sy_end, $year_level);
+				
+				/*echo $this->db->last_query();
+				echo '<br>';*/
+
+				$output .= '<table class="table table-bordered table-hover">';
+
+				
+
+				if(empty($assigned_subjects)){
+					$output .= '<tr><td colspan="2">You are not assigned in this year level.</td></tr>';
+				}else{
+
+					$output .= '<tr>';
+					$output .= '<td>Subject Code</td>';
+					$output .= '<td>Description</td>';
+					$output .= '<td>Action</td>';
+					$output .= '</tr>';
+
+					foreach($assigned_subjects as $subject){
+
+						$subj_offerid = $subject->subj_offerid;
+						$offer_id = $subject->offer_id;
+						$subj_id = $subject->subj_id;
+						$subj_code = $subject->subj_code;
+						$subj_desc = $subject->subj_desc;
+
+						$output .= '<tr>';
+						$output .= '<td>'.$subj_code.'</td>';
+						$output .= '<td>'.$subj_desc.'</td>';
+						$output .= '<td><a class="view-subject-grade-system" href="#" data-id="'.$subj_offerid.'">View</a></td>';
+						$output .= '</tr>';
+
+
+
+						
+					}
+				}//end if else
+
+				$output .= '</table>';
+			}
+			
+			
 				
 
 			echo $output;

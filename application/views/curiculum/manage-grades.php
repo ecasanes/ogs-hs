@@ -27,7 +27,7 @@
                     </div>
 
                     <div class="form-group">
-                    	<label for="school_year" class="control-label col-sm-2 col-xs-12">Grade Level</label>
+                    	<label for="school_year" class="control-label col-sm-2 col-xs-12">Year Level</label>
 	                      <div class="col-sm-2 col-xs-12">
 	                        <select name="grade_level" id="" class="form-control" required>
 	                        	<option value="">Select</option>
@@ -41,7 +41,7 @@
 	                      <div class="section col-sm-2 col-xs-12">
 	                      	<div class="loading hidden"><i class="fa fa-loading fa-spin"></i> Loading Sections...</div>
 	                      	<div class="not-found hidden">No Sections Found</div>
-	                      	<div class="requirements">Please Select School Year and Grade Level</div>
+	                      	<div class="requirements">Please Select School Year and Year Level</div>
 	                      	<select name="section" class="form-control hidden" required>
 	                      	</select>
 	                      </div>
@@ -136,61 +136,61 @@
 		  		<div class="loading hidden">
 					<i class="fa fa-spin fa-loading"></i> Loading...
 		  		</div>
-		  		<div id="edit-activity-settings-container">
-					<div class="form-horizontal">
-						<div class="form-group">
-							<div class="row">
-								<label class="control-label col-sm-2 col-xs-12">Weight</label>
-								<div class="col-sm-2 col-xs-12">
-									<input type="number" value="" class="form-control number-only" min="1" max="100" name="activity_weight">
-								</div>
-								
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="row">
-								<label class="control-label col-sm-2 col-xs-12">Columns</label>
-								<div class="col-sm-2 col-xs-12">
-									<select class="form-control" name="activity_column">
-										<option value="">Select</option>
-										<option value="1">1</option>
-										<option value="2">2</option>
-										<option value="3">3</option>
-										<option value="4">4</option>
-										<option value="5">5</option>
-										<option value="6">6</option>
-										<option value="7">7</option>
-										<option value="8">8</option>
-										<option value="9">9</option>
-										<option value="10">10</option>
-									</select>
-								</div>
-								
-							</div>
-						</div>
-
-						<div class="form-group">
-							<div class="row">
-								<label class="control-label col-sm-2 col-xs-12"></label>
-								<div class="col-sm-2 col-xs-12">
-									<button id="submit-activity-settings" class="btn btn-primary btn-block">Submit</button>
-								</div>
-								
-							</div>
-						</div>
-
-						<div class="form-group">
-							<div class="row">
-								<div class="col-xs-12 col-sm-2">
-								</div>
-								<div class="col-xs-12 col-sm-3">
-									<div id="settings-success" class="success text-success"></div>
-								</div>
-							</div>
-						</div>
-						
-					</div>
-		      	</div>
+		  		<!-- <div id="edit-activity-settings-container">
+		  							<div class="form-horizontal">
+		  								<div class="form-group">
+		  									<div class="row">
+		  										<label class="control-label col-sm-2 col-xs-12">Weight</label>
+		  										<div class="col-sm-2 col-xs-12">
+		  											<input type="number" value="" class="form-control number-only" min="1" max="100" name="activity_weight">
+		  										</div>
+		  										
+		  									</div>
+		  								</div>
+		  								<div class="form-group">
+		  									<div class="row">
+		  										<label class="control-label col-sm-2 col-xs-12">Columns</label>
+		  										<div class="col-sm-2 col-xs-12">
+		  											<select class="form-control" name="activity_column">
+		  												<option value="">Select</option>
+		  												<option value="1">1</option>
+		  												<option value="2">2</option>
+		  												<option value="3">3</option>
+		  												<option value="4">4</option>
+		  												<option value="5">5</option>
+		  												<option value="6">6</option>
+		  												<option value="7">7</option>
+		  												<option value="8">8</option>
+		  												<option value="9">9</option>
+		  												<option value="10">10</option>
+		  											</select>
+		  										</div>
+		  										
+		  									</div>
+		  								</div>
+		  		
+		  								<div class="form-group">
+		  									<div class="row">
+		  										<label class="control-label col-sm-2 col-xs-12"></label>
+		  										<div class="col-sm-2 col-xs-12">
+		  											<button id="submit-activity-settings" class="btn btn-primary btn-block">Submit</button>
+		  										</div>
+		  										
+		  									</div>
+		  								</div>
+		  		
+		  								<div class="form-group">
+		  									<div class="row">
+		  										<div class="col-xs-12 col-sm-2">
+		  										</div>
+		  										<div class="col-xs-12 col-sm-3">
+		  											<div id="settings-success" class="success text-success"></div>
+		  										</div>
+		  									</div>
+		  								</div>
+		  								
+		  							</div>
+		  				      	</div> -->
 		      	<br>
 				<div class="tab-pane fade in active" id="quizzes" data-id="quiz">
 

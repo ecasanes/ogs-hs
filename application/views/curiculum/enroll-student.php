@@ -27,7 +27,7 @@
                     </div>
 
                     <div class="form-group">
-                    	<label for="school_year" class="control-label col-sm-2 col-xs-12">Grade Level</label>
+                    	<label for="school_year" class="control-label col-sm-2 col-xs-12">Year Level</label>
 	                      <div class="col-sm-4 col-xs-12">
 	                        <select name="grade_level" id="" class="form-control" required>
 	                        	<option value="">Select</option>
@@ -41,7 +41,7 @@
 	                      <div class="section col-sm-4 col-xs-12">
 	                      	<div class="loading hidden"><i class="fa fa-loading fa-spin"></i> Loading Sections...</div>
 	                      	<div class="not-found hidden">No Sections Found</div>
-	                      	<div class="requirements">Please Select School Year and Grade Level</div>
+	                      	<div class="requirements">Please Select School Year and Year Level</div>
 	                      	<select name="section" class="form-control hidden" required>
 	                      	</select>
 	                      </div>

@@ -19,13 +19,13 @@
 
                           <div class="alert alert-info alert-dismissible fade in" role="alert">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                            <strong>Note.</strong> Click on the tab button to select a Subject for a Grade level in a School Year.
+                            <strong>Note.</strong> Click on the tab button to select a Subject for a Year Level in a School Year.
                           </div>
 
                           <?php echo form_open('', array('id'=>'add-grade-level-form')); ?>
                           <div class="form-horizontal">
                               <!-- <div class="form-group">
-                                <label for="username" class="control-label col-sm-2 col-xs-12">Grade Level</label>
+                                <label for="username" class="control-label col-sm-2 col-xs-12">Year Level</label>
                                 <div class="col-sm-2 col-xs-12">
                                   <select name="grade_level" id="" class="form-control" required>
                                     <option value="">Select</option>
@@ -78,7 +78,7 @@
                           <!--
                           
                           School year
-                          grade level
+                          Year Level
                           section
                           class record
   

@@ -820,7 +820,7 @@ class Curiculum_Model extends MY_Model {
         return $result;
     }
 
-    public function get_subjects_assigned_by_teacher($section_id, $user_id){ //gl_id, offer_id
+    public function get_subjects_assigned_by_teacher($user_id, $section_id = null){ //gl_id, offer_id
 
         $sql = "SELECT 
               * 
@@ -828,13 +828,54 @@ class Curiculum_Model extends MY_Model {
               `tbl_subj_offering` a,
               tbl_subject b,
               tbl_teacher_subj c
-            WHERE a.`offer_id` = ?
-              AND b.`subj_id` = a.`subj_id` 
+            WHERE b.`subj_id` = a.`subj_id` 
               AND c.`subj_offerid` = a.`subj_offerid`
               AND c.`user_id` = ?";
 
-        $escaped_values = array($section_id, $user_id);
+        if($section_id !== null){
+            $sql .= " AND a.`offer_id` = ?";
+            $escaped_values = array($user_id, $section_id);
+        }else{
+            $escaped_values = array($user_id);
+        }
+              
+        $query = $this->db->query($sql, $escaped_values);
 
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function get_subjects_assigned_by_teacher_and_year($user_id, $sy_start = null, $sy_end = null, $year_level = null){ //gl_id, offer_id
+
+        $sql = "SELECT 
+              * 
+            FROM
+              `tbl_subj_offering` a,
+              tbl_subject b,
+              tbl_teacher_subj c,
+              tbl_grade_level d,
+              tbl_grade_section e 
+            WHERE b.`subj_id` = a.`subj_id` 
+              AND c.`subj_offerid` = a.`subj_offerid` 
+              AND d.`gl_id` = e.`gl_id` 
+              AND a.`offer_id` = e.`offer_id` 
+              AND c.`user_id` = ?";
+
+        $escaped_values = array();
+        $escaped_values[] = $user_id;
+
+        if($sy_start !== null && $sy_end !== null){
+            $sql .= " AND d.`sy_start` = ? AND d.`sy_end` = ?";
+            $escaped_values[] = $sy_start;
+            $escaped_values[] = $sy_end;
+        }
+
+        if($year_level !== null){
+            $sql .= " AND d.`grade_level` = ?";
+            $escaped_values[] = $year_level;
+        }
+              
         $query = $this->db->query($sql, $escaped_values);
 
         $result = $query->result();
