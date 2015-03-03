@@ -1759,6 +1759,9 @@ Module.Curiculum = (function() {
 
 		$sy_search_button = $('#search-grade-system');
 		$search_results = $('#grade-system-container');
+
+		
+
 		$loading = $('.loading');
 
 		$sy_search_button.click(function(e){
@@ -1768,14 +1771,13 @@ Module.Curiculum = (function() {
 			var school_year = $this.closest('.form-group').find('select[name=school_year]').val();
 
 			$.ajax({
-				url: base_url + controller + '/display_grading_system',
+				url: base_url + controller + '/display_assigned_subjects_per_year_level',
 				method: "get",
 				data: {"school_year": school_year},
 				dataType: "html",
 				beforeSend: function(data){
 					
 					$search_results.html('');
-
 					$loading.removeClass('hidden');
 				},
 				success: function(data) {
@@ -1792,8 +1794,148 @@ Module.Curiculum = (function() {
 		});
 
 		$(document).on('click', '.view-subject-grade-system', function(e){
-			alert('test');
+			e.preventDefault();
+
+			var $this = $(this);
+			var subj_offerid = $this.data('id');
+			var subj_code = $this.data('code');
+			
+
+			$.ajax({
+				url: base_url + controller + '/display_grading_system_tabs',
+				method: "get",
+				data: {"subj_offerid": subj_offerid, "subj_code": subj_code },
+				dataType: "html",
+				beforeSend: function(data){
+					
+					$search_results.html('');
+					$loading.removeClass('hidden');
+				},
+				success: function(data) {
+					$search_results.html(data);
+					display_grading_system(subj_offerid, 1, 'edit');
+				},
+				complete: function(data){
+					$loading.addClass('hidden');
+				},
+				error: function(error, data){
+					console.log(error.responseText);
+				}
+
+			});
 		});
+
+		$(document).on('click', '.term-grading', function(e){
+			e.preventDefault();
+
+			var $this = $(this);
+
+			var active_panel_id = $this.attr('href');
+			var $active_panel = $(active_panel_id);
+			var $grading_percentage = $('#grading-percentage');
+
+			var $loading = $this.closest('.tab-content').find('.loading');
+
+			var subj_offerid = $grading_percentage.data('id');
+			var term = $this.data('term');
+
+			console.log(subj_offerid);
+			console.log(term);
+
+			display_grading_system(subj_offerid, term, 'edit', $this);
+
+		});
+	}
+
+	function update_grading_system(){
+
+		$form = $('#edit-grading-system-form');
+	
+		$form.submit(function(e){
+			e.preventDefault();
+
+			var $this = $(this);
+
+			var $active_panel = $('.active.tab-pane');
+			var active_panel_id = $active_panel.attr('id');
+			var post_data = $this.serializeArray();
+
+			var subj_offerid = $this.find('input[name=subj_offerid]').val();
+			var term = $this.find('input[name=term]').val();
+
+			$.ajax({
+				url: base_url + controller + '/update_grading_system',
+				method: "post",
+				data: post_data,
+				dataType: "json",
+				beforeSend: function(data){
+				},
+				success: function(data) {
+					console.log(data);
+
+					if(data.result == 'success'){
+						display_grading_system(subj_offerid, term, 'edit');
+						$active_panel.find('.message').removeClass('error-message').addClass(data.message_class).text(data.message);
+					}else if(data.result == 'failed'){
+						$active_panel.find('.message').removeClass('success-message').addClass(data.message_class).text(data.message);
+					}
+					
+				},
+				complete: function(data){
+				},
+				error: function(error, data){
+					console.log(error.responseText);
+				}
+
+			});
+		});
+	}
+
+	function display_grading_system(subj_offerid, term, action, $this){
+
+		console.log('display grading system called');
+
+		var $this = $this || null;
+
+		if($this !== null){
+			var active_panel_id = $this.attr('href');
+			var $active_panel = $(active_panel_id);
+		}else{
+			var $active_panel = $('.active.tab-pane');
+			var active_panel_id = $active_panel.attr('id');
+		}
+
+		
+		var $grading_percentage = $('#grading-percentage');
+
+		var $loading = $active_panel.closest('.tab-content').find('.loading');
+
+		//console.log($active_panel.html());
+
+		$.ajax({
+				url: base_url + controller + '/display_grading_system/'+action,
+				method: "get",
+				data: { "term":term, "subj_offerid":subj_offerid },
+				dataType: "html",
+				beforeSend: function(data){
+					
+					$active_panel.html('');
+					$loading.removeClass('hidden');
+				},
+				success: function(data) {
+					$active_panel.html(data);
+					$form = $('#edit-grading-system-form');
+					$form.unbind();
+					update_grading_system();
+				},
+				complete: function(data){
+					$loading.addClass('hidden');
+				},
+				error: function(error, data){
+					console.log(error.responseText);
+				}
+
+			});
 	}
 
 	return {

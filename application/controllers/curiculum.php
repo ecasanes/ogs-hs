@@ -2261,7 +2261,7 @@ class Curiculum extends My_Controller {
 		}
 	}
 
-	public function display_grading_system(){
+	public function display_assigned_subjects_per_year_level(){
 
 		$data = $this->input->get();
 
@@ -2321,7 +2321,7 @@ class Curiculum extends My_Controller {
 						$output .= '<tr>';
 						$output .= '<td>'.$subj_code.'</td>';
 						$output .= '<td>'.$subj_desc.'</td>';
-						$output .= '<td><a class="view-subject-grade-system" href="#" data-id="'.$subj_offerid.'">View</a></td>';
+						$output .= '<td><a class="view-subject-grade-system" href="#" data-id="'.$subj_offerid.'" data-code="'.$subj_code.'">View</a></td>';
 						$output .= '</tr>';
 
 
@@ -2338,6 +2338,170 @@ class Curiculum extends My_Controller {
 
 			echo $output;
 		}
+	}
+
+	public function display_grading_system_tabs(){
+
+		$data = $this->input->get();
+
+		$user_type = $this->user_type;
+		$user_id = $this->user_id;
+
+		if($data){
+
+			extract( $data, EXTR_SKIP );
+
+			$main_model = $this->main_model;
+
+			$model_data = array();
+			$model_data['subj_offerid'] = $subj_offerid;
+			$model_data['subj_code'] = $subj_code;
+
+			$output = $this->load->view('curiculum/grade-tabs', $model_data, true);
+
+			echo $output;
+
+		}
+	}
+
+	public function display_grading_system($action = "view"){
+
+		$data = $this->input->get();
+
+		$user_type = $this->user_type;
+		$user_id = $this->user_id;
+
+		if($data){
+
+			extract( $data, EXTR_SKIP );
+
+			$main_model = $this->main_model;
+
+			//term
+			//subj_offerid
+
+			//assignment
+			$assignment_weight = $main_model->get_assignment_weight($subj_offerid, $term);
+			$assignment_column = $main_model->get_assignment_column($subj_offerid, $term);
+
+			//quiz
+			$quiz_weight = $main_model->get_quiz_weight($subj_offerid, $term);
+			$quiz_column = $main_model->get_quiz_column($subj_offerid, $term);
+
+			//recitation
+			$recitation_weight = $main_model->get_recitation_weight($subj_offerid, $term);
+			$recitation_column = $main_model->get_recitation_column($subj_offerid, $term);
+
+			//project
+			$project_weight = $main_model->get_project_weight($subj_offerid, $term);
+			$project_column = $main_model->get_project_column($subj_offerid, $term);
+
+			//exam
+			$exam_weight = $main_model->get_exam_weight($subj_offerid, $term);
+			$exam_column = 1;
+			//$exam_column = $main_model->get_exam_column($subj_offerid, $term);
+
+			$total_columns = $assignment_column+$quiz_column+$recitation_column+$project_column+$exam_column;
+			$total_weight = $assignment_weight+$quiz_weight+$recitation_weight+$project_weight+$exam_weight;
+
+			$model_data = array(
+				'subj_offerid' => $subj_offerid,
+				'term' => $term,
+				'assignment_weight' => $assignment_weight,
+				'assignment_column' => $assignment_column,
+				'quiz_weight' => $quiz_weight,
+				'quiz_column' => $quiz_column,
+				'recitation_weight' => $recitation_weight,
+				'recitation_column' => $recitation_column,
+				'project_weight' => $project_weight,
+				'project_column' => $project_column,
+				'exam_weight' => $exam_weight,
+				'exam_column' => $exam_column,
+				'total_columns' => $total_columns,
+				'total_weight' => $total_weight
+			);
+
+			if($action == "view"){
+				$output = $this->load->view('curiculum/grade-system-view', $model_data, true);
+			}else if($action == "edit"){
+				$output = $this->load->view('curiculum/grade-system-edit', $model_data, true);
+			}
+			
+
+			echo $output;
+
+		}
+
+	}
+
+	public function update_grading_system(){
+
+		$data = $this->input->post();
+
+		if($data){
+			extract( $data, EXTR_SKIP );
+			$main_model = $this->main_model;
+
+			$new_total_weight = $quiz_weight+$project_weight+$assignment_weight+$recitation_weight+$exam_weight;
+
+			if($new_total_weight === 100){
+
+			//switch($activity_type){
+
+			//case "quiz":
+				$main_model->update_quiz_weight($quiz_weight, $subj_offerid, $term);
+				$column_count = $main_model->get_quiz_column($subj_offerid, $term);
+				$last_query = $this->update_column_rows($column_count, $quiz_column, $subj_offerid, $term, 'quiz');
+				$main_model->update_quiz_column($quiz_column, $subj_offerid, $term);
+				//break;
+			//case "project":
+				$main_model->update_project_weight($project_weight, $subj_offerid, $term);
+				$column_count = $main_model->get_project_column($subj_offerid, $term);
+				$last_query = $this->update_column_rows($column_count, $project_column, $subj_offerid, $term, 'project');
+				$main_model->update_project_column($project_column, $subj_offerid, $term);
+				//break;
+			//case "assignment":
+				$main_model->update_assignment_weight($assignment_weight, $subj_offerid, $term);
+				$column_count = $main_model->get_assignment_column($subj_offerid, $term);
+				$last_query = $this->update_column_rows($column_count, $assignment_column, $subj_offerid, $term, 'assignment');
+				$main_model->update_assignment_column($assignment_column, $subj_offerid, $term);
+				//break;
+			//case "recitation":
+				$main_model->update_recitation_weight($recitation_weight, $subj_offerid, $term);
+				$column_count = $main_model->get_recitation_column($subj_offerid, $term);
+				$last_query = $this->update_column_rows($column_count, $recitation_column, $subj_offerid, $term, 'recitation');
+				$main_model->update_recitation_column($recitation_column, $subj_offerid, $term);
+				//break;
+			//case "exam":
+				$main_model->update_exam_weight($exam_weight, $subj_offerid, $term);
+				//only 4 columns
+				//$last_query = '';
+				//break;
+			//}
+				$json_result = array(
+					'result' => 'success',
+					'last_query' => $last_query,
+					'message' => 'Grading percentage successfully saved.',
+					'message_class' => 'success-message'
+				);
+
+			}else{
+
+				$json_result = array(
+					'result' => 'failed',
+					'last_query' => '',
+					'message' => 'Please make sure that total percentage is equal to 100.',
+					'message_class' => 'error-message',
+					'total_weight' => $total_weight
+				);
+
+			}
+
+			
+
+			echo json_encode($json_result);
+		}
+	
 	}
 
 
