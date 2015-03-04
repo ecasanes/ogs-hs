@@ -454,23 +454,27 @@ class Curiculum extends My_Controller {
 
 			$main_model = $this->main_model;
 
-			if($school_year != '' && $grade_level != '' && $section != '' && $student != ''){
+			if($school_year != '' && $grade_level != '' && $section != '' && !empty($enrolled_students)){
 
 				$school_year = explode('-', $school_year);
 				$sy_start = $school_year[0];
 				$sy_end = $school_year[1];
 
 				$grade_level_id = $main_model->get_grade_level_id_by_detail($sy_start, $sy_end, $grade_level);
-				$exist = $this->enroll_student_exist($grade_level_id, $student);
 
-				if($exist){
-					$this->session->set_flashdata( 'error', 'Student already enrolled.' );
-				}else{
-					var_dump($data);
-					$main_model->enroll_student($section, $student);
-					$this->assign_initial_scores($section, $student);
-					$this->session->set_flashdata( 'success', 'Student was successfully enrolled.' );
+				foreach($enrolled_students as $student_user_id){
+
+					$exist = $this->enroll_student_exist($grade_level_id, $student_user_id);
+
+					if($exist){
+						$this->session->set_flashdata( 'error', 'Student already enrolled.' );
+					}else{
+						$main_model->enroll_student($section, $student_user_id);
+						$this->assign_initial_scores($section, $student_user_id);
+						$this->session->set_flashdata( 'success', 'Student was successfully enrolled.' );
+					}
 				}
+				
 
 			}else{
 				$this->session->set_flashdata( 'error', 'Please select schoolyear, grade level and section.' );
@@ -1985,6 +1989,8 @@ class Curiculum extends My_Controller {
 			$section_info = $main_model->get_section_info($offer_id);
 			$subject_info = $main_model->get_subject_info($subj_offerid);
 
+			var_dump($subj_offerid);
+
 			$section_name = $section_info->section;
 			$grade_level = $section_info->grade_level;
 			$sy_start = $section_info->sy_start;
@@ -2502,6 +2508,52 @@ class Curiculum extends My_Controller {
 			echo json_encode($json_result);
 		}
 	
+	}
+
+	public function student_checkboxes_by_info(){
+
+		$data = $this->input->post();
+
+		if($data){
+
+			$output = "";
+
+			extract( $data, EXTR_SKIP );
+			$main_model = $this->main_model;
+
+			$school_year = explode('-', $school_year);
+			$sy_start = $school_year[0];
+			$sy_end = $school_year[1];
+
+			$unenrolled_students = $main_model->get_unenrolled_students($sy_start, $sy_end, $grade_level);
+
+			if(empty($unenrolled_students)){
+				$output .= '<div class="checkbox">';
+				$output .= "No unenrolled students for this shool year and year level.";
+				$output .= '</div>';
+			}else{
+				foreach($unenrolled_students as $enrolled){
+				
+					$student_user_id = $enrolled->user_id;
+					$student_fullname = $enrolled->lname . ', ' .$enrolled->fname . ' ' . $enrolled->mname;
+
+					$output .= '<div class="checkbox">';
+					$output .= "<label>";
+					$output .= '<input type="checkbox" value="'.$student_user_id.'" name="enrolled_students[]"> '.$student_fullname;
+					$output .= "</label>";
+					$output .= '</div>';
+				}
+			}
+			
+
+			$json_result = array(
+				'success' => true,
+				'html' => $output
+			);
+
+			echo json_encode($json_result);
+
+		}
 	}
 
 

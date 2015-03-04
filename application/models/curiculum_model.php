@@ -591,6 +591,38 @@ class Curiculum_Model extends MY_Model {
         return $result;
     }
 
+    public function get_unenrolled_students($sy_start, $sy_end, $year_level, $user_type = 3){
+
+        $sql = "SELECT 
+          * 
+        FROM
+          tbl_user 
+        WHERE user_id NOT IN 
+          (SELECT 
+            a.user_id 
+          FROM
+            tbl_user a,
+            tbl_enroll_student b,
+            tbl_grade_section c,
+            tbl_grade_level d 
+          WHERE a.user_id = b.user_id 
+            AND b.`offer_id` = c.`offer_id` 
+            AND c.`gl_id` = d.`gl_id` 
+            AND d.`sy_start` = ? 
+            AND d.`sy_end` = ? 
+            AND d.`grade_level` = ?) 
+          AND user_type = ? ";
+
+        $escaped_values = array($sy_start, $sy_end, $year_level, $user_type);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+
+    }
+
     public function get_available_year_level_by_school_year($sy_start, $sy_end, $user_id = null){
 
        

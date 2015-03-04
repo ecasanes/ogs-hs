@@ -48,12 +48,12 @@
                     </div>
 
                     <div class="form-group">
-                    	<label for="school_year" class="control-label col-sm-2 col-xs-12">Student Name</label>
-	                      <div class="col-sm-4 col-xs-12">
-	                        <select name="student" id="" class="form-control select2-dropdown" required>
-	                        	<option value="">Select</option>
-	                          <?php echo $student_dropdown; ?>
-	                        </select>
+                    	<label for="student" class="control-label col-sm-2 col-xs-12">Student</label>
+	                      <div class="student col-sm-4 col-xs-12">
+	                      	<div class="loading hidden"><i class="fa fa-loading fa-spin"></i> Loading Students...</div>
+	                      	<div class="not-found hidden">No Students Found</div>
+	                      	<div class="requirements">Please Select School Year and Year Level</div>
+	                      	<div class="search-result"></div>
 	                      </div>
                     </div>
 			  		

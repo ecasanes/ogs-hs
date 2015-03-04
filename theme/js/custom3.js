@@ -1298,15 +1298,74 @@ Module.Curiculum = (function() {
 		});
 	}
 
+	function get_student_checkboxes($student_container, school_year, grade_level){
+
+		var school_year = school_year || null;
+		var grade_level = grade_level || null;
+
+		var $loading = $student_container.find('.loading');
+		var $requirements = $student_container.find('.requirements');
+		var $not_found = $student_container.find('.not-found');
+		var $search_result = $student_container.find('.search-result');
+
+		if(school_year === null && grade_level === null){
+			$not_found.addClass('hidden');
+			$loading.addClass('hidden');
+			$requirements.removeClass('hidden');
+			$search_result.addClass('hidden');
+		}else{
+			$.ajax({
+				url: base_url + 'curiculum/student_checkboxes_by_info',
+				method: "post",
+				data: {"school_year": school_year, "grade_level":grade_level },
+				dataType: "json",
+				beforeSend: function(data){
+
+					$loading.removeClass('hidden');
+					$requirements.addClass('hidden');
+
+				},
+				success: function(data) {
+
+					console.log(data);
+
+					var content = data.html;
+					var success = data.success;
+
+					if(success){
+						$search_result.html(content);
+						$not_found.addClass('hidden');
+						$search_result.removeClass('hidden');
+						$loading.addClass('hidden');
+						$requirements.addClass('hidden');
+					}else{
+						$not_found.removeClass('hidden');
+						$loading.addClass('hidden');
+						$requirements.addClass('hidden');
+						$search_result.addClass('hidden');
+					}
+					
+				},
+				complete: function(data){
+					
+				},
+				error: function(error, data){
+					console.log(error.responseText);
+				}
+
+			});
+		}
+	}
+
 	function enroll_student(){
 
 		var $form = $('#enroll-student-form');
 		var $school_year = $form.find('[name=school_year]');
 		var $grade_level = $form.find('[name=grade_level]');
 		var $section = $form.find('[name=section]');
-		var $user = $form.find('[name=student]');
 
 		var $section_container = $form.find('.section');
+		var $student_container = $form.find('.student');
 
 		$school_year.change(function(e){
 
@@ -1315,9 +1374,10 @@ Module.Curiculum = (function() {
 			var school_year = $this.val();
 			var grade_level = $grade_level.val();
 
-			if(grade_level != null && grade_level != null){
+			if(grade_level !== '' && school_year !== ''){
 
 				get_section_dropdown($section_container, school_year, grade_level);
+				get_student_checkboxes($student_container, school_year, grade_level);
 
 			}else{
 				get_section_dropdown($section_container);
@@ -1332,9 +1392,10 @@ Module.Curiculum = (function() {
 			var school_year = $school_year.val();
 			var grade_level = $this.val();
 
-			if(school_year != null && grade_level != null){
+			if(school_year !== '' && grade_level !== ''){
 
 				get_section_dropdown($section_container, school_year, grade_level);
+				get_student_checkboxes($student_container, school_year, grade_level);
 
 			}else{
 				get_section_dropdown($section_container);
@@ -1556,10 +1617,10 @@ Module.Curiculum = (function() {
 		var school_year = school_year || null;
 		var grade_level = grade_level || null;
 
-		$loading = $section_container.find('.loading');
-		$requirements = $section_container.find('.requirements');
-		$not_found = $section_container.find('.not-found');
-		$select = $section_container.find('[name=section]');
+		var $loading = $section_container.find('.loading');
+		var $requirements = $section_container.find('.requirements');
+		var $not_found = $section_container.find('.not-found');
+		var $select = $section_container.find('[name=section]');
 
 		if(school_year === null && grade_level === null){
 			$not_found.addClass('hidden');
