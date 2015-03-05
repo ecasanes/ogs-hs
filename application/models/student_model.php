@@ -38,6 +38,17 @@ class Student_Model extends MY_Model {
 		return $result;
     }
 
+    public function update_student_year_level($user_id, $year_level){
+
+    	$sql = "UPDATE tbl_user SET year_level = ? WHERE user_id = ?";
+
+    	$escaped_values = array($year_level, $user_id);
+
+    	$query = $this->db->query($sql, $escaped_values);
+
+    	return $this->db->insert_id();
+    }
+
     
 }
 

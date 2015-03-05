@@ -59,7 +59,8 @@ class Curiculum extends My_Controller {
 		$footer_data = array();
 		$footer_data['listeners'] = array(
 			'Module.Curiculum.offer_subject()',
-
+			'Module.Subject.filter_offered_subject()',
+			'Module.Subject.search_offered_subject()'
 		);
 
 		$this->load->view( 'layout/header', $header_data );
@@ -75,14 +76,26 @@ class Curiculum extends My_Controller {
 
 		$header_data = array();
 
+		$success = $this->session->flashdata('success');
+		$error = $this->session->flashdata('error');
+
 		$model_data = array(
 				'grade_level_dropdown' => $this->grade_level_dropdown(),
-				'school_year_dropdown' => $this->school_year_dropdown()
+				'school_year_dropdown' => $this->school_year_dropdown(),
 			);
+
+		if($success){
+			$model_data['result'] = true;
+			$model_data['message'] = $success;
+		}else if($error){
+			$model_data['result'] = false;
+			$model_data['message'] = $error;
+		}
 
 		$footer_data = array();
 		$footer_data['listeners'] = array(
-			'Module.Curiculum.add_grade_level()'
+			'Module.Section.filter_section()',
+			'Module.Section.search_section()'
 		);
 
 		$this->load->view( 'layout/header', $header_data );
@@ -366,11 +379,14 @@ class Curiculum extends My_Controller {
 			$exist = $this->section_exist($grade_level_id, $section);
 
 			if($exist){
-				echo json_encode('failed');
+				$this->session->set_flashdata( 'error', 'Section already exists.' );
 			}else{
+				$this->session->set_flashdata( 'success', 'Section successfully saved.' );
 				$offer_id = $main_model->add_section($grade_level_id, $section);
-				redirect('curiculum/add-section');
+				
 			}
+
+			redirect('curiculum/add-section');
 			
 		}
 	}
@@ -2474,7 +2490,143 @@ class Curiculum extends My_Controller {
 			echo $output;
 
 		}
+	}
 
+	public function display_sections_by_grade_level(){
+
+		$data = $this->input->get();
+
+		if($data){
+
+			$output = "";
+
+			extract( $data, EXTR_SKIP );
+			$main_model = $this->main_model;
+
+			if($school_year == "" || $school_year == null){
+				$sy_start = date('Y');
+				$sy_end = date('Y') + 1;
+			}else{
+				$school_year = explode('-', $school_year);
+				$sy_start = $school_year[0];
+				$sy_end = $school_year[1];
+			}
+			
+
+			for($term=1;$term<=4;$term++){
+
+				$output .= '<h3> Year Level: '. $term .'</h3>';
+
+				$grade_level_id = $main_model->get_grade_level_id_by_detail($sy_start, $sy_end, $term);
+				$sections = $main_model->get_sections_by_grade_level($grade_level_id);
+
+				$output .= '<table class="table table-bordered">';
+				$output .= '<tr>';
+				$output .= '<th style="width:100px;">ID</th>';
+				$output .= '<th>Name</th>';
+				$output .= '</tr>';
+
+				foreach($sections as $section){
+					$offer_id = $section->offer_id;
+					$section_name = $section->section;
+
+					$output .= '<tr>';
+					$output .= '<td>'.$offer_id.'</td>';
+					$output .= '<td>'.$section_name.'</td>';
+					$output .= '</tr>';
+
+				}
+
+				$output .= '</table>';
+			}
+
+			echo $output;		
+
+			
+		}
+	}
+
+	public function display_offered_subjects_by_section_and_school_year(){
+
+		$data = $this->input->get();
+
+		if($data){
+
+			$output = "";
+
+			extract( $data, EXTR_SKIP );
+			$main_model = $this->main_model;
+
+			if($school_year == "" || $school_year == null){
+				$sy_start = date('Y');
+				$sy_end = date('Y') + 1;
+			}else{
+				$school_year = explode('-', $school_year);
+				$sy_start = $school_year[0];
+				$sy_end = $school_year[1];
+			}
+			
+
+			for($term=1;$term<=4;$term++){
+
+				$output .= '<h3> Year Level: '. $term .'</h3>';
+
+				$grade_level_id = $main_model->get_grade_level_id_by_detail($sy_start, $sy_end, $term);
+				$sections = $main_model->get_sections_by_grade_level($grade_level_id);
+
+				$output .= '<table class="table table-bordered">';
+				$output .= '<tr>';
+				$output .= '<th style="width:100px;">ID</th>';
+				$output .= '<th style="width:200px;">Name</th>';
+				$output .= '<th>Offered Subjects</th>';
+				$output .= '</tr>';
+
+				foreach($sections as $section){
+					$offer_id = $section->offer_id;
+					$section_name = $section->section;
+
+					$output .= '<tr>';
+					$output .= '<td>'.$offer_id.'</td>';
+					$output .= '<td>'.$section_name.'</td>';
+					$output .= '<td>';
+
+					$subjects = $main_model->get_offered_subjects_by_section($offer_id);
+
+					
+
+					if(empty($subjects)){
+
+						$output .= '<p>No offered subjects for this section.</p>';
+
+					}else{
+
+						$output .= '<ul>';
+
+						foreach($subjects as $subject){
+
+							$subj_code = $subject->subj_code;
+							$subj_desc = $subject->subj_desc;
+
+							$output .= '<li>'.$subj_code.'</li>';
+						}
+
+						$output .= '</ul>';
+
+					}
+					
+
+					$output .= '</td>';
+					$output .= '</tr>';
+
+				}
+
+				$output .= '</table>';
+			}
+
+			echo $output;		
+
+			
+		}
 	}
 
 	public function update_grading_system(){

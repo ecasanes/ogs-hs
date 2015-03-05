@@ -49,8 +49,15 @@
 		  <div class="panel-footer">
 		  	<div class="row">
 		  		<div class="col-sm-10">
-		  			<span class="error-message"></span>
-		  			<span class="success-message"></span>
+
+					<?php if(isset($result)): ?>
+			  			<?php if($result): ?>
+			  				<span class="success-message"><?php echo $message; ?></span>
+				  		<?php else: ?>
+							<span class="error-message"><?php echo $message; ?></span>
+				  		<?php endif; ?>
+				  	<?php endif; ?>
+		  			
 		  		</div>
 		  		<div class="col-sm-2">
 		  			<input type="submit" class="pull-right btn btn-success submit-form" value="Add">
@@ -70,7 +77,7 @@
 		    	
 		    </div>
 		  </div>
-		  <div id="search-user" class="panel-body">
+		  <div id="search-section" class="panel-body">
 		    <div class="form-horizontal">
 		    	<div class="row">
 		    		
@@ -81,9 +88,11 @@
 	                          <?php echo $school_year_dropdown; ?>
 	                        </select>
 	                      </div>
-	                      <div class="col-sm-1">
-		  			<input type="submit" class="pull-right btn btn-success submit-form" value="Search">
-		  		</div>
+	                      
+	                      
+	                      <!-- <div class="col-sm-1">
+	                      				  			<input type="submit" class="pull-right btn btn-success submit-form" value="Search">
+	                      				  		</div> -->
 
          
                     </div>

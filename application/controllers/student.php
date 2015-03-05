@@ -67,6 +67,22 @@ class Student extends My_Controller {
 			echo $this->load->view($controller.'/list', $model_data, true);
 		}
 	}
+
+	public function update_student(){
+
+		$data = $this->input->post();
+
+		if($data){
+
+			extract( $data, EXTR_SKIP );
+
+			$main_model = $this->main_model;
+
+			$main_model->update_student_year_level($user_id, $year_level);
+		}
+
+		
+	}
 }
 
 /* End of file instructor.php */

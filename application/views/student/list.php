@@ -25,11 +25,13 @@ else:
 		<?php 
 		foreach($results as $result): 
 			$id = $result->user_id;
+			$username = $result->username;
 			$firstname = $result->fname;
 			$middlename = $result->mname;
 			$lastname = $result->lname;
 			$fullname = $firstname . ' ' . $middlename . ' ' . $lastname;
 			$year_level = $result->year_level;
+			$year = $year_level;
 			if($year_level == "" || $year_level == null || $year_level == 0){
 				$year_level = "Not yet enrolled";
 			}
@@ -42,7 +44,7 @@ else:
 				<?php
 				if($action):
 				?>
-					<td><a href="#" class="btn btn-primary btn-sm" data-toggle="tooltip" data-title="Edit"><i class="fa fa-edit"></i> </a></td>
+					<td><a href="#" class="btn btn-primary btn-sm edit-student" data-toggle="tooltip" data-title="Edit" data-id="<?php echo $id; ?>" data-year="<?php echo $year; ?>" data-firstname="<?php echo $firstname; ?>" data-lastname="<?php echo $lastname; ?>" data-username="<?php echo $username; ?>"><i class="fa fa-edit"></i> </a></td>
 				<?php
 				endif;
 				?>

@@ -89,7 +89,7 @@
 		    	
 		    </div>
 		  </div>
-		  <div id="search-user" class="panel-body">
+		  <div id="search-offered-subjects" class="panel-body">
 		    <div class="form-horizontal">
 		    	<div class="row">
 		    		
@@ -100,9 +100,9 @@
 	                          <?php echo $school_year_dropdown; ?>
 	                        </select>
 	                      </div>
-	                      <div class="col-sm-1">
-		  			<input type="submit" class="pull-right btn btn-success submit-form" value="Search">
-		  		</div>
+	                      <!-- <div class="col-sm-1">
+	                      		  			<input type="submit" class="pull-right btn btn-success submit-form" value="Search">
+	                      		  		</div> -->
 
          
                     </div>
