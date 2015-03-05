@@ -86,7 +86,7 @@ class MY_Controller extends CI_Controller {
 
       if ( $this->form_validation->run() ) {
 
-        $user_id = $user_model->create_user($username, $password, $firstname, $lastname, $age, $gender, $address, $user_type);
+        $user_id = $user_model->create_user($username, $password, $firstname, $lastname, $age, $gender, $address, $user_type, '', $year_level);
         $success_message = $user_title." was added successfully. ";
 
         if($user_id){

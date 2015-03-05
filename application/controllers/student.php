@@ -27,8 +27,8 @@ class Student extends My_Controller {
 		$footer_data = array();
 		$footer_data['listeners'] = array(
 			'Module.User.add_user()', 
-			'Module.User.search_user()',
-			'Module.User.refresh_user_list()'
+			'Module.Student.filter_student()',
+			'Module.Student.search_student()'
 		);
 
 		$this->load->view( 'layout/header', $header_data );
@@ -37,28 +37,35 @@ class Student extends My_Controller {
 
 	}
 
-	public function scores(){
+	public function filter_student(){
 
-	}
+		$data = $this->input->get();
+		$controller = $this->controller;
+		$user_type = $this->session->userdata('user_type');
 
-	public function assignment(){
+		if($data){
 
-	}
+			extract( $data, EXTR_SKIP );
+			$main_model = $this->main_model;
 
-	public function exam(){
+			$results = $main_model->get_student_by_search_key_and_year_level($search, $year_level);
 
-	}
+			if($user_type == 1){
+				$action = true;
+			}else{
+				$action = false;
+			}
 
-	public function project(){
+			//var_dump($results);
 
-	}
+			$model_data = array(
+				'results' => $results,
+				'action' => $action,
+				'user_type' => $user_type
+			);
 
-	public function quiz(){
-
-	}
-
-	public function recitation(){
-
+			echo $this->load->view($controller.'/list', $model_data, true);
+		}
 	}
 }
 

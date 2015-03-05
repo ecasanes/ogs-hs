@@ -25,9 +25,16 @@ function error_input_keyup(){
 	});
 }
 
-function select_enhancements(){
+function bootstrap_enhancements(){
 
     $('.select2-dropdown').select2();
+    $('.list-tooltip').tooltip({
+    	'html': true
+    });
+    /*$('.list-tooltip').on('shown.bs.tooltip', function () {
+	  var $this = $(this);
+	  $this.next().find('ul').addClass('list-unstyled');
+	});*/
 }
 
 function numberEffects() {
@@ -97,12 +104,86 @@ function numberEffects() {
     });
 }
 
-select_enhancements();
+bootstrap_enhancements();
 error_input_keyup();
 numberEffects();
 
 
+Module.Student = (function() {
 
+	function filter_student(){
+
+		var $search_user = $('#search-student');
+		var $search_results = $search_user.find('.search-results');
+		var $year_level = $search_user.find('[name=year_level]');
+		var $search_input = $search_user.find('[name=search]');
+		var $loading = $search_user.find('.loading');
+
+		//keyp search key
+		$(document).on('keyup', '#search-user-input', function(e){
+
+			var $this = $(this);
+			var search_key = $this.val();
+			var year_level = $year_level.val();
+
+			search_student(year_level, search_key);			
+			
+
+		});
+
+		//select year level
+		$year_level.change(function(e){
+			e.preventDefault();
+			var $this = $(this);
+			var search_key = $("#search-user-input").val();
+			var year_level = $this.val();
+
+			search_student(year_level, search_key);
+		});
+	}
+
+	function search_student(year_level, search_key){
+
+		var year_level = year_level || '';
+		var search_key = search_key || '';
+
+		var $search_user = $('#search-student');
+		var $search_results = $search_user.find('.search-results');
+		var $year_level = $search_user.find('[name=year_level]');
+		var $search_input = $search_user.find('[name=search]');
+		var $loading = $search_user.find('.loading');
+
+		$.ajax({
+			url: base_url + 'student/filter_student',
+			method: "get",
+			data: {"search": search_key, "year_level": year_level },
+			dataType: "html",
+			beforeSend: function(data){
+				
+				$search_results.html('');
+
+				$loading.removeClass('hidden');
+			},
+			success: function(data) {
+				//console.log(data);
+				$search_results.html(data);
+			},
+			complete: function(data){
+				$loading.addClass('hidden');
+			},
+			error: function(error, data){
+				console.log(error.responseText);
+			}
+
+		});
+	}
+
+	return {
+		filter_student: filter_student,
+		search_student: search_student
+	}
+
+})();
 
 Module.User = (function() {
 
@@ -854,6 +935,7 @@ Module.Curiculum = (function() {
 				success: function(data) {
 
 					$container.html(data);
+					bootstrap_enhancements();
 
 				},
 				complete: function(data){

@@ -593,6 +593,9 @@ class Curiculum_Model extends MY_Model {
 
     public function get_unenrolled_students($sy_start, $sy_end, $year_level, $user_type = 3){
 
+        //get all students enrolled in this year level - cross out
+        //if 1
+
         $sql = "SELECT 
           * 
         FROM
@@ -2023,7 +2026,11 @@ class Curiculum_Model extends MY_Model {
 
         $result = $query->row()->weight;
 
-        return $result;
+        if(empty($result)){
+            return 0;
+        }else{
+            return $result;
+        }
     }
 
     public function get_assignment_weight($subj_offerid, $term){
@@ -2036,7 +2043,11 @@ class Curiculum_Model extends MY_Model {
 
         $result = $query->row()->weight;
 
-        return $result;
+        if(empty($result)){
+            return 0;
+        }else{
+            return $result;
+        }
     }
 
     public function get_project_weight($subj_offerid, $term){
@@ -2049,7 +2060,11 @@ class Curiculum_Model extends MY_Model {
 
         $result = $query->row()->weight;
 
-        return $result;
+        if(empty($result)){
+            return 0;
+        }else{
+            return $result;
+        }
     }
 
     public function get_recitation_weight($subj_offerid, $term){
@@ -2062,7 +2077,11 @@ class Curiculum_Model extends MY_Model {
 
         $result = $query->row()->weight;
 
-        return $result;
+        if(empty($result)){
+            return 0;
+        }else{
+            return $result;
+        }
     }
 
     public function get_exam_weight($subj_offerid, $term){
@@ -2075,7 +2094,11 @@ class Curiculum_Model extends MY_Model {
 
         $result = $query->row()->weight;
 
-        return $result;
+        if(empty($result)){
+            return 0;
+        }else{
+            return $result;
+        }
     }
 
     public function get_quiz_column($subj_offerid, $term){

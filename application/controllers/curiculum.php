@@ -1974,6 +1974,37 @@ class Curiculum extends My_Controller {
 	public function get_student_final_grade($user_id, $offer_id){
 	}
 
+	public function get_grading_system_tooltip($subj_offerid, $term){
+
+		$main_model = $this->main_model;
+
+		//assignment
+		$assignment_weight = $main_model->get_assignment_weight($subj_offerid, $term);
+
+		//quiz
+		$quiz_weight = $main_model->get_quiz_weight($subj_offerid, $term);
+
+		//recitation
+		$recitation_weight = $main_model->get_recitation_weight($subj_offerid, $term);
+
+		//project
+		$project_weight = $main_model->get_project_weight($subj_offerid, $term);
+
+		//exam
+		$exam_weight = $main_model->get_exam_weight($subj_offerid, $term);
+
+		$output = "";
+		$output .= '<ul>';
+		$output .= '<li> Quiz - '.$quiz_weight.'% </li>';
+		$output .= '<li> Assignment - '.$assignment_weight.'% </li>';
+		$output .= '<li> Recitation - '.$recitation_weight.'% </li>';
+		$output .= '<li> Project - '.$project_weight.'% </li>';
+		$output .= '<li> Exam - '.$exam_weight.'% </li>';
+		$output .= "</ul>";
+
+		return $output;
+	}
+
 	public function display_student_grade_per_subject_term(){
 
 		$data = $this->input->get();
@@ -1989,7 +2020,7 @@ class Curiculum extends My_Controller {
 			$section_info = $main_model->get_section_info($offer_id);
 			$subject_info = $main_model->get_subject_info($subj_offerid);
 
-			var_dump($subj_offerid);
+			//var_dump($subj_offerid);
 
 			$section_name = $section_info->section;
 			$grade_level = $section_info->grade_level;
@@ -2019,6 +2050,11 @@ class Curiculum extends My_Controller {
 				switch($term){
 					case 1:
 						$term_title = "1st Grading";
+						/*$quiz_weight = $main_model->get_quiz_weight($subj_offerid);
+						$assignment_weight
+						$project_weight
+						$recitation_weight
+						$exam_weight*/
 						break;
 					case 2:
 						$term_title = "2nd Grading";
@@ -2033,6 +2069,7 @@ class Curiculum extends My_Controller {
 
 				$output .= '<td>';
 				$output .= $term_title;
+				$output .= ' <i class="fa fa-question-circle list-tooltip" data-toggle="tooltip" data-placement="top" title="'.$this->get_grading_system_tooltip($subj_offerid, $term).'"></i>';
 				$output .= '</td>';
 			}
 

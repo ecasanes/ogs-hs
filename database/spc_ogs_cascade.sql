@@ -603,6 +603,7 @@ CREATE TABLE IF NOT EXISTS `tbl_user` (
   `age` int(5) DEFAULT NULL,
   `gender` varchar(7) DEFAULT NULL,
   `address` varchar(50) DEFAULT NULL,
+  `year_level` int(11) DEFAULT NULL,
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
 

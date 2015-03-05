@@ -37,14 +37,14 @@ class User_Model extends MY_Model {
     }
 
     /* start CRUD */
-    public function create_user($username, $password, $fname, $lname, $age, $gender, $address, $user_type, $mname=''){
+    public function create_user($username, $password, $fname, $lname, $age, $gender, $address, $user_type, $mname='', $year_level = null){
 
         $db_table = $this::DB_TABLE;
         $db_primary =$this::DB_TABLE_PK;
 
-        $sql = "INSERT INTO {$db_table} (username, password, fname, lname, age, gender, address, user_type, mname) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO {$db_table} (username, password, fname, lname, age, gender, address, user_type, mname, year_level) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        $escaped_values = array($username, md5($password), $fname, $lname, $age, $gender, $address, $user_type, $mname);
+        $escaped_values = array($username, md5($password), $fname, $lname, $age, $gender, $address, $user_type, $mname, $year_level);
 
         $query = $this->db->query($sql, $escaped_values);
 

@@ -19,6 +19,16 @@
               <div class="col-sm-3 col-xs-12">
                 <input type="text" class="form-control" name="username" placeholder="Username" required>
               </div>
+              <label for="username" class="control-label col-sm-2 col-xs-12">Year Level</label>
+              <div class="col-sm-3 col-xs-12">
+                <select name="year_level" id="" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+              </div>
             </div>
 
             <div class="form-group">
@@ -95,11 +105,21 @@
           
         </div>
       </div>
-      <div id="search-user" class="panel-body">
+      <div id="search-student" class="panel-body">
         <div class="form-horizontal">
           <div class="row">
             
+              <div class="col-sm-3 col-xs-12">
+                <select name="year_level" class="form-control">
+                  <option value="">Select Year Level</option>
+                  <option value="1">1st Year</option>
+                  <option value="2">2nd Year</option>
+                  <option value="3">3rd Year</option>
+                  <option value="4">4th Year</option>
+                </select>
+              </div>
               <div class="col-sm-4 col-xs-12">
+
                 <input id="search-user-input" type="text" class="form-control" placeholder="Find Student by typing First/ Last Name" name="search">
               </div>
           </div>
