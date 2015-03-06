@@ -1465,7 +1465,7 @@ class Curiculum extends My_Controller {
 	    $main_model = new Curiculum_Model;
 
 	    $user_type = $this->user_type;
-		$user_id = $this->session->userdata('user_type');
+		$user_id = $this->user_id;
 
 		if($user_type == 1){
 			$results = $main_model->get_sections_by_grade_level($grade_level_id);
