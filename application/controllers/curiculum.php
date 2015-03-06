@@ -1330,7 +1330,8 @@ class Curiculum extends My_Controller {
 
 			$json_array = array(
 					'success' => $success,
-					'html' => $option
+					'html' => $option,
+					'last_query' => $this->db->last_query()
 				);
 
 			echo json_encode($json_array);
@@ -1464,12 +1465,12 @@ class Curiculum extends My_Controller {
 	    $main_model = new Curiculum_Model;
 
 	    $user_type = $this->user_type;
-		$user_id = $this->user_id;
+		$user_id = $this->session->userdata('user_type');
 
 		if($user_type == 1){
 			$results = $main_model->get_sections_by_grade_level($grade_level_id);
 		}else if($user_type == 2){
-			$results = $main_model->get_sections_by_grade_level($grade_level_id, $user_id);
+			$results = $main_model->get_sections_by_teacher_detail($grade_level_id, $user_id);
 		}
 	    
 
