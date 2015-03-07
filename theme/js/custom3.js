@@ -2205,8 +2205,8 @@ Module.Curiculum = (function() {
             var subj_offerid = $grading_percentage.data('id');
             var term = $this.data('term');
 
-            console.log(subj_offerid);
-            console.log(term);
+            /*console.log(subj_offerid);
+            console.log(term);*/
 
             display_grading_system(subj_offerid, term, 'edit', $this);
 
@@ -2215,9 +2215,9 @@ Module.Curiculum = (function() {
 
     function update_grading_system() {
 
-        $form = $('#edit-grading-system-form');
+        //$form = $('#edit-grading-system-form');
 
-        $form.submit(function(e) {
+        $(document).on('submit', '#edit-grading-system-form', function(e){
             e.preventDefault();
 
             var $this = $(this);
@@ -2269,6 +2269,8 @@ Module.Curiculum = (function() {
             var active_panel_id = $active_panel.attr('id');
         }
 
+        console.log(active_panel_id);
+
 
         var $grading_percentage = $('#grading-percentage');
 
@@ -2291,8 +2293,8 @@ Module.Curiculum = (function() {
             },
             success: function(data) {
                 $active_panel.html(data);
-                $form = $('#edit-grading-system-form');
-                $form.unbind();
+                //$form = $('#edit-grading-system-form');
+                //$form.unbind();
                 update_grading_system();
             },
             complete: function(data) {
