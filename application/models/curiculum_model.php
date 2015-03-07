@@ -51,6 +51,21 @@ class Curiculum_Model extends MY_Model {
         return $this->db->insert_id();
     }
 
+    public function get_teacher_by_offered_subject($subj_offerid){
+
+        $sql = "SELECT * FROM tbl_teacher_subj a, tbl_user b WHERE a.`subj_offerid` = ? AND a.`user_id` = b.user_id LIMIT 1";
+
+        $escaped_values = array($subj_offerid);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $num_rows = $query->num_rows();
+
+        $result = $query->row();
+
+        return $result;
+    }
+
     public function enroll_student($offer_id, $user_id){
 
         $sql = "INSERT INTO tbl_enroll_student (offer_id, user_id) VALUES (?, ?)";

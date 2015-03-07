@@ -191,6 +191,7 @@
 		  								
 		  							</div>
 		  				      	</div> -->
+		  		<span>Click on score total to edit student scores.</span>
 		      	<br>
 				<div class="tab-pane fade in active" id="quizzes" data-id="quiz">
 

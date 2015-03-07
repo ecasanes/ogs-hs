@@ -96,30 +96,30 @@
 
 
 		<!-- start panel -->
-		<!-- <div class="panel panel-primary">
+		<div class="panel panel-primary">
 		  <div class="panel-heading">
-		    <h3 class="panel-title">List of Assigned Instructors</h3>
+		    <h3 class="panel-title">List of Offered Subjects</h3>
 		    <div class="panel-options">
 		    	
 		    </div>
 		  </div>
-		  <div id="search-user" class="panel-body">
+		  <div id="search-offered-subjects" class="panel-body">
 		    <div class="form-horizontal">
 		    	<div class="row">
 		    		
 		    			<div class="form-group">
-			                      <label for="school_year" class="control-label col-sm-2 col-xs-12">Filter by School Year</label>
-			                      <div class="col-sm-2 col-xs-12">
-			                        <select name="school_year" id="" class="form-control" required>
-			                          <?php echo $school_year_dropdown; ?>
-			                        </select>
-			                      </div>
-			                      <div class="col-sm-1">
-		  			<input type="submit" class="pull-right btn btn-success submit-form" value="Search">
-		  		</div>
-		
-		         
-		                    </div>
+	                      <label for="school_year" class="control-label col-sm-2 col-xs-12">Filter by School Year</label>
+	                      <div class="col-sm-2 col-xs-12">
+	                        <select name="school_year" id="" class="form-control" required>
+	                          <?php echo $school_year_dropdown; ?>
+	                        </select>
+	                      </div>
+	                      <!-- <div class="col-sm-1">
+	                      		  			<input type="submit" class="pull-right btn btn-success submit-form" value="Search">
+	                      		  		</div> -->
+
+         
+                    </div>
 		    	</div>
 		    </div>
 		    <br>
@@ -129,12 +129,12 @@
 						<i class="fa fa-spin fa-refresh"></i> Loading...
 		    		</span>
 		    		<div class="search-results">
-		
+
 		    		</div>
 		    	</div>
 		    </div>
 		  </div>
-		</div> -->
+		</div>
 		<!-- end panel -->
 	</div>
 </div>

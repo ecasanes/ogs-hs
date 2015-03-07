@@ -120,7 +120,9 @@ class Curiculum extends My_Controller {
 
 		$footer_data = array();
 		$footer_data['listeners'] = array(
-			'Module.Curiculum.assign_instructor()'
+			'Module.Curiculum.assign_instructor()',
+			'Module.Subject.filter_offered_subject()',
+			'Module.Subject.search_offered_subject()'
 		);
 
 		$this->load->view( 'layout/header', $header_data );
@@ -2605,10 +2607,20 @@ class Curiculum extends My_Controller {
 
 						foreach($subjects as $subject){
 
+							$subj_offerid = $subject->subj_offerid;
 							$subj_code = $subject->subj_code;
 							$subj_desc = $subject->subj_desc;
 
-							$output .= '<li>'.$subj_code.'</li>';
+							$teacher_info = $main_model->get_teacher_by_offered_subject($subj_offerid);
+
+							if(empty($teacher_info)){
+								$teacher_fullname = "Subject not yet assigned.";
+							}else{
+								$teacher_fullname = "assigned to: " . $teacher_info->lname . ', ' . $teacher_info->fname . ' ' . $teacher_info->mname;
+							}
+							
+
+							$output .= '<li>'.$subj_code.' - ' . $teacher_fullname . '</li>';
 						}
 
 						$output .= '</ul>';
