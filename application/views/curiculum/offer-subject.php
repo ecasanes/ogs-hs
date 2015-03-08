@@ -100,9 +100,9 @@
 	                          <?php echo $school_year_dropdown; ?>
 	                        </select>
 	                      </div>
-	                      <!-- <div class="col-sm-1">
-	                      		  			<input type="submit" class="pull-right btn btn-success submit-form" value="Search">
-	                      		  		</div> -->
+	                      <div class="col-sm-1">
+	                      	<input type="submit" class="pull-right btn btn-success submit-form" value="Search">
+	                      </div>
 
          
                     </div>

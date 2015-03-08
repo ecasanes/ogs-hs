@@ -109,6 +109,252 @@ error_input_keyup();
 numberEffects();
 
 
+Module.GradeLock = (function() {
+
+    function filter_grade_lock() {
+
+        var $form = $('#search-grade-lock');
+        var $grade_lock_form = $('#grade-lock-form');
+        var $search_results = $grade_lock_form.find('.panel-body');
+        var $loading = $('.loading');
+
+        //select year level
+        $(document).on('submit', '#search-grade-lock', function(e){
+            e.preventDefault();
+
+            var $this = $(this);
+
+            //console.log($search_results.html());
+
+            var post_data = $this.serializeArray();
+
+            $.ajax({
+                url: base_url + 'curiculum/display_grade_lock',
+                method: "get",
+                data: post_data,
+                dataType: "json",
+                beforeSend: function(data) {
+
+                    $search_results.html('');
+
+                    $loading.removeClass('hidden');
+                },
+                success: function(data) {
+                    
+                    console.log(data);
+                    
+                    $search_results.html(data.html);
+                    //console.log($search_results.html());
+                    
+                },
+                complete: function(data) {
+                    $loading.addClass('hidden');
+                },
+                error: function(error, data) {
+                    console.log(error.responseText);
+                }
+
+            });
+        });
+
+        //lock all subjects
+        $(document).on('click', '#lock-all-subjects', function(e){
+
+           e.preventDefault();
+
+            var $this = $(this);
+
+            var gl_id = $this.data('gl');
+            var subj_id = null;
+            var lock_status = 1;
+
+            var $lock_subject = $grade_lock_form.find('.lock-subject');
+
+            $.ajax({
+                url: base_url + 'curiculum/change_lock_status',
+                method: "post",
+                data: {"gl_id": gl_id, "lock_status": lock_status},
+                dataType: "json",
+                beforeSend: function(data) {
+                },
+                success: function(data) {
+
+                    console.log(data);
+                    
+                    if(data.result){
+                        console.log('success');
+                        $lock_subject.removeClass('lock-subject');
+                        $lock_subject.addClass('unlock-subject');
+
+                        $lock_subject.removeClass('btn-primary');
+                        $lock_subject.addClass('btn-danger');
+
+                        $lock_subject.find('.fa').removeClass('fa-unlock');
+                        $lock_subject.find('.fa').addClass('fa-lock');
+                        $lock_subject.find('.lock-status-text').text('Unlock Grades');
+                    }
+                    
+                },
+                complete: function(data) {
+                },
+                error: function(error, data) {
+                    console.log(error.responseText);
+                }
+
+            });
+
+        });
+
+        //unlock all subjects
+        $(document).on('click', '#unlock-all-subjects', function(e){
+
+           e.preventDefault();
+
+            var $this = $(this);
+
+            var gl_id = $this.data('gl');
+            var subj_id = null;
+            var lock_status = 0;
+
+            var $lock_subject = $grade_lock_form.find('.unlock-subject');
+
+            $.ajax({
+                url: base_url + 'curiculum/change_lock_status',
+                method: "post",
+                data: {"gl_id": gl_id, "lock_status": lock_status},
+                dataType: "json",
+                beforeSend: function(data) {
+                },
+                success: function(data) {
+
+                    console.log(data);
+                    
+                    if(data.result){
+                        console.log('success');
+                        $lock_subject.removeClass('unlock-subject');
+                        $lock_subject.addClass('lock-subject');
+
+                        $lock_subject.removeClass('btn-danger');
+                        $lock_subject.addClass('btn-primary');
+
+                        $lock_subject.find('.fa').removeClass('fa-lock');
+                        $lock_subject.find('.fa').addClass('fa-unlock');
+                        $lock_subject.find('.lock-status-text').text('Lock Grades');
+                    }
+                    
+                },
+                complete: function(data) {
+                },
+                error: function(error, data) {
+                    console.log(error.responseText);
+                }
+
+            });
+
+        });
+
+        //lock subject
+        $(document).on('click', '.lock-subject', function(e){
+
+            e.preventDefault();
+
+            var $this = $(this);
+
+            var gl_id = $this.data('gl');
+            var subj_id = $this.data('id');
+            var lock_status = 1;
+
+            $.ajax({
+                url: base_url + 'curiculum/change_lock_status',
+                method: "post",
+                data: {"gl_id": gl_id, "subj_id": subj_id, "lock_status": lock_status},
+                dataType: "json",
+                beforeSend: function(data) {
+                },
+                success: function(data) {
+                    
+                    if(data.result){
+                        console.log('success');
+                        $this.removeClass('lock-subject');
+                        $this.removeClass('btn-primary');
+
+                        $this.addClass('unlock-subject');
+                        $this.addClass('btn-danger');
+
+                        $this.find('.fa').removeClass('fa-unlock');
+                        $this.find('.fa').addClass('fa-lock');
+                        $this.find('.lock-status-text').text('Unlock Grades');
+                    }
+                    
+                },
+                complete: function(data) {
+                },
+                error: function(error, data) {
+                    console.log(error.responseText);
+                }
+
+            });
+
+        });
+
+        //unlock subject
+        $(document).on('click', '.unlock-subject', function(e){
+
+            e.preventDefault();
+
+            var $this = $(this);
+
+            var gl_id = $this.data('gl');
+            var subj_id = $this.data('id');
+            var lock_status = 0;
+
+            $.ajax({
+                url: base_url + 'curiculum/change_lock_status',
+                method: "post",
+                data: {"gl_id": gl_id, "subj_id": subj_id, "lock_status": lock_status},
+                dataType: "json",
+                beforeSend: function(data) {
+                },
+                success: function(data) {
+                    
+                    if(data.result){
+                        console.log('success');
+                        $this.removeClass('unlock-subject');
+                        $this.removeClass('btn-danger');
+
+                        $this.addClass('lock-subject');
+                        $this.addClass('btn-primary');
+
+                        $this.find('.fa').addClass('fa-unlock');
+                        $this.find('.fa').removeClass('fa-lock');
+                        $this.find('.lock-status-text').text('Lock Grades');
+                    }
+                    
+
+                    
+                    //console.log($search_results.html());
+                    
+                },
+                complete: function(data) {
+                },
+                error: function(error, data) {
+                    console.log(error.responseText);
+                }
+
+            });
+
+        });
+
+
+    }
+
+
+
+    return {
+        filter_grade_lock: filter_grade_lock,
+    }
+
+})();
 
 Module.Section = (function() {
 
@@ -978,12 +1224,21 @@ Module.Subject = (function() {
         var $search_results = $search_subject.find('.search-results');
         var $school_year = $search_subject.find('[name=school_year]');
         var $loading = $search_subject.find('.loading');
+        var $submit_button = $search_subject.find('[type=submit]');
 
         //select year level
         $school_year.change(function(e) {
             e.preventDefault();
             var $this = $(this);
             var school_year = $this.val();
+
+            search_offered_subject(school_year);
+        });
+
+        $submit_button.click(function(e){
+            e.preventDefault();
+            var $this = $(this);
+            var school_year = $school_year.val();
 
             search_offered_subject(school_year);
         });

@@ -227,6 +227,21 @@ class Curiculum_Model extends MY_Model {
 
     /* update */
 
+    public function update_grade_subj($gl_id, $lock_status, $subj_id = null){
+
+        if($subj_id === null){
+            $sql = "UPDATE tbl_grade_subj SET lock_status = ? WHERE gl_id = ?";
+            $escaped_values = array($lock_status, $gl_id);
+        }else{
+            $sql = "UPDATE tbl_grade_subj SET lock_status = ? WHERE subj_id = ? AND gl_id = ?";
+            $escaped_values = array($lock_status, $subj_id, $gl_id);
+        }
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        return $query;
+    }
+
     public function update_quiz($activity_id, $items){
 
         $sql = "UPDATE tbl_quiz SET q_item = ? WHERE QID = ?";
@@ -868,6 +883,36 @@ class Curiculum_Model extends MY_Model {
         $result = $query->result();
 
         return $result;
+    }
+
+    public function get_subjects_offered_by_school_year($sy_start, $sy_end, $year_level){
+
+        $sql = "SELECT DISTINCT 
+              (a.`subj_id`),
+              a.*,
+              b.*,
+              c.*,
+              d.*
+            FROM
+              tbl_subject a,
+              tbl_subj_offering b,
+              tbl_grade_level c,
+              tbl_grade_subj d
+            WHERE a.`subj_id` = b.`subj_id` 
+              AND c.`sy_start` = ?
+              AND c.`sy_end` = ?
+              AND c.`grade_level` = ?
+              AND c.`gl_id` = d.`gl_id`
+              AND d.`subj_id` = a.`subj_id`";
+
+        $escaped_values = array($sy_start, $sy_end, $year_level);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+
     }
 
     public function get_subjects_assigned_by_teacher($user_id, $section_id = null){ //gl_id, offer_id

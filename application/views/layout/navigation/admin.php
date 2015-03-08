@@ -57,6 +57,7 @@
         <ul class="dropdown-menu">
           <li><a href="<?php echo base_url('curiculum'); ?>">Manage Curiculum</a></li>
           <li><a href="<?php echo base_url('curiculum/enroll-student'); ?>">Enroll Student</a></li>
+          <li><a href="<?php echo base_url('curiculum/grade-lock'); ?>">Lock/Unlock Grades</a></li>
         </ul>
       </li>
     </ul>

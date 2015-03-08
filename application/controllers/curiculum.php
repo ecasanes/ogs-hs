@@ -263,6 +263,30 @@ class Curiculum extends My_Controller {
 		$this->load->view( 'layout/footer' , $footer_data);
 	}
 
+	public function grade_lock(){
+
+		$this->is_logged_in();
+
+		$user_model = $this->user_model;
+
+		$header_data = array();
+
+		$model_data = array(
+				'grade_level_dropdown' => $this->grade_level_dropdown(),
+				'school_year_dropdown' => $this->school_year_dropdown()
+			);
+
+		$footer_data = array();
+		$footer_data['listeners'] = array(
+			'Module.GradeLock.filter_grade_lock()'
+		);
+
+		$this->load->view( 'layout/header', $header_data );
+		$this->load->view( 'curiculum/grade-lock', $model_data );
+		$this->load->view( 'layout/footer' , $footer_data);
+
+	}
+
 	/* submits */
 	public function create_grade_level(){
 
@@ -2709,7 +2733,6 @@ class Curiculum extends My_Controller {
 
 			echo json_encode($json_result);
 		}
-	
 	}
 
 	public function student_checkboxes_by_info(){
@@ -2756,6 +2779,94 @@ class Curiculum extends My_Controller {
 			echo json_encode($json_result);
 
 		}
+	}
+
+	public function display_grade_lock(){
+
+		$data = $this->input->get();
+
+		if($data){
+
+			extract( $data, EXTR_SKIP );
+
+			$main_model = $this->main_model;
+
+			$school_year = explode('-', $filter_school_year);
+			$sy_start = $school_year[0];
+			$sy_end = $school_year[1];
+
+			$subjects = $main_model->get_subjects_offered_by_school_year($sy_start, $sy_end, $filter_year_level);
+			$grade_level_id = $main_model->get_grade_level_id_by_detail($sy_start, $sy_end, $filter_year_level);
+
+			$output = "";
+			$output .= '<table class="table table-bordered">';
+			$output .= '<tr>';
+			$output .= '<th>Subject</th>';
+			$output .= '<td>
+			<a id="lock-all-subjects" href="#" class="btn btn-danger" data-gl="'.$grade_level_id.'"><i class="fa fa-lock"></i> Lock all Subjects</a>
+			<a id="unlock-all-subjects" href="#" class="btn btn-primary" data-gl="'.$grade_level_id.'"><i class="fa fa-unlock"></i> Unlock all Subjects</a>
+			</td>';
+			$output .= '</tr>';
+
+			foreach($subjects as $subject){
+
+				$subj_id = $subject->subj_id;
+				$gl_id = $subject->gl_id;
+				$subj_code = $subject->subj_code;
+				$lock_status = $subject->lock_status;
+
+				$output .= '<tr>';
+				$output .= '<td>'.$subj_code.'</td>';
+				$output .= '<td>';
+
+				if($lock_status){
+					$output .= '<a href="#" class="btn btn-danger lock-status unlock-subject" data-id="'.$subj_id.'" data-gl="'.$gl_id.'"><i class="fa fa-lock"></i> <span class="lock-status-text">Unlock Grades</span></a>';
+				}else{
+					$output .= '<a href="#" class="btn btn-primary lock-status lock-subject" data-id="'.$subj_id.'" data-gl="'.$gl_id.'"><i class="fa fa-unlock"></i> <span class="lock-status-text">Lock Grades</span></a>';
+				}
+
+				$output .= '</td>';
+				$output .= '</tr>';
+
+			}
+
+			$output .= '</table>';
+
+			$json_result = array(
+				'html' => $output,
+				'last_query' => $this->db->last_query()
+			);
+
+			echo json_encode($json_result);
+		}
+	}
+
+	public function change_lock_status(){
+
+		$data = $this->input->post();
+
+		if($data){
+
+			extract( $data, EXTR_SKIP );
+
+			$main_model = $this->main_model;
+
+			if(isset($subj_id)){
+				$main_model->update_grade_subj($gl_id, $lock_status);
+			}else{
+				$main_model->update_grade_subj($gl_id, $lock_status);
+			}
+			
+
+			$json_result = array(
+				'result' => true,
+				'last_query' => $this->db->last_query()
+			);
+
+			echo json_encode($json_result);
+		}
+
+
 	}
 
 
