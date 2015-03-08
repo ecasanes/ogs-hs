@@ -13,7 +13,7 @@ else:
 			<td>Name</td>
 			<td>Year Level</td>
 			<?php
-				if($action):
+				if(isset($action) && $action == true):
 			?>
 				<td></td>
 			<?php
@@ -42,7 +42,7 @@ else:
 				<td><?php echo $fullname; ?></td>
 				<td><?php echo $year_level; ?></td>
 				<?php
-				if($action):
+				if(isset($action) && $action == true):
 				?>
 					<td><a href="#" class="btn btn-primary btn-sm edit-student" data-toggle="tooltip" data-title="Edit" data-id="<?php echo $id; ?>" data-year="<?php echo $year; ?>" data-firstname="<?php echo $firstname; ?>" data-lastname="<?php echo $lastname; ?>" data-username="<?php echo $username; ?>"><i class="fa fa-edit"></i> </a></td>
 				<?php

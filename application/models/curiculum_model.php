@@ -733,8 +733,14 @@ class Curiculum_Model extends MY_Model {
 
         $query = $this->db->query($sql, $escaped_values);
 
-        $result = $query->row()->lock_status;
+        $num_rows = $query->num_rows();
 
+        if ( $num_rows > 0 ) {
+            $result = $query->row()->lock_status;
+        }else {
+            $result = 0;
+        }
+        
         return $result;
     }
 

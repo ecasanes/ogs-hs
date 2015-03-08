@@ -999,9 +999,11 @@ class Curiculum extends My_Controller {
 		$lock_status = $main_model->get_subject_lock_status($subj_id, $grade_level_id);
 		extract( $activity_type_variables, EXTR_SKIP );
 
+		$output = "";
+
 		if(!empty($enrolled_students)){
 
-			$output = "";
+			
 			$output .= '<table class="table table-bordered table-hover">';
 
 			$output .= '<tr>';
@@ -1029,7 +1031,7 @@ class Curiculum extends My_Controller {
 				
 
 				$output .= '<tr>';
-				if($lock_status || $user_type == 3){
+				if($lock_status || $user_type == 3 || $user_type == 1){
 					$output .= '<td class="quiz-cell compensate-padding">'.$items.'</td>';
 				}else{
 					$output .= '<td class="quiz-cell"><input data-id="'.$activity_id.'" data-section="'.$offer_id.'" data-subject="'.$subj_id.'" type="text" value="'.$items.'" class="activity-toggle"></td>';
@@ -1105,18 +1107,23 @@ class Curiculum extends My_Controller {
 				$total_activity_score = 0;
 				$quiz_count = 0;
 
-				foreach($activities as $activity){
+				/*var_dump($activities)*/
 
-					$activity_id = $activity->{$activity_id_column};
-					$score = $activity->{$score_column};
-					$total_activity_score = $total_activity_score + $score;
-					$quiz_count++;
+				if(!empty($activities)){
+					foreach($activities as $activity){
 
-					$output .= '<td class="quiz-cell">';
-					$output .= $score;
-					$output .= '</td>';
+						$activity_id = $activity->{$activity_id_column};
+						$score = $activity->{$score_column};
+						$total_activity_score = $total_activity_score + $score;
+						$quiz_count++;
 
+						$output .= '<td class="quiz-cell">';
+						$output .= $score;
+						$output .= '</td>';
+
+					}	
 				}
+				
 
 				//average
 				if($total_activity_score == 0){
@@ -1801,6 +1808,9 @@ class Curiculum extends My_Controller {
 			case "exam":
 				$activities = $main_model->get_student_exam_by_subject($user_id, $subj_offerid, $term);
 				break;
+			default:
+				$activities = $main_model->get_student_quiz_by_subject($user_id, $subj_offerid, $term);
+				break;
 		}
 
 		return $activities;
@@ -2004,6 +2014,9 @@ class Curiculum extends My_Controller {
 			case "exam":
 				$weight = $main_model->get_exam_weight($subj_offerid, $term);
 				break;
+			default:
+				$weight = $main_model->get_quiz_weight($subj_offerid, $term);
+				break;
 		}
 
 		return $weight;
@@ -2028,6 +2041,9 @@ class Curiculum extends My_Controller {
 				break;
 			case "exam":
 				$column = 1;
+				break;
+			default:
+				$column = $main_model->get_quiz_column($subj_offerid, $term);
 				break;
 		}
 
@@ -2169,8 +2185,11 @@ class Curiculum extends My_Controller {
 
 			$section_name = $section_info->section;
 			$grade_level = $section_info->grade_level;
+
 			$sy_start = $section_info->sy_start;
 			$sy_end = $section_info->sy_end;
+			$input_school_year = $sy_start.'-'.$sy_end;
+
 			$grade_level_id = $section_info->gl_id;
 
 			$subject_name = $subject_info->subj_code;
@@ -2214,10 +2233,18 @@ class Curiculum extends My_Controller {
 						break;
 				}
 
-				$output .= '<td>';
-				$output .= '<a href="#" class="view-grade-book" data-term="'.$term.'" data-subject="'.$subj_id.'" data-section="'.$offer_id.'" data-gl="'.$grade_level_id.'" data-title="'.$term_title.'">'.$term_title.'</a>';
-				$output .= ' <i class="hidden-print fa fa-question-circle list-tooltip" data-toggle="tooltip" data-placement="top" title="'.$this->get_grading_system_tooltip($subj_offerid, $term).'"></i>';
-				$output .= '</td>';
+				$grade_book_class = "view-grade-book";
+				$percentage_tooltip = '<i class="hidden-print fa fa-question-circle list-tooltip" data-toggle="tooltip" data-placement="top" title="'.$this->get_grading_system_tooltip($subj_offerid, $term).'"></i>';
+
+				if($user_type == 1){
+					$output .= '<td>'.$term_title.' '.$percentage_tooltip.'</td>';
+				}else{
+					$output .= '<td>';
+					$output .= '<a href="#" class="'.$grade_book_class.'" data-grade_level="'.$grade_level.'" data-sy="'.$input_school_year.'" data-user="'.$user_type.'" data-term="'.$term.'" data-subject="'.$subj_id.'" data-section="'.$offer_id.'" data-gl="'.$grade_level_id.'" data-title="'.$term_title.'">'.$term_title.'</a>';
+					$output .= $percentage_tooltip;
+					$output .= '</td>';
+				}
+				
 			}
 
 			$output .= '<td>';
@@ -2501,20 +2528,25 @@ class Curiculum extends My_Controller {
 
 					$output .= '<tr>';
 					$output .= '<td>Subject Code</td>';
+					$output .= '<td>Section</td>';
 					$output .= '<td>Description</td>';
 					$output .= '<td>Action</td>';
 					$output .= '</tr>';
 
 					foreach($assigned_subjects as $subject){
 
+						//var_dump($subject);
+
 						$subj_offerid = $subject->subj_offerid;
 						$offer_id = $subject->offer_id;
 						$subj_id = $subject->subj_id;
 						$subj_code = $subject->subj_code;
 						$subj_desc = $subject->subj_desc;
+						$section_name = $subject->section;
 
 						$output .= '<tr>';
 						$output .= '<td>'.$subj_code.'</td>';
+						$output .= '<td>'.$section_name.'</td>';
 						$output .= '<td>'.$subj_desc.'</td>';
 						$output .= '<td><a class="view-subject-grade-system" href="#" data-id="'.$subj_offerid.'" data-code="'.$subj_code.'">View</a></td>';
 						$output .= '</tr>';

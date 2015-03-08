@@ -105,7 +105,7 @@
           
         </div>
       </div>
-      <div id="search-student" class="panel-body">
+      <div id="search-user" class="panel-body">
         <div class="form-horizontal">
           <div class="row">
             

@@ -424,7 +424,7 @@ Module.Student = (function() {
 
     function filter_student() {
 
-        var $search_user = $('#search-student');
+        var $search_user = $('#search-user');
         var $search_results = $search_user.find('.search-results');
         var $year_level = $search_user.find('[name=year_level]');
         var $search_input = $search_user.find('[name=search]');
@@ -458,7 +458,7 @@ Module.Student = (function() {
         var year_level = year_level || '';
         var search_key = search_key || '';
 
-        var $search_user = $('#search-student');
+        var $search_user = $('#search-user');
         var $search_results = $search_user.find('.search-results');
         var $year_level = $search_user.find('[name=year_level]');
         var $search_input = $search_user.find('[name=search]');
@@ -497,7 +497,7 @@ Module.Student = (function() {
 
         var $form = $('#edit-student-form');
 
-        var $search_user = $('#search-student');
+        var $search_user = $('#search-user');
         var $search_results = $search_user.find('.search-results');
         var $year_level = $search_user.find('[name=year_level]');
         var $search_input = $search_user.find('[name=search]');
@@ -1415,6 +1415,13 @@ Module.Curiculum = (function() {
             var term = $this.data('term');
             var gl_id = $this.data('gl');
             var term_title = $this.data('title');
+            var user_type = $this.data('user');
+            var school_year = $this.data('sy');
+            var grade_level = $this.data('grade_level')
+
+            var ajax_url;
+
+            
             
             
             var $container = $activity_grade_panel.find('.tab-pane.active');
@@ -1425,15 +1432,23 @@ Module.Curiculum = (function() {
             console.log(activity_id);
             console.log(activity_type);
 
+            if(user_type == 3){
+                ajax_url = base_url + controller + '/get_student_subject_grades/' + activity_type;
+            }else{
+                ajax_url = base_url + controller + '/submit_manage_grades_ajax/' + activity_type;
+            }
+
             $.ajax({
-                url: base_url + controller + '/get_student_subject_grades/' + activity_type,
+                url: ajax_url, 
                 method: "get",
                 dataType: "json",
                 data: {
                     "subject": subject,
                     "section": offer_id,
                     "term": term,
-                    "grade_level_id": gl_id
+                    "grade_level_id": gl_id,
+                    "school_year" : school_year,
+                    "grade_level" : grade_level
                 },
                 beforeSend: function(data) {
                     $loading.removeClass('hidden');
