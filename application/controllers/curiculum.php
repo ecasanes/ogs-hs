@@ -584,7 +584,7 @@ class Curiculum extends My_Controller {
 				$sy_start = $school_year[0];
 				$sy_end = $school_year[1];
 
-				//$grade_level_id = $main_model->get_grade_level_id_by_detail($sy_start, $sy_end, $grade_level);
+				$grade_level_id = $main_model->get_grade_level_id_by_detail($sy_start, $sy_end, $grade_level);
 				$exist = $this->enrolled_students_in_section_exist($section);
 
 				if(!$exist){
@@ -613,7 +613,7 @@ class Curiculum extends My_Controller {
 					$json_array = array(
 							'success' => $success,
 							'message' => $message,
-							'content' => $this->display_activity_modification_table($term, $enrolled_students, $subj_offerid, $section, $subject, $activity_type),
+							'content' => $this->display_activity_modification_table($term, $enrolled_students, $subj_offerid, $section, $subject, $grade_level_id, $activity_type),
 							'term' => $term,
 							'subj_offerid' => $subj_offerid,
 							'activity_type' => $activity_type,
@@ -909,12 +909,13 @@ class Curiculum extends My_Controller {
 		}
 	}
 
-	public function display_activity_modification_table($term, $enrolled_students, $subj_offerid, $offer_id, $subj_id, $activity_type = "quiz"){
+	public function display_activity_modification_table($term, $enrolled_students, $subj_offerid, $offer_id, $subj_id, $grade_level_id, $activity_type = "quiz"){
 
 		$main_model = $this->main_model;
 
 		$activity_type_variables = $this->get_activity_type_variables($activity_type);
 		$activity_info = $this->get_activities($subj_offerid, $term, $activity_type);
+		$lock_status = $main_model->get_subject_lock_status($subj_id, $grade_level_id);
 		extract( $activity_type_variables, EXTR_SKIP );
 
 		if(!empty($enrolled_students)){
@@ -945,7 +946,15 @@ class Curiculum extends My_Controller {
 				$output .= '<input type="hidden" value="'.$activity_id.'" class="">';
 				$output .='</td></tr>';
 				
-				$output .= '<tr><td class="quiz-cell"><input data-id="'.$activity_id.'" data-section="'.$offer_id.'" data-subject="'.$subj_id.'" type="text" value="'.$items.'" class="activity-toggle"></td></tr>';
+
+				$output .= '<tr>';
+				if($lock_status){
+					$output .= '<td class="quiz-cell compensate-padding">'.$items.'</td>';
+				}else{
+					$output .= '<td class="quiz-cell"><input data-id="'.$activity_id.'" data-section="'.$offer_id.'" data-subject="'.$subj_id.'" type="text" value="'.$items.'" class="activity-toggle"></td>';
+				}
+				
+				$output .= '</tr>';
 				$output .= '</table>';
 				$output .= '</td>';
 			}
@@ -1051,7 +1060,12 @@ class Curiculum extends My_Controller {
 				$output .= $total_activity_score_display;
 				$output .= '</td>';
 				$output .= '<td class="quiz-cell ">';
-				$output .= $string_average.' %';
+				if($lock_status){
+					$output .= '<i class="fa fa-lock text-danger"></i> ' . $string_average.' %';
+				}else{
+					$output .= $string_average.' %';
+				}
+				
 				$output .= '</td>';
 				/*$output .= '<td class="quiz-cell ">';
 				$output .= $average*24+65;

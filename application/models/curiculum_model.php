@@ -723,7 +723,19 @@ class Curiculum_Model extends MY_Model {
         $result = $query->row();
 
         return $result;
+    }
 
+    public function get_subject_lock_status($subj_id, $gl_id){
+
+        $sql = "SELECT lock_status FROM tbl_grade_subj WHERE subj_id = ? AND gl_id = ? LIMIT 1";
+
+        $escaped_values = array($subj_id, $gl_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row()->lock_status;
+
+        return $result;
     }
 
     public function get_sections_by_grade_level($grade_level_id, $user_id = null){
