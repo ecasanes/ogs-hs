@@ -1410,7 +1410,7 @@ class Curiculum_Model extends MY_Model {
         return $result;
     }
 
-    public function get_student_project($section, $user_id){
+    public function get_student_project($section, $user_id, $subj_offerid = null){
 
         $sql = "SELECT 
           DISTINCT(f.PID),
@@ -1435,7 +1435,12 @@ class Curiculum_Model extends MY_Model {
           AND d.`user_id` = e.user_id
           AND f.`subj_offerid` = a.`subj_offerid`";
 
-        $escaped_values = array($section, $user_id);
+        if($subj_offerid !== null){
+            $escaped_values = array($section, $user_id);
+        }else{
+            $sql .= " a.`subj_offerid` = ?";
+            $escaped_values = array($section, $user_id, $subj_offerid);
+        }
 
         $query = $this->db->query($sql, $escaped_values);
 
@@ -1444,7 +1449,7 @@ class Curiculum_Model extends MY_Model {
         return $result;
     }
 
-    public function get_student_quiz($section, $user_id){
+    public function get_student_quiz($section, $user_id, $subj_offerid = null){
 
         $sql = "SELECT 
           DISTINCT(f.QID),
@@ -1469,7 +1474,12 @@ class Curiculum_Model extends MY_Model {
           AND d.`user_id` = e.user_id
           AND f.`subj_offerid` = a.`subj_offerid`";
 
-        $escaped_values = array($section, $user_id);
+        if($subj_offerid !== null){
+            $escaped_values = array($section, $user_id);
+        }else{
+            $sql .= " a.`subj_offerid` = ?";
+            $escaped_values = array($section, $user_id, $subj_offerid);
+        }
 
         $query = $this->db->query($sql, $escaped_values);
 
@@ -1478,7 +1488,7 @@ class Curiculum_Model extends MY_Model {
         return $result;
     }
 
-    public function get_student_recitation($section, $user_id){
+    public function get_student_recitation($section, $user_id, $subj_offerid = null){
 
         $sql = "SELECT 
           DISTINCT(f.RID),
@@ -1503,7 +1513,12 @@ class Curiculum_Model extends MY_Model {
           AND d.`user_id` = e.user_id
           AND f.`subj_offerid` = a.`subj_offerid`";
 
-        $escaped_values = array($section, $user_id);
+        if($subj_offerid !== null){
+            $escaped_values = array($section, $user_id);
+        }else{
+            $sql .= " a.`subj_offerid` = ?";
+            $escaped_values = array($section, $user_id, $subj_offerid);
+        }
 
         $query = $this->db->query($sql, $escaped_values);
 
@@ -1512,7 +1527,7 @@ class Curiculum_Model extends MY_Model {
         return $result;
     }
 
-    public function get_student_assignment($section, $user_id){
+    public function get_student_assignment($section, $user_id, $subj_offerid = null){
 
         $sql = "SELECT 
           DISTINCT(f.AID),
@@ -1537,7 +1552,12 @@ class Curiculum_Model extends MY_Model {
           AND d.`user_id` = e.user_id
           AND f.`subj_offerid` = a.`subj_offerid`";
 
-        $escaped_values = array($section, $user_id);
+        if($subj_offerid !== null){
+            $escaped_values = array($section, $user_id);
+        }else{
+            $sql .= " a.`subj_offerid` = ?";
+            $escaped_values = array($section, $user_id, $subj_offerid);
+        }
 
         $query = $this->db->query($sql, $escaped_values);
 
@@ -1546,7 +1566,7 @@ class Curiculum_Model extends MY_Model {
         return $result;
     }
 
-    public function get_student_exam($section, $user_id){
+    public function get_student_exam($section, $user_id, $subj_offerid = null){
 
         $sql = "SELECT 
           DISTINCT(f.exam_id),
@@ -1571,7 +1591,12 @@ class Curiculum_Model extends MY_Model {
           AND d.`user_id` = e.user_id
           AND f.`subj_offerid` = a.`subj_offerid`";
 
-        $escaped_values = array($section, $user_id);
+        if($subj_offerid !== null){
+            $escaped_values = array($section, $user_id);
+        }else{
+            $sql .= " a.`subj_offerid` = ?";
+            $escaped_values = array($section, $user_id, $subj_offerid);
+        }
 
         $query = $this->db->query($sql, $escaped_values);
 

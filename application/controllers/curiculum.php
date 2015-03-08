@@ -417,6 +417,20 @@ class Curiculum extends My_Controller {
 		}
 	}
 
+	public function compensate_scores_for_enrolled_students($offer_id, $subj_id, $subj_offerid){
+
+		$main_model = $this->main_model;
+
+		//get enrolled students - section 
+		$students = $main_model->get_enrolled_students_by_section($offer_id);
+
+		foreach($students as $student){
+			$student_user_id = $student->user_id;
+			$this->assign_initial_scores($offer_id, $student_user_id, $subj_offerid);
+		}
+		
+	}
+
 	public function submit_offer_subject(){
 
 		$data = $this->input->post();
@@ -438,6 +452,7 @@ class Curiculum extends My_Controller {
 					var_dump($data);
 					$subj_offerid = $main_model->offer_subject($section, $subject);
 					$this->assign_subject_defaults($subj_offerid);
+					$this->compensate_scores_for_enrolled_students($section, $subject, $subj_offerid);
 					$this->session->set_flashdata( 'success', 'Subject was successfully offered.' );
 				}
 
@@ -1221,7 +1236,7 @@ class Curiculum extends My_Controller {
 		}
 	}
 
-	public function assign_initial_scores($offer_id, $user_id){
+	public function assign_initial_scores($offer_id, $user_id, $subj_offerid = null){
 
 		$main_model = $this->main_model;
 
@@ -1232,7 +1247,7 @@ class Curiculum extends My_Controller {
 		}*/
 
 		//exam
-		$results = $main_model->get_student_exam($offer_id, $user_id);
+		$results = $main_model->get_student_exam($offer_id, $user_id, $subj_offerid);
 
 		foreach($results as $result){
 
@@ -1243,7 +1258,7 @@ class Curiculum extends My_Controller {
 		}
 
 		//project
-		$results = $main_model->get_student_project($offer_id, $user_id);
+		$results = $main_model->get_student_project($offer_id, $user_id, $subj_offerid);
 
 		foreach($results as $result){
 
@@ -1254,7 +1269,7 @@ class Curiculum extends My_Controller {
 		}
 
 		//quizzes
-		$results = $main_model->get_student_quiz($offer_id, $user_id);
+		$results = $main_model->get_student_quiz($offer_id, $user_id, $subj_offerid);
 
 		foreach($results as $result){
 
@@ -1265,7 +1280,7 @@ class Curiculum extends My_Controller {
 		}
 
 		//recitation
-		$results = $main_model->get_student_recitation($offer_id, $user_id);
+		$results = $main_model->get_student_recitation($offer_id, $user_id, $subj_offerid);
 
 		foreach($results as $result){
 
@@ -1276,7 +1291,7 @@ class Curiculum extends My_Controller {
 		}
 
 		//assignment
-		$results = $main_model->get_student_assignment($offer_id, $user_id);
+		$results = $main_model->get_student_assignment($offer_id, $user_id, $subj_offerid);
 
 		foreach($results as $result){
 
