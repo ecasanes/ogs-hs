@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 05, 2015 at 03:49 PM
+-- Generation Time: Mar 08, 2015 at 11:28 AM
 -- Server version: 5.5.32
 -- PHP Version: 5.4.19
 
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `tbl_assignment` (
   `subj_offerid` int(11) DEFAULT NULL,
   PRIMARY KEY (`AID`),
   KEY `tbl_subj_offering_tbl_assignment` (`subj_offerid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=141 ;
 
 -- --------------------------------------------------------
 
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `tbl_exam` (
   `subj_offerid` int(11) DEFAULT NULL,
   PRIMARY KEY (`exam_id`),
   KEY `tbl_subj_offering_tbl_exam` (`subj_offerid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=29 ;
 
 -- --------------------------------------------------------
 
@@ -95,21 +95,17 @@ CREATE TABLE IF NOT EXISTS `tbl_grade_level` (
   `sy_end` int(5) DEFAULT NULL,
   `grade_level` int(2) DEFAULT NULL,
   PRIMARY KEY (`gl_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=18 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=22 ;
 
 --
 -- Dumping data for table `tbl_grade_level`
 --
 
 INSERT INTO `tbl_grade_level` (`gl_id`, `sy_start`, `sy_end`, `grade_level`) VALUES
-(1, 2019, 2020, 1),
-(2, 2019, 2020, 2),
-(3, 2019, 2020, 3),
-(9, 2019, 2020, 4),
-(14, 2015, 2016, 1),
-(15, 2015, 2016, 2),
-(16, 2015, 2016, 3),
-(17, 2015, 2016, 4);
+(18, 2015, 2016, 1),
+(19, 2015, 2016, 2),
+(20, 2015, 2016, 3),
+(21, 2015, 2016, 4);
 
 -- --------------------------------------------------------
 
@@ -123,19 +119,7 @@ CREATE TABLE IF NOT EXISTS `tbl_grade_section` (
   `gl_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`offer_id`),
   KEY `tbl_grade_level_tbl_grade_section` (`gl_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
-
---
--- Dumping data for table `tbl_grade_section`
---
-
-INSERT INTO `tbl_grade_section` (`offer_id`, `section`, `gl_id`) VALUES
-(1, 'Section 1', 1),
-(2, 'Section 2', 2),
-(3, 'Section 2', 3),
-(4, 'Section 2', 1),
-(5, 'Section 3', 2),
-(6, 'Mabuti', 14);
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
 
 -- --------------------------------------------------------
 
@@ -146,16 +130,10 @@ INSERT INTO `tbl_grade_section` (`offer_id`, `section`, `gl_id`) VALUES
 CREATE TABLE IF NOT EXISTS `tbl_grade_subj` (
   `subj_id` int(11) DEFAULT NULL,
   `gl_id` int(11) DEFAULT NULL,
+  `lock_status` int(11) NOT NULL,
   KEY `tbl_subject_tbl_grade_subj` (`subj_id`),
   KEY `tbl_grade_level_tbl_grade_subj` (`gl_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `tbl_grade_subj`
---
-
-INSERT INTO `tbl_grade_subj` (`subj_id`, `gl_id`) VALUES
-(1, 14);
 
 -- --------------------------------------------------------
 
@@ -188,7 +166,7 @@ CREATE TABLE IF NOT EXISTS `tbl_project` (
   `subj_offerid` int(11) DEFAULT NULL,
   PRIMARY KEY (`PID`),
   KEY `tbl_subj_offering_tbl_project` (`subj_offerid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=57 ;
 
 -- --------------------------------------------------------
 
@@ -204,7 +182,7 @@ CREATE TABLE IF NOT EXISTS `tbl_quiz` (
   `subj_offerid` int(11) DEFAULT NULL,
   PRIMARY KEY (`QID`),
   KEY `tbl_subj_offering_tbl_quiz` (`subj_offerid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=169 ;
 
 -- --------------------------------------------------------
 
@@ -220,7 +198,7 @@ CREATE TABLE IF NOT EXISTS `tbl_recitation` (
   `subj_offerid` int(11) DEFAULT NULL,
   PRIMARY KEY (`RID`),
   KEY `tbl_subj_offering_tbl_recitation` (`subj_offerid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=113 ;
 
 -- --------------------------------------------------------
 
@@ -304,14 +282,7 @@ CREATE TABLE IF NOT EXISTS `tbl_subject` (
   `subj_desc` varchar(40) DEFAULT NULL,
   `subj_unit` int(5) DEFAULT NULL,
   PRIMARY KEY (`subj_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
-
---
--- Dumping data for table `tbl_subject`
---
-
-INSERT INTO `tbl_subject` (`subj_id`, `subj_code`, `subj_desc`, `subj_unit`) VALUES
-(1, 'CSC101', 'Computer Science 1', 3);
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 -- --------------------------------------------------------
 
@@ -326,7 +297,7 @@ CREATE TABLE IF NOT EXISTS `tbl_subj_offering` (
   PRIMARY KEY (`subj_offerid`),
   KEY `tbl_grade_section_tbl_subj_offering` (`offer_id`),
   KEY `tbl_subject_tbl_subj_offering` (`subj_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
 
 -- --------------------------------------------------------
 
@@ -360,22 +331,17 @@ CREATE TABLE IF NOT EXISTS `tbl_user` (
   `address` varchar(50) DEFAULT NULL,
   `year_level` int(11) DEFAULT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=14 ;
 
 --
 -- Dumping data for table `tbl_user`
 --
 
 INSERT INTO `tbl_user` (`user_id`, `username`, `password`, `user_type`, `fname`, `mname`, `lname`, `age`, `gender`, `address`, `year_level`) VALUES
-(1, 'ernest.casanes', '63f69f3c6ea97828332ce9bf86616069', 1, 'Admin 1', 'Cilocilo', 'Casanes', 24, 'male', 'Del Carmen, Iligan City', NULL),
-(2, 'ecasanes', '63f69f3c6ea97828332ce9bf86616069', 2, 'Instructor 1', 'Casanes', 'Lastname', 24, 'male', 'test', NULL),
-(3, 'ecasanes2', 'bc65f426282a1a198804b1d7602b25d4', 2, 'Instructor 2', 'Test', 'Lastname', 24, 'male', 'test', NULL),
-(4, 'abcd', '187ef4436122d1cc2f40dc2b92f0eba0', 2, 'Instructor 3', 'Hello', 'Lastname', 24, 'male', 'sfsf', NULL),
-(5, 'student', '63f69f3c6ea97828332ce9bf86616069', 3, 'Student 1', 'Casanes', 'Lastname', 13, 'male', 'sfsf', NULL),
-(6, 'student1', '5e5545d38a68148a2d5bd5ec9a89e327', 3, 'Student 1', '', 'Test', 13, 'male', 'dfsfd', NULL),
-(7, 'student2', '213ee683360d88249109c2f92789dbc3', 3, 'Student 2', '', 'Test', 12, 'male', 'lskjfsldfkj', NULL),
-(8, 'student3', '8e4947690532bc44a8e41e9fb365b76a', 3, 'Student 3', '', 'Test', 14, 'male', 'kljsdfljsdf', NULL),
-(9, 'student4', '166a50c910e390d922db4696e4c7747b', 3, 'Student 4', '', 'Test', 15, 'male', 'dsfsdf', NULL);
+(1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 1, 'Admin 1', 'Cilocilo', 'Casanes', 24, 'male', 'Del Carmen, Iligan City', NULL),
+(10, 'teacher', '8d788385431273d11e8b43bb78f3aa41', 2, 'Teacher', '', 'Teacher Last', 30, 'male', 'Test', NULL),
+(11, 'student', 'cd73502828457d15655bbd7a63fb0bc8', 3, 'Student', '', 'lastname', 13, 'male', 'test', 1),
+(12, 'student2', '213ee683360d88249109c2f92789dbc3', 3, 'Test', '', 'Lastname', 14, 'male', 'tst', 1);
 
 --
 -- Constraints for dumped tables
