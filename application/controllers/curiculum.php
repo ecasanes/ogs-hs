@@ -2216,7 +2216,7 @@ class Curiculum extends My_Controller {
 
 				$output .= '<td>';
 				$output .= '<a href="#" class="view-grade-book" data-term="'.$term.'" data-subject="'.$subj_id.'" data-section="'.$offer_id.'" data-gl="'.$grade_level_id.'" data-title="'.$term_title.'">'.$term_title.'</a>';
-				$output .= ' <i class="fa fa-question-circle list-tooltip" data-toggle="tooltip" data-placement="top" title="'.$this->get_grading_system_tooltip($subj_offerid, $term).'"></i>';
+				$output .= ' <i class="hidden-print fa fa-question-circle list-tooltip" data-toggle="tooltip" data-placement="top" title="'.$this->get_grading_system_tooltip($subj_offerid, $term).'"></i>';
 				$output .= '</td>';
 			}
 

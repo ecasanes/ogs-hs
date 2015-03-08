@@ -1,5 +1,5 @@
-<div id="view-class-record">
-  <div class="form-horizontal">
+<div id="view-class-record" >
+  <div class="form-horizontal hidden-print">
   <div class="form-group">
     <label for="school_year" class="control-label col-sm-2 col-xs-12">School Year</label>
     <div class="col-sm-2 col-xs-12">
@@ -10,6 +10,9 @@
 
     <div class="col-sm-1 col-xs-12">
       <input id="search-class-record" type="submit" value="Search" class="btn btn-success">
+    </div>
+    <div class="col-xs-1">
+      <a href="#" class="btn btn-primary" onclick="window.print(); return false;"><i class="fa fa-print"></i> Print</a>
     </div>
   </div>
 </div>
@@ -58,7 +61,7 @@
           </div>
             <br>
         <div class="tab-pane fade in active" id="quizzes" data-id="quiz">
-          test
+          
         </div>
         <div class="tab-pane fade in" id="assignment" data-id="assignment">
           

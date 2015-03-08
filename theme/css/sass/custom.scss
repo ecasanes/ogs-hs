@@ -184,3 +184,17 @@ input, textarea, select{
 		text-align:left;
 	}
 }
+
+.panel-tabs{
+	li{
+		@media print{
+			display:none;
+		}
+		&.active{
+			@media print{
+				display:block;
+			}
+			
+		}
+	}
+}

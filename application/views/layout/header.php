@@ -67,7 +67,7 @@ $user_type = $this->session->userdata('user_type');
     <div id="banner" class="container-fluid-md">
       <div class="row">
         <div class="col-xs-12">
-          <h2 class="banner-title">SPC Online Grading System</h2>
+          <h2 class="banner-title hidden-print">SPC Online Grading System</h2>
         </div>
       </div>
     </div>
