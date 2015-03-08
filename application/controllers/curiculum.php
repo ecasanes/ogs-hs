@@ -644,6 +644,85 @@ class Curiculum extends My_Controller {
 		}
 	}
 
+	public function get_student_subject_grades($activity_type = "quiz"){
+
+		$data = $this->input->get();
+
+		if($data){
+			extract( $data, EXTR_SKIP );
+
+			$user_id = $this->user_id;
+
+			$main_model = $this->main_model;
+
+			if($section != '' && $subject != '' && $term != ''){
+
+				/*$input_school_year = $school_year;
+
+				$school_year = explode('-', $school_year);
+				$sy_start = $school_year[0];
+				$sy_end = $school_year[1];
+
+				$grade_level_id = $main_model->get_grade_level_id_by_detail($sy_start, $sy_end, $grade_level);*/
+				/*$exist = $this->enrolled_students_in_section_exist($section);
+
+				if(!$exist){
+					
+					$success = false;
+					$message = "No enrolled students for this section.";
+
+					$json_array = array(
+							'success' => $success,
+							'message' => $message,
+							'content' => ''
+						);
+
+					echo json_encode($json_array);
+
+				}else{*/
+					//select all students for this subject by section and subj_id
+					$enrolled_students = $main_model->get_enrolled_students_by_section_and_subject($section, $subject, $user_id);
+					$subj_offerid = $main_model->get_subject_offerid($section, $subject);
+					$activity_weight = $this->get_activity_weight($subj_offerid, $term, $activity_type);
+					$activity_column = $this->get_activity_column($subj_offerid, $term, $activity_type);
+
+					$success = true;
+					$message = "Search success.";
+
+					$json_array = array(
+							'success' => $success,
+							'message' => $message,
+							'content' => $this->display_activity_modification_table($term, $enrolled_students, $subj_offerid, $section, $subject, $grade_level_id, $activity_type),
+							'term' => $term,
+							'subj_offerid' => $subj_offerid,
+							'activity_type' => $activity_type,
+							'section' => $section,
+							'subject' => $subject,
+							'activity_weight' => $activity_weight,
+							'activity_column' => $activity_column,
+							'grade_level_id' => $grade_level_id
+						);
+
+					echo json_encode($json_array);
+				//}
+
+			}else{
+
+				$success = false;
+				$message = "Please select from all fields.";
+
+				$json_array = array(
+						'success' => $success,
+						'message' => $message,
+						'content' => ''
+					);
+
+				echo json_encode($json_array);
+			}
+		}
+	
+	}
+
 	public function update_activity(){
 
 		$data = $this->input->post();
@@ -911,6 +990,8 @@ class Curiculum extends My_Controller {
 
 	public function display_activity_modification_table($term, $enrolled_students, $subj_offerid, $offer_id, $subj_id, $grade_level_id, $activity_type = "quiz"){
 
+		$user_type = $this->user_type;
+
 		$main_model = $this->main_model;
 
 		$activity_type_variables = $this->get_activity_type_variables($activity_type);
@@ -948,7 +1029,7 @@ class Curiculum extends My_Controller {
 				
 
 				$output .= '<tr>';
-				if($lock_status){
+				if($lock_status || $user_type == 3){
 					$output .= '<td class="quiz-cell compensate-padding">'.$items.'</td>';
 				}else{
 					$output .= '<td class="quiz-cell"><input data-id="'.$activity_id.'" data-section="'.$offer_id.'" data-subject="'.$subj_id.'" type="text" value="'.$items.'" class="activity-toggle"></td>';
@@ -1060,11 +1141,16 @@ class Curiculum extends My_Controller {
 				$output .= $total_activity_score_display;
 				$output .= '</td>';
 				$output .= '<td class="quiz-cell ">';
-				if($lock_status){
-					$output .= '<i class="fa fa-lock text-danger"></i> ' . $string_average.' %';
-				}else{
+				if($user_type == 3){
 					$output .= $string_average.' %';
+				}else{
+					if($lock_status){
+						$output .= '<i class="fa fa-lock text-danger"></i> ' . $string_average.' %';
+					}else{
+						$output .= $string_average.' %';
+					}
 				}
+				
 				
 				$output .= '</td>';
 				/*$output .= '<td class="quiz-cell ">';
@@ -1663,9 +1749,9 @@ class Curiculum extends My_Controller {
 
 		$results = $main_model->get_project_by_subj_offerid($subj_offerid);
 
-		echo '<pre>';
+		/*echo '<pre>';
 		var_dump($results);
-		echo '</pre>';
+		echo '</pre>';*/
 	}
 
 	public function get_single_student_activity($activity_id, $user_id, $activity_type = "quiz"){
@@ -1982,7 +2068,9 @@ class Curiculum extends My_Controller {
 		$calculations = $this->get_student_activity_term_calculations($user_id, $subj_offerid, $term, $term_constant, $lowest_grade, $activity_type);
 
 		//$activity_weight = $this->get_activity_weight($subj_offerid, $term, $activity_type);
-
+		/*echo '<pre>';
+		var_dump($this->db->last_query());
+		echo '</pre>';*/
 		$term_activity_score = $calculations->term_activity_score;
 
 		return $term_activity_score;
@@ -2083,8 +2171,10 @@ class Curiculum extends My_Controller {
 			$grade_level = $section_info->grade_level;
 			$sy_start = $section_info->sy_start;
 			$sy_end = $section_info->sy_end;
+			$grade_level_id = $section_info->gl_id;
 
 			$subject_name = $subject_info->subj_code;
+			$subj_id = $subject_info->subj_id;
 			$instructor_name = $subject_info->lname . ', ' . $subject_info->fname . ' ' . $subject_info->mname;
 
 			$output = '<h3>SY ' . $sy_start . ' - ' . $sy_end . '</h3>';
@@ -2125,7 +2215,7 @@ class Curiculum extends My_Controller {
 				}
 
 				$output .= '<td>';
-				$output .= $term_title;
+				$output .= '<a href="#" class="view-grade-book" data-term="'.$term.'" data-subject="'.$subj_id.'" data-section="'.$offer_id.'" data-gl="'.$grade_level_id.'" data-title="'.$term_title.'">'.$term_title.'</a>';
 				$output .= ' <i class="fa fa-question-circle list-tooltip" data-toggle="tooltip" data-placement="top" title="'.$this->get_grading_system_tooltip($subj_offerid, $term).'"></i>';
 				$output .= '</td>';
 			}
@@ -2263,7 +2353,12 @@ class Curiculum extends My_Controller {
 				$final_total = $final_total + $subject_grade;
 			}
 
-			$final_grade = $final_total/$subject_count;
+			if($subject_count == 0){
+				$final_grade = "Not yet computed.";
+			}else{
+				$final_grade = $final_total/$subject_count;
+			}
+			
 
 			$output .= "<td>";
 			$output .= $final_grade;

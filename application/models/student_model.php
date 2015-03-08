@@ -5,6 +5,19 @@ class Student_Model extends MY_Model {
     const DB_TABLE = 'tbl_student';
     const DB_TABLE_PK = 'student_id';
 
+    public function get_student_info($user_id){
+
+        $sql = "SELECT * FROM tbl_user WHERE user_id = ? LIMIT 1";
+
+        $escaped_values = array($user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row();
+
+        return $result;
+    }
+
     public function get_student_by_search_key_and_year_level($search_key, $year_level){
 
     	if($year_level == ""){

@@ -1102,20 +1102,42 @@ class Curiculum_Model extends MY_Model {
         return $result;
     }
 
-    public function get_enrolled_students_by_section_and_subject($offer_id, $subj_id){
+    public function get_enrolled_students_by_section_and_subject($offer_id, $subj_id, $user_id = null){
 
-        $sql = "SELECT 
-              * 
-            FROM
-              tbl_enroll_student a,
-              tbl_subj_offering b,
-              tbl_user c 
-            WHERE a.`offer_id` = ?
-              AND a.`offer_id` = b.`offer_id` 
-              AND a.`user_id` = c.user_id
-              AND b.`subj_id` = ?";
+        if($user_id === null){
 
-        $escaped_values = array($offer_id, $subj_id);
+            $sql = "SELECT 
+                  * 
+                FROM
+                  tbl_enroll_student a,
+                  tbl_subj_offering b,
+                  tbl_user c 
+                WHERE a.`offer_id` = ?
+                  AND a.`offer_id` = b.`offer_id` 
+                  AND a.`user_id` = c.user_id
+                  AND b.`subj_id` = ?";
+
+            $escaped_values = array($offer_id, $subj_id);
+
+        }else{
+
+            $sql = "SELECT 
+                  * 
+                FROM
+                  tbl_enroll_student a,
+                  tbl_subj_offering b,
+                  tbl_user c 
+                WHERE a.`offer_id` = ?
+                  AND a.`offer_id` = b.`offer_id` 
+                  AND a.`user_id` = c.user_id
+                  AND b.`subj_id` = ?
+                  AND a.user_id = ?";
+
+            $escaped_values = array($offer_id, $subj_id, $user_id);
+
+        }
+
+        
 
         $query = $this->db->query($sql, $escaped_values);
 

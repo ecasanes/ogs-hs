@@ -1305,6 +1305,9 @@ Module.Curiculum = (function() {
 
         var $search_class_record = $('#search-class-record');
 
+        var $activity_grade_panel = $('#term-activity-grade');
+        var $activity_form = $activity_grade_panel.find('#activity-form');
+
         //school year select
         $search_class_record.click(function(e) {
 
@@ -1320,6 +1323,7 @@ Module.Curiculum = (function() {
                 beforeSend: function(data) {
                     $loading.removeClass('hidden');
                     $container.html('');
+                    $activity_grade_panel.addClass('hidden');
                 },
                 success: function(data) {
 
@@ -1372,7 +1376,7 @@ Module.Curiculum = (function() {
 
             var $this = $(this);
             var subj_offerid = $this.data('subject');
-            var offer_id = $this.data('section')
+            var offer_id = $this.data('section');
 
             $.ajax({
                 url: base_url + controller + '/display_student_grade_per_subject_term',
@@ -1401,6 +1405,179 @@ Module.Curiculum = (function() {
 
             });
         });
+
+        $(document).on('click', '.view-grade-book', function(e){
+            e.preventDefault();
+
+            var $this = $(this);
+            var subject = $this.data('subject');
+            var offer_id = $this.data('section');
+            var term = $this.data('term');
+            var gl_id = $this.data('gl');
+            var term_title = $this.data('title');
+            
+            
+            var $container = $activity_grade_panel.find('.tab-pane.active');
+
+            var activity_id = $activity_form.find('.tab-pane.active').attr('id');
+            var activity_type = $activity_form.find('.tab-pane.active').data('id');
+
+            console.log(activity_id);
+            console.log(activity_type);
+
+            $.ajax({
+                url: base_url + controller + '/get_student_subject_grades/' + activity_type,
+                method: "get",
+                dataType: "json",
+                data: {
+                    "subject": subject,
+                    "section": offer_id,
+                    "term": term,
+                    "grade_level_id": gl_id
+                },
+                beforeSend: function(data) {
+                    $loading.removeClass('hidden');
+                    $('#' + activity_id).html('');
+                },
+                success: function(data) {
+
+                    console.log(data);
+
+                    $activity_grade_panel.removeClass('hidden');
+                    $activity_grade_panel.find('.term-title').text('for ' + term_title);
+
+                    var content = data.content
+                    var grade_level = data.grade_level;
+                    var section = data.section;
+                    var subject = data.subject;
+                    var term = data.term;
+                    var subj_offerid = data.subj_offerid;
+                    var grade_level_id = data.grade_level_id;
+
+                    var activity_weight = data.activity_weight;
+                    var activity_column = data.activity_column;
+                    var activity_type = data.activity_type;
+                    if (activity_column == 0) {
+                        activity_column = '';
+                    }
+
+                    $activity_form.find('input[name=activity_weight]').val(activity_weight);
+                    if (activity_type == 'exam') {
+                        $activity_form.find('select[name=activity_column]')
+                            .prop('disabled', true)
+                            .val(activity_column)
+                            .data('id', activity_column);
+                    } else {
+                        $activity_form.find('select[name=activity_column]')
+                            .prop('disabled', false)
+                            .val(activity_column)
+                            .data('id', activity_column);
+                    }
+
+                    //console.log(data);
+                    $('#' + activity_id).html(content);
+                    $activity_form.find('input[name=grade_level]').val(grade_level);
+                    $activity_form.find('input[name=section]').val(section);
+                    $activity_form.find('input[name=subject]').val(subject);
+                    $activity_form.find('input[name=term]').val(term);
+                    $activity_form.find('input[name=subj_offerid]').val(subj_offerid);
+                    $activity_form.find('input[name=grade_level_id]').val(grade_level_id);
+
+                },
+                complete: function(data) {
+                    $loading.addClass('hidden');
+                },
+                error: function(error, data) {
+                    console.log(error.responseText);
+                }
+
+            });
+        });
+
+        //click on individual tab
+        $('.activity-tab').click(function(e) {
+
+            e.preventDefault();
+            var $this = $(this);
+
+            var grade_level = $activity_form.find('input[name=grade_level]').val();
+            var grade_level_id = $activity_form.find('input[name=grade_level_id]').val();
+            var section = $activity_form.find('input[name=section]').val();
+            var subject = $activity_form.find('input[name=subject]').val();
+            var term = $activity_form.find('input[name=term]').val();
+
+            var activity_id = $this.attr('href');
+            var activity_type = $this.data('id');
+
+            var post_data = {
+                "grade_level": grade_level,
+                "section": section,
+                "subject": subject,
+                "term": term,
+                "grade_level_id": grade_level_id
+            };
+
+            console.log(post_data);
+
+
+            $.ajax({
+                url: base_url + controller + '/get_student_subject_grades/' + activity_type,
+                method: "get",
+                dataType: "json",
+                data: post_data,
+                beforeSend: function(data) {
+                    $loading.removeClass('hidden');
+                    $(activity_id).html('');
+                },
+                success: function(data) {
+
+                    var content = data.content
+                    var school_year = data.school_year;
+                    var grade_level = data.grade_level;
+                    var section = data.section;
+                    var subject = data.subject;
+                    var term = data.term;
+                    var subj_offerid = data.subj_offerid;
+
+                    var activity_weight = data.activity_weight;
+                    var activity_column = data.activity_column;
+                    var activity_type = data.activity_type;
+                    if (activity_column == 0) {
+                        activity_column = '';
+                    }
+
+                    $activity_form.find('input[name=activity_weight]').val(activity_weight);
+                    if (activity_type == 'exam') {
+                        $activity_form.find('select[name=activity_column]')
+                            .prop('disabled', true)
+                            .val(activity_column)
+                            .data('id', activity_column);
+                    } else {
+                        $activity_form.find('select[name=activity_column]')
+                            .prop('disabled', false)
+                            .val(activity_column)
+                            .data('id', activity_column);
+                    }
+
+                    $activity_form.find('input[name=subj_offerid]').val(subj_offerid);
+
+
+                    console.log(data);
+                    $(activity_id).html(content);
+
+                },
+                complete: function(data) {
+                    $loading.addClass('hidden');
+                },
+                error: function(error, data) {
+                    console.log(error.responseText);
+                }
+
+            });
+
+        });
+
+        
     }
 
     function refresh_grades() {

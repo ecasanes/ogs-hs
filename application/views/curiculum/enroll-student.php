@@ -71,7 +71,7 @@
 		            <?php endif; ?>
 		  		</div>
 		  		<div class="col-sm-2">
-		  			<input type="submit" class="pull-right btn btn-success submit-form" value="Assign">
+		  			<input type="submit" class="pull-right btn btn-success submit-form" value="Enroll">
 		  		</div>
 		  	</div>
 		  </div>
