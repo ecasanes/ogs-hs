@@ -705,16 +705,28 @@ class Curiculum_Model extends MY_Model {
     public function get_subject_info($subj_offerid){
 
         $sql = "SELECT 
-              * 
+          * 
+        FROM
+          (SELECT 
+            a.*,
+            ost.subj_offerid,
+            ost.offer_id,
+            ost.subj_id 
+          FROM
+            (SELECT 
+              a.`subj_offerid`,
+              a.`offer_id`,
+              a.`subj_id`,
+              c.user_id 
             FROM
-              tbl_subj_offering a,
-              tbl_subject b,
-              tbl_teacher_subj c,
-              tbl_user d
-            WHERE a.`subj_offerid` = ?
-              AND a.`subj_id` = b.`subj_id` 
-              AND c.`subj_offerid` = a.`subj_offerid`
-              AND d.user_id = c.`user_id`";
+              tbl_subj_offering a 
+              LEFT JOIN tbl_teacher_subj c 
+                ON a.`subj_offerid` = c.`subj_offerid`) AS ost 
+            LEFT JOIN tbl_user a 
+              ON a.user_id = ost.user_id) AS teacher_info,
+          tbl_subject b 
+        WHERE teacher_info.subj_offerid = ?
+          AND teacher_info.subj_id = b.`subj_id` ";
 
         $escaped_values = array($subj_offerid);
 

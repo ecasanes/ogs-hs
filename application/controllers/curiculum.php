@@ -2209,7 +2209,15 @@ class Curiculum extends My_Controller {
 
 			$subject_name = $subject_info->subj_code;
 			$subj_id = $subject_info->subj_id;
-			$instructor_name = $subject_info->lname . ', ' . $subject_info->fname . ' ' . $subject_info->mname;
+			$instructor_user_id = $subject_info->user_id;
+
+			if(empty($instructor_user_id)){
+				$instructor_name = "Instructor not assigned yet";
+			}else{
+				$instructor_name = $subject_info->lname . ', ' . $subject_info->fname . ' ' . $subject_info->mname;
+			}
+
+			
 
 			$output = '<h3>SY ' . $sy_start . ' - ' . $sy_end . '</h3>';
 			$output .= '<h3> Grade ' . $grade_level . ' - ' . $section_name . '</h3>';
