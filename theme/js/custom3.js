@@ -377,12 +377,14 @@ Module.Section = (function() {
 
     function search_section(school_year) {
 
-    	var school_year = school_year || '';
+    	
 
         var $search_section = $('#search-section');
         var $search_results = $search_section.find('.search-results');
         var $school_year = $search_section.find('[name=school_year]');
         var $loading = $search_section.find('.loading');
+
+        var school_year = school_year || $school_year.val();
 
         $.ajax({
             url: base_url + 'curiculum/display_sections_by_grade_level',
@@ -1246,12 +1248,14 @@ Module.Subject = (function() {
 
     function search_offered_subject(school_year) {
 
-    	var school_year = school_year || '';
+    	
 
         var $search_subject = $('#search-offered-subjects');
         var $search_results = $search_subject.find('.search-results');
         var $school_year = $search_subject.find('[name=school_year]');
         var $loading = $search_subject.find('.loading');
+
+        var school_year = school_year || $school_year.val();
 
         $.ajax({
             url: base_url + 'curiculum/display_offered_subjects_by_section_and_school_year',

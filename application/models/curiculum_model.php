@@ -1447,10 +1447,10 @@ class Curiculum_Model extends MY_Model {
           AND d.`user_id` = e.user_id
           AND f.`subj_offerid` = a.`subj_offerid`";
 
-        if($subj_offerid !== null){
+        if($subj_offerid === null){
             $escaped_values = array($section, $user_id);
         }else{
-            $sql .= " a.`subj_offerid` = ?";
+            $sql .= "AND a.`subj_offerid` = ?";
             $escaped_values = array($section, $user_id, $subj_offerid);
         }
 
@@ -1486,10 +1486,10 @@ class Curiculum_Model extends MY_Model {
           AND d.`user_id` = e.user_id
           AND f.`subj_offerid` = a.`subj_offerid`";
 
-        if($subj_offerid !== null){
+        if($subj_offerid === null){
             $escaped_values = array($section, $user_id);
         }else{
-            $sql .= " a.`subj_offerid` = ?";
+            $sql .= "AND a.`subj_offerid` = ?";
             $escaped_values = array($section, $user_id, $subj_offerid);
         }
 
@@ -1525,10 +1525,10 @@ class Curiculum_Model extends MY_Model {
           AND d.`user_id` = e.user_id
           AND f.`subj_offerid` = a.`subj_offerid`";
 
-        if($subj_offerid !== null){
+        if($subj_offerid === null){
             $escaped_values = array($section, $user_id);
         }else{
-            $sql .= " a.`subj_offerid` = ?";
+            $sql .= "AND a.`subj_offerid` = ?";
             $escaped_values = array($section, $user_id, $subj_offerid);
         }
 
@@ -1564,10 +1564,10 @@ class Curiculum_Model extends MY_Model {
           AND d.`user_id` = e.user_id
           AND f.`subj_offerid` = a.`subj_offerid`";
 
-        if($subj_offerid !== null){
+        if($subj_offerid === null){
             $escaped_values = array($section, $user_id);
         }else{
-            $sql .= " a.`subj_offerid` = ?";
+            $sql .= "AND a.`subj_offerid` = ?";
             $escaped_values = array($section, $user_id, $subj_offerid);
         }
 
@@ -1603,10 +1603,10 @@ class Curiculum_Model extends MY_Model {
           AND d.`user_id` = e.user_id
           AND f.`subj_offerid` = a.`subj_offerid`";
 
-        if($subj_offerid !== null){
+        if($subj_offerid === null){
             $escaped_values = array($section, $user_id);
         }else{
-            $sql .= " a.`subj_offerid` = ?";
+            $sql .= "AND a.`subj_offerid` = ?";
             $escaped_values = array($section, $user_id, $subj_offerid);
         }
 

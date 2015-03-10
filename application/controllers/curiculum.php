@@ -1261,6 +1261,10 @@ class Curiculum extends My_Controller {
 		}*/
 
 		//exam
+		if($subj_offerid == null || $subj_offerid == ''){
+			$subj_offerid = null;
+		}
+
 		$results = $main_model->get_student_exam($offer_id, $user_id, $subj_offerid);
 
 		foreach($results as $result){
@@ -2709,8 +2713,8 @@ class Curiculum extends My_Controller {
 			$main_model = $this->main_model;
 
 			if($school_year == "" || $school_year == null){
-				$sy_start = date('Y');
-				$sy_end = date('Y') + 1;
+				$sy_start = date('Y') - 1;
+				$sy_end = date('Y');
 			}else{
 				$school_year = explode('-', $school_year);
 				$sy_start = $school_year[0];
