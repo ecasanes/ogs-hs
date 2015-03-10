@@ -42,7 +42,7 @@
                                 <div class="col-sm-2 col-xs-12">
                                   <select name="sy_start" class="form-control" required>
                                     <option value="">Select</option>
-                                    <?php echo year_dropdown(); ?>
+                                    <?php echo year_dropdown($year_minus_a_year, 1); ?>
                                   </select>
                                 </div>
                               </div>
@@ -52,14 +52,14 @@
                                 <div class="col-sm-2 col-xs-12">
                                   <select name="sy_end" class="form-control" required>
                                     <option value="">Select</option>
-                                    <?php echo year_dropdown(); ?>
+                                    <?php echo year_dropdown(null, 0); ?>
                                   </select>
                                 </div>
                               </div>
 
                               <div class="form-group">
                                 <label for="username" class="control-label col-sm-2 col-xs-12"></label>
-                                <div class="col-sm-5 col-xs-12">
+                                <div class="col-sm-6 col-xs-12">
                                   <input type="submit" value="Add" class="btn btn-success">
                                   &nbsp;
                                   <span class="error-message"></span>

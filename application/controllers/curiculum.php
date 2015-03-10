@@ -26,8 +26,11 @@ class Curiculum extends My_Controller {
 
 		$header_data = array();
 
+		$year_lowest_limit = date('Y', strtotime(date("Y", strtotime( date('Y'))) . " - 1 year"));
+
 		$model_data = array(
-				'school_year_dropdown' => $this->school_year_dropdown()
+				'school_year_dropdown' => $this->school_year_dropdown(),
+				'year_minus_a_year' => $year_lowest_limit
 			);
 
 		$footer_data = array();
@@ -302,31 +305,42 @@ class Curiculum extends My_Controller {
 
 			if(!$exist){
 
-				for($i=1;$i<=4;$i++){
-					$grade_level_id = $main_model->create_grade_level($sy_start, $sy_end, $i);
-				}
-				
-				$success_message = "Grade Level was added successfully. ";
-
-				if($grade_level_id){
-
+				if($sy_start >= $sy_end){
 					$json_result = array(
-						'grade_level_id' => $grade_level_id,
-						'result' => 'success',
-						'success_message' => $success_message
-						);
-				}else{
-					$json_result = array(
+						'grade_level' => 'failed',
+						'grade_level_message' => 'School year must not start with a much greater value than SY End. ',
 						'result' => 'failed'
-						);
+					);
+				}else{
+
+					for($i=1;$i<=4;$i++){
+						$grade_level_id = $main_model->create_grade_level($sy_start, $sy_end, $i);
+					}
+					
+					$success_message = "Year Level was added successfully. ";
+
+					if($grade_level_id){
+
+						$json_result = array(
+							'grade_level_id' => $grade_level_id,
+							'result' => 'success',
+							'success_message' => $success_message
+							);
+					}else{
+						$json_result = array(
+							'result' => 'failed'
+							);
+					}
+
+					$json_result['grade_level'] = 'success';   
 				}
 
-				$json_result['grade_level'] = 'success';      
+				   
 
 			}else{
 				$json_result = array(
 					'grade_level' => 'failed',
-					'grade_level_message' => 'Grade Level already exist. ',
+					'grade_level_message' => 'Year Level already exist. ',
 					'result' => 'failed'
 					);
 			}
@@ -2828,6 +2842,57 @@ class Curiculum extends My_Controller {
 
 			
 		}
+	}
+
+	public function check_grading_system_columns(){
+
+		$data = $this->input->post();
+
+		if($data){
+			extract( $data, EXTR_SKIP );
+			$main_model = $this->main_model;
+
+			$column_pass = true;
+
+			$message = "<p>Columns to be removed may contain score.</p>";
+			$message .= "<p>Are you sure to remove last column for the following?</p>";
+			$message .= "<ul>";
+
+			if($quiz_column < $old_quiz_column){
+				$column_pass = false;
+				$message .= "<li>Quiz</li>";
+			}
+
+			if($project_column < $old_project_column){
+				$column_pass = false;
+				$message .= "<li>Project</li>";
+			}
+
+			if($assignment_column < $old_assignment_column){
+				$column_pass = false;
+				$message .= "<li>Assignment</li>";
+			}
+
+			if($recitation_column < $old_recitation_column){
+				$column_pass = false;
+				$message .= "<li>Recitation</li>";
+			}
+
+			$message .= "</ul>";
+
+			if($column_pass){
+				$message = "";
+			}
+
+			$json_result = array(
+				'result' => $column_pass,
+				'message' => $message
+			);
+
+			echo json_encode($json_result);
+
+		}
+
 	}
 
 	public function update_grading_system(){

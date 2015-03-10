@@ -114,7 +114,7 @@ if ( !function_exists( 'convert_string_to_date' ) ) {
 
 
 if ( !function_exists( 'year_dropdown' ) ) {
-	function year_dropdown($default_value = null) {
+	function year_dropdown($default_value = null, $min = 10, $max = 10) {
 
 		if($default_value == null){
 			$current_year = date('Y');
@@ -123,8 +123,8 @@ if ( !function_exists( 'year_dropdown' ) ) {
 		}
 		
 
-		$year_lowest_limit = date('Y', strtotime(date("Y", strtotime( date('Y'))) . " - 10 year"));
-		$year_highest_limit = date('Y', strtotime(date("Y", strtotime( date('Y'))) . " + 10 year"));
+		$year_lowest_limit = date('Y', strtotime(date("Y", strtotime( date('Y'))) . " - ".$min." year"));
+		$year_highest_limit = date('Y', strtotime(date("Y", strtotime( date('Y'))) . " + ".$max." year"));
 
 		$output = "";
 		for($i=$year_lowest_limit;$i<$year_highest_limit;$i++){

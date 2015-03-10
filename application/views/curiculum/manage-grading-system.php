@@ -22,3 +22,21 @@
 
 </div> 
 </div>
+
+
+<div class="modal fade" id="column-modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Would you like to contiue? <span class="tag"></span></h4>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary go-no" data-dismiss="modal"> No</button>
+        <button type="submit" class="btn btn-danger go-yes"> Yes</button>
+      </div>
+    </div>
+  </div>
+</div>

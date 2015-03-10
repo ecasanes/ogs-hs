@@ -2660,22 +2660,93 @@ Module.Curiculum = (function() {
         });
     }
 
+    function check_grading_system_columns($this){
+
+        var $active_panel = $('.active.tab-pane');
+        var active_panel_id = $active_panel.attr('id');
+        var post_data = $this.serializeArray();
+
+        var subj_offerid = $this.find('input[name=subj_offerid]').val();
+        var term = $this.find('input[name=term]').val();
+
+        var result = true;
+
+        $.ajax({
+            url: base_url + controller + '/check_grading_system_columns',
+            method: "post",
+            data: post_data,
+            dataType: "json",
+            async:false,
+            beforeSend: function(data) {},
+            success: function(data) {
+
+                console.log(data);
+
+                result = data.result;
+                var message = data.message;
+
+                if(result){
+                }else{
+                    $('#column-modal').modal();
+                    $('#column-modal').find('.modal-body').html(message);
+                }
+
+            },
+            complete: function(data) {},
+            error: function(error, data) {
+                console.log(error.responseText);
+            }
+
+        });
+
+        return result;
+
+    }
+
     function update_grading_system() {
 
         //$form = $('#edit-grading-system-form');
 
         $(document).on('submit', '#edit-grading-system-form', function(e){
+
             e.preventDefault();
 
-            var $this = $(this);
+            commence_update_grading_system();
+        });
 
-            var $active_panel = $('.active.tab-pane');
-            var active_panel_id = $active_panel.attr('id');
-            var post_data = $this.serializeArray();
+        $(document).on('click', '#column-modal .go-yes', function(e){
 
-            var subj_offerid = $this.find('input[name=subj_offerid]').val();
-            var term = $this.find('input[name=term]').val();
+            e.preventDefault();
 
+            $('#column-modal').modal('hide');
+
+            var bypass_check = true;
+
+            commence_update_grading_system(bypass_check);
+        });
+    }
+
+    function commence_update_grading_system(bypass_check){
+
+        var bypass_check = bypass_check || false;
+
+        var $this = $('#edit-grading-system-form');
+
+        var $active_panel = $('.active.tab-pane');
+        var active_panel_id = $active_panel.attr('id');
+        var post_data = $this.serializeArray();
+
+        var subj_offerid = $this.find('input[name=subj_offerid]').val();
+        var term = $this.find('input[name=term]').val();
+
+        var column_check = true;
+
+        if(!bypass_check){
+            column_check = check_grading_system_columns($this);
+        }
+        
+
+        if(column_check){
             $.ajax({
                 url: base_url + controller + '/update_grading_system',
                 method: "post",
@@ -2686,8 +2757,8 @@ Module.Curiculum = (function() {
                     console.log(data);
 
                     if (data.result == 'success') {
-                        display_grading_system(subj_offerid, term, 'edit');
-                        $active_panel.find('.message').removeClass('error-message').addClass(data.message_class).text(data.message);
+                        display_grading_system(subj_offerid, term, 'edit', null, data.result);
+                        
                     } else if (data.result == 'failed') {
                         $active_panel.find('.message').removeClass('success-message').addClass(data.message_class).text(data.message);
                     }
@@ -2699,14 +2770,16 @@ Module.Curiculum = (function() {
                 }
 
             });
-        });
+        }
+
     }
 
-    function display_grading_system(subj_offerid, term, action, $this) {
+    function display_grading_system(subj_offerid, term, action, $this, success) {
 
         console.log('display grading system called');
 
         var $this = $this || null;
+        var success = success || false;
 
         if ($this !== null) {
             var active_panel_id = $this.attr('href');
@@ -2743,6 +2816,10 @@ Module.Curiculum = (function() {
                 //$form = $('#edit-grading-system-form');
                 //$form.unbind();
                 update_grading_system();
+                if(success == 'success'){
+                    $active_panel.find('.message').removeClass('error-message').addClass('success-message').text('Grading System successfully updated.');
+                }
+                
             },
             complete: function(data) {
                 $loading.addClass('hidden');

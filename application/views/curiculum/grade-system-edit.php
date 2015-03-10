@@ -1,6 +1,11 @@
 <?php echo form_open('', array('id'=>'edit-grading-system-form')); ?>
 <?php echo form_hidden('subj_offerid', $subj_offerid); ?>
 <?php echo form_hidden('term', $term); ?>
+<?php echo form_hidden('old_assignment_column', $assignment_column); ?>
+<?php echo form_hidden('old_quiz_column', $quiz_column); ?>
+<?php echo form_hidden('old_recitation_column', $recitation_column); ?>
+<?php echo form_hidden('old_project_column', $project_column); ?>
+<?php echo form_hidden('old_exam_column', $exam_column); ?>
 <table class="table table-bordered table-hover">
 	<thead>
 		<tr>
@@ -56,3 +61,5 @@
 </div>
 
 <?php echo form_close(); ?>
+
+
