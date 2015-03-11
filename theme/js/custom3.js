@@ -2675,6 +2675,8 @@ Module.Curiculum = (function() {
 
         var result = true;
 
+        console.log(post_data);
+
         $.ajax({
             url: base_url + controller + '/check_grading_system_columns',
             method: "post",

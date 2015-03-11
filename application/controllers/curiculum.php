@@ -2854,6 +2854,8 @@ class Curiculum extends My_Controller {
 
 		if($data){
 			extract( $data, EXTR_SKIP );
+			//subj_offerid
+			//term
 			$main_model = $this->main_model;
 
 			$column_pass = true;
@@ -2862,22 +2864,26 @@ class Curiculum extends My_Controller {
 			$message .= "<p>Are you sure to remove last column for the following?</p>";
 			$message .= "<ul>";
 
-			if($quiz_column < $old_quiz_column){
+			$quiz_items = $main_model->get_quiz_items($subj_offerid, $term);
+			if($quiz_column < $old_quiz_column && $quiz_items > 0){
 				$column_pass = false;
 				$message .= "<li>Quiz</li>";
 			}
 
-			if($project_column < $old_project_column){
+			$project_items = $main_model->get_project_items($subj_offerid, $term);
+			if($project_column < $old_project_column && $project_items > 0){
 				$column_pass = false;
 				$message .= "<li>Project</li>";
 			}
 
-			if($assignment_column < $old_assignment_column){
+			$assignment_items = $main_model->get_assignment_items($subj_offerid, $term);
+			if($assignment_column < $old_assignment_column && $assignment_items > 0){
 				$column_pass = false;
 				$message .= "<li>Assignment</li>";
 			}
 
-			if($recitation_column < $old_recitation_column){
+			$recitation_items = $main_model->get_recitation_items($subj_offerid, $term);
+			if($recitation_column < $old_recitation_column && $recitation_items > 0){
 				$column_pass = false;
 				$message .= "<li>Recitation</li>";
 			}
