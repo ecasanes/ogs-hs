@@ -1,4 +1,4 @@
-<?php echo form_open('', array('id'=>'edit-grading-system-form')); ?>
+<?php echo form_open('', array( 'class'=> 'edit-grading-system-form')); ?>
 <?php echo form_hidden('subj_offerid', $subj_offerid); ?>
 <?php echo form_hidden('term', $term); ?>
 <?php echo form_hidden('old_assignment_column', $assignment_column); ?>

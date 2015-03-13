@@ -2675,7 +2675,7 @@ Module.Curiculum = (function() {
 
         var result = true;
 
-        console.log(post_data);
+        //console.log(post_data);
 
         $.ajax({
             url: base_url + controller + '/check_grading_system_columns',
@@ -2713,34 +2713,44 @@ Module.Curiculum = (function() {
 
         //$form = $('#edit-grading-system-form');
 
-        $(document).on('submit', '#edit-grading-system-form', function(e){
+        $(document).on('submit', '.tab-pane.active .edit-grading-system-form', function(e){
 
             e.preventDefault();
 
-            commence_update_grading_system();
+            var $this = $(this);
+
+            var bypass_check = false;
+
+            commence_update_grading_system(bypass_check, $this);
         });
 
         $(document).on('click', '#column-modal .go-yes', function(e){
 
             e.preventDefault();
 
+            var $this = $(this);
+
+            var $grade_system_container = $('#grade-system-container');
+            var $active_tab = $grade_system_container.find('.active.tab-pane');
+            var $form = $active_tab.find('.edit-grading-system-form');
+
             $('#column-modal').modal('hide');
 
             var bypass_check = true;
 
-            commence_update_grading_system(bypass_check);
+            commence_update_grading_system(bypass_check, $form);
         });
     }
 
-    function commence_update_grading_system(bypass_check){
+    function commence_update_grading_system(bypass_check, $form){
 
         var bypass_check = bypass_check || false;
 
-        var $this = $('#edit-grading-system-form');
+        var $this = $form;
 
         var $active_panel = $('.active.tab-pane');
         var active_panel_id = $active_panel.attr('id');
-        var post_data = $this.serializeArray();
+        var post_data = $active_panel.find('.edit-grading-system-form').serializeArray();
 
         var subj_offerid = $this.find('input[name=subj_offerid]').val();
         var term = $this.find('input[name=term]').val();
@@ -2750,6 +2760,8 @@ Module.Curiculum = (function() {
         if(!bypass_check){
             column_check = check_grading_system_columns($this);
         }
+
+        console.log(post_data);
         
 
         if(column_check){
@@ -2760,6 +2772,7 @@ Module.Curiculum = (function() {
                 dataType: "json",
                 beforeSend: function(data) {},
                 success: function(data) {
+
                     console.log(data);
 
                     if (data.result == 'success') {
