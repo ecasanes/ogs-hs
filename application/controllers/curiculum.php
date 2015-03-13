@@ -717,11 +717,12 @@ class Curiculum extends My_Controller {
 
 					$success = true;
 					$message = "Search success.";
+					$is_get = true;
 
 					$json_array = array(
 							'success' => $success,
 							'message' => $message,
-							'content' => $this->display_activity_modification_table($term, $enrolled_students, $subj_offerid, $section, $subject, $grade_level_id, $activity_type),
+							'content' => $this->display_activity_modification_table($term, $enrolled_students, $subj_offerid, $section, $subject, $grade_level_id, $activity_type, $is_get),
 							'term' => $term,
 							'subj_offerid' => $subj_offerid,
 							'activity_type' => $activity_type,
@@ -1017,7 +1018,7 @@ class Curiculum extends My_Controller {
 		}
 	}
 
-	public function display_activity_modification_table($term, $enrolled_students, $subj_offerid, $offer_id, $subj_id, $grade_level_id, $activity_type = "quiz"){
+	public function display_activity_modification_table($term, $enrolled_students, $subj_offerid, $offer_id, $subj_id, $grade_level_id, $activity_type = "quiz", $is_get = false){
 
 		$user_type = $this->user_type;
 
@@ -1060,7 +1061,7 @@ class Curiculum extends My_Controller {
 				
 
 				$output .= '<tr>';
-				if($lock_status || $user_type == 3 || $user_type == 1){
+				if($lock_status || $user_type == 3 || $user_type == 1 || $is_get == true){
 					$output .= '<td class="quiz-cell compensate-padding">'.$items.'</td>';
 				}else{
 					$output .= '<td class="quiz-cell"><input data-id="'.$activity_id.'" data-section="'.$offer_id.'" data-subject="'.$subj_id.'" type="text" value="'.$items.'" class="activity-toggle"></td>';
@@ -2294,7 +2295,7 @@ class Curiculum extends My_Controller {
 
 			$output .= '</tr>';
 
-			if($user_type == 1){
+			if($user_type == 1 || $user_type == 2){
 				$students = $main_model->get_enrolled_students_by_section($offer_id);
 			}else if($user_type == 3){
 				$students = $main_model->get_enrolled_students_by_section($offer_id, $student_user_id);
@@ -2389,7 +2390,7 @@ class Curiculum extends My_Controller {
 
 		$output .= '</tr>';
 
-		if($user_type == 1){
+		if($user_type == 1 || $user_type == 2){
 			$students = $main_model->get_enrolled_students_by_section($offer_id);
 		}else if($user_type == 3){
 			$students = $main_model->get_enrolled_students_by_section($offer_id, $student_user_id);
@@ -2458,7 +2459,7 @@ class Curiculum extends My_Controller {
 			$sy_start = $school_year[0];
 			$sy_end = $school_year[1];
 
-			if($user_type == 1){
+			if($user_type == 1 || $user_type == 2){
 				$grade_levels = $main_model->get_available_year_level_by_school_year($sy_start, $sy_end);
 			}else if($user_type == 3){
 				$grade_levels = $main_model->get_available_year_level_by_school_year($sy_start, $sy_end, $student_user_id);
@@ -2467,7 +2468,7 @@ class Curiculum extends My_Controller {
 
 			if($user_type == 1){
 				$output = "<h3> Class Offerings SY: " . $sy_start . ' - ' . $sy_end . "</h3>";
-			}else if($user_type == 3){
+			}else if($user_type == 3 || $user_type == 2){
 				$output = "<h3> SY: " . $sy_start . ' - ' . $sy_end . "</h3>";
 			}
 			
@@ -2481,7 +2482,7 @@ class Curiculum extends My_Controller {
 
 					$output .= "<h3> Year Leve: " . $grade_level_tag . "</h3>";
 
-					if($user_type == 1){
+					if($user_type == 1 || $user_type == 2){
 						$sections = $main_model->get_sections_by_grade_level($grade_level_id);
 					}else if($user_type == 3){	
 						$sections = $main_model->get_sections_by_grade_level($grade_level_id, $student_user_id);
