@@ -184,24 +184,28 @@ class Subject extends My_Controller {
 			$sy_start = $school_year[0];
 			$sy_end = $school_year[1];
 
-			$exist = $this->subject_code_grade_level_exist($sy_start, $sy_end, $grade_level, $subject);
+			foreach($subject as $subj){
 
-			var_dump($exist);
+				$exist = $this->subject_code_grade_level_exist($sy_start, $sy_end, $grade_level, $subj);
 
-			if ( !$exist ) {
+				if ( !$exist ) {
 
-				$grade_level_id = $curiculum_model->get_grade_level_id_by_detail($sy_start, $sy_end, $grade_level);
-				$main_model->add_subject_grade_level($subject, $grade_level_id);
+					$grade_level_id = $curiculum_model->get_grade_level_id_by_detail($sy_start, $sy_end, $grade_level);
+					$main_model->add_subject_grade_level($subj, $grade_level_id);
 
-				var_dump($this->db->last_query());
+					//var_dump($this->db->last_query());
 
-				$this->session->set_flashdata( 'success', 'Grade level successfully assigned to subject.' );
+					$this->session->set_flashdata( 'success', 'Grade level successfully assigned to subject.' );
 
-			}else{
+				}else{
 
-				$this->session->set_flashdata( 'error', 'Subject already assigned to grade level.' );
-				
+					$this->session->set_flashdata( 'error', 'Subject already assigned to grade level.' );
+					
+				}
+
 			}
+
+			
 
 			redirect('subject/assign-subject-grade-level');
 
@@ -408,7 +412,7 @@ class Subject extends My_Controller {
 	public function subjects_by_year_level_dropdown($school_year, $year_level, $html_type = "dropdown"){
 
 		$main_model = $this->main_model;
-		
+
 	    $school_year = explode('-', $school_year);
 		$sy_start = $school_year[0];
 		$sy_end = $school_year[1];

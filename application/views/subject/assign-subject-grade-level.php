@@ -38,10 +38,10 @@
 
             <div class="form-group">
               <label for="subject" class="control-label col-sm-2 col-xs-12">Subject Name</label>
-                <div class="subject col-sm-2 col-xs-12">
+                <div class="subject col-sm-4 col-xs-12">
                   <div class="loading hidden"><i class="fa fa-loading fa-spin"></i> Loading Subjects...</div>
-                  <div class="not-found hidden">No Subjects Found</div>
-                  <div class="requirements">Please Select Subject</div>
+                  <div class="not-found hidden">No Subjects Found. All subjects in the master list were already assigned to this school year and year level.</div>
+                  <div class="requirements">Please Select School Year and Year Level</div>
                   <div class="subject-checkbox">
 
                   </div>

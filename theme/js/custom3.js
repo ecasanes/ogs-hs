@@ -974,6 +974,24 @@ Module.AssignSubject = (function(){
                 get_section_dropdown($subject_container);
             }
         });
+
+
+        $school_year.change(function(e) {
+
+            var $this = $(this);
+
+            var year_level = $year_level.val();
+            var school_year = $this.val();
+
+            if (year_level != null) {
+
+                get_subject_checkbox($subject_container, year_level, school_year);
+
+            } else {
+
+                get_section_dropdown($subject_container);
+            }
+        });
     }
 
     function get_subject_checkbox($subject_container, year_level, school_year) {

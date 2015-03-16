@@ -61,7 +61,7 @@ class Subject_Model extends MY_Model {
           * 
         FROM
           tbl_subject 
-        WHERE subj_id NOT IN 
+        WHERE year_level = ? AND subj_id NOT IN 
           (SELECT DISTINCT 
             (a.`subj_id`) 
           FROM
@@ -71,7 +71,7 @@ class Subject_Model extends MY_Model {
             AND b.`sy_end` = ? 
             AND b.grade_level = ?)";
 
-      $escaped_values = array($sy_start, $sy_end, $year_level);
+      $escaped_values = array($year_level, $sy_start, $sy_end, $year_level);
 
       $query = $this->db->query($sql, $escaped_values);
 
