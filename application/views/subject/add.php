@@ -2,7 +2,7 @@
   <div class="col-sm-6 col-xs-12">
 
     <!-- start panel -->
-    <div class="panel panel-primary">
+    <div id="add-subject-panel" class="panel panel-primary">
       
       <div class="panel-heading">
         <h3 class="panel-title">Add Subject</h3>

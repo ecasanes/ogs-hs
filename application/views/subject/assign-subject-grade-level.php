@@ -37,12 +37,14 @@
             </div>
 
             <div class="form-group">
-              <label for="school_year" class="control-label col-sm-2 col-xs-12">Subject Name</label>
-                <div class="col-sm-3 col-xs-12">
-                  <select name="subject" id="" class="form-control" required>
-                    <option value="">Select</option>
-                    <?php echo $no_grade_level_subject_dropdown; ?>
-                  </select>
+              <label for="subject" class="control-label col-sm-2 col-xs-12">Subject Name</label>
+                <div class="subject col-sm-2 col-xs-12">
+                  <div class="loading hidden"><i class="fa fa-loading fa-spin"></i> Loading Subjects...</div>
+                  <div class="not-found hidden">No Subjects Found</div>
+                  <div class="requirements">Please Select Subject</div>
+                  <div class="subject-checkbox">
+
+                  </div>
                 </div>
             </div>
             

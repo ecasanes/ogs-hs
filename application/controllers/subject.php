@@ -59,7 +59,8 @@ class Subject extends My_Controller {
 		$footer_data = array();
 		$footer_data['listeners'] = array(
 			'Module.Subject.add_subject()', 
-			'Module.Subject.refresh_subject_list()'
+			'Module.Subject.refresh_subject_list()',
+			'Module.AssignSubject.get_subject_per_year_level()'
 		);
 
 		$this->load->view( 'layout/header', $header_data );
@@ -74,6 +75,23 @@ class Subject extends My_Controller {
 		$main_model = $this->main_model;
 
 		$count = $main_model->count_subject_by_grade_level($sy_start, $sy_end, $grade_level, $subject_id);
+
+		/*var_dump($this->db->last_query());
+		var_dump($count);*/
+
+		if($count > 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+
+	public function subject_code_year_level_exist($grade_level, $subject_id){
+
+		$main_model = $this->main_model;
+
+		$count = $main_model->count_subject_by_year_level($grade_level, $subject_id);
 
 		/*var_dump($this->db->last_query());
 		var_dump($count);*/
@@ -105,12 +123,13 @@ class Subject extends My_Controller {
 
 			$this->form_validation->set_rules( 'subject_code', 'Subject Code', 'is_unique[tbl_subject.subj_code]' );
 
-			$school_year = explode('-', $school_year);
+			/*$school_year = explode('-', $school_year);
 			$sy_start = $school_year[0];
-			$sy_end = $school_year[1];
+			$sy_end = $school_year[1];*/
 
 			$subject_code_unique = $this->form_validation->run();
-			$grade_level_exist = $this->subject_code_grade_level_exist($sy_start, $sy_end, $grade_level, $subject_code);
+			//$grade_level_exist = $this->subject_code_grade_level_exist($sy_start, $sy_end, $grade_level, $subject_code);
+			$grade_level_exist = $this->subject_code_year_level_exist($grade_level, $subject_code);
 
 			if( $subject_code_unique == false && $grade_level_exist == true){
 
@@ -120,9 +139,9 @@ class Subject extends My_Controller {
 
 			}else if(($subject_code_unique == false && $grade_level_exist == false) || ($subject_code_unique == true && $grade_level_exist == false)){
 
-				$subj_id = $main_model->create_subject($subject_code, $subject_unit, $subject_description);
-				$grade_level_id = $curiculum_model->get_grade_level_id_by_detail($sy_start, $sy_end, $grade_level);
-				$main_model->add_subject_grade_level($subj_id, $grade_level_id);
+				$subj_id = $main_model->create_subject($subject_code, $subject_unit, $subject_description, $grade_level);
+				//$grade_level_id = $curiculum_model->get_grade_level_id_by_detail($sy_start, $sy_end, $grade_level);
+				//$main_model->add_subject_grade_level($subj_id, $grade_level_id);
 
 				$message = "Subject was added successfully. ";
 				$result = "success";
@@ -340,6 +359,75 @@ class Subject extends My_Controller {
 	      $subj_desc = $result->subj_desc;
 
 	      $option .= '<option value="'.$subj_id.'">'.$subj_code.'</option>';
+	    }
+
+	    return $option;
+	}
+
+	public function ajax_subjects_by_year_level($html_type = "dropdown"){
+
+		$data = $this->input->get();
+
+		if($data){
+
+			extract( $data, EXTR_SKIP );
+			$main_model = $this->main_model;
+
+			if($html_type == "dropdown"){
+				$option = '<option value="">Select</option>';
+			}else{
+				$option = "";
+			}
+			
+			$option .= $this->subjects_by_year_level_dropdown($school_year, $year_level, $html_type);
+
+			if($html_type == "dropdown"){
+				if($option == '<option value="">Select</option>'){
+					$success = false;
+				}else{
+					$success = true;
+				}
+			}else{
+				if($option == ""){
+					$success = false;
+				}else{
+					$success = true;
+				}
+			}
+			
+
+			$json_array = array(
+					'success' => $success,
+					'html' => $option
+				);
+
+			echo json_encode($json_array);
+		}
+	}
+
+	public function subjects_by_year_level_dropdown($school_year, $year_level, $html_type = "dropdown"){
+
+		$main_model = $this->main_model;
+		
+	    $school_year = explode('-', $school_year);
+		$sy_start = $school_year[0];
+		$sy_end = $school_year[1];
+
+	    $results = $main_model->get_subjects_not_assigned_by_school_year_and_year_level($sy_start, $sy_end, $year_level);
+
+	    $option = "";
+
+	    foreach($results as $result){
+
+	      $subj_id = $result->subj_id;
+	      $subj_code = $result->subj_code;
+
+	      if($html_type == "dropdown"){
+	      	$option .= '<option value="'.$subj_id.'">'.$subj_code.'</option>';
+	      }else{
+	      	$option .= '<div class="checkbox"><label><input value="'.$subj_id.'" name="subject[]" type="checkbox"> '.$subj_code.' </label></div>';
+	      }
+	      
 	    }
 
 	    return $option;

@@ -22,7 +22,8 @@ else:
 			$code = $result->subj_code;
 			$name = $result->subj_desc;
 			$unit = $result->subj_unit;
-			$grade_level = $result->grade_level;
+			$grade_level = $result->year_level;
+			//$grade_level = $result->grade_level;
 			$link = '';
 		?>
 			<tr>

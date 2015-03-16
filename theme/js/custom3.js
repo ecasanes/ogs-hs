@@ -949,6 +949,102 @@ Module.Teacher = (function() {
 })();
 
 
+Module.AssignSubject = (function(){
+
+    function get_subject_per_year_level(){
+
+        var $form = $('#assign-subject-grade-level-form');
+        var $school_year = $form.find('select[name=school_year]');
+        var $year_level = $form.find('select[name=grade_level]');
+        var $subject_container = $form.find('.subject');
+
+        $year_level.change(function(e) {
+
+            var $this = $(this);
+
+            var year_level = $this.val();
+            var school_year = $school_year.val();
+
+            if (year_level != null) {
+
+                get_subject_checkbox($subject_container, year_level, school_year);
+
+            } else {
+
+                get_section_dropdown($subject_container);
+            }
+        });
+    }
+
+    function get_subject_checkbox($subject_container, year_level, school_year) {
+
+        console.log('get subject checkbox');
+
+        var year_level = year_level || null;
+        var school_year = school_year || null;
+
+        var ajax_url = base_url + controller + "/ajax_subjects_by_year_level/checkbox";
+        var ajax_data = { "year_level" : year_level, "school_year" : school_year };
+
+        $loading = $subject_container.find('.loading');
+        $requirements = $subject_container.find('.requirements');
+        $not_found = $subject_container.find('.not-found');
+        $select = $subject_container.find('.subject-checkbox');
+
+        if (school_year === null || year_level === null) {
+            $not_found.addClass('hidden');
+            $loading.addClass('hidden');
+            $requirements.removeClass('hidden');
+            $select.addClass('hidden');
+        } else {
+            $.ajax({
+                url: ajax_url,
+                method: "get",
+                data: ajax_data,
+                dataType: "json",
+                beforeSend: function(data) {
+
+                    $loading.removeClass('hidden');
+                    $requirements.addClass('hidden');
+
+                },
+                success: function(data) {
+
+                    var content = data.html;
+                    var success = data.success;
+
+                    if (success) {
+                        $select.html(content);
+                        $not_found.addClass('hidden');
+                        $select.removeClass('hidden');
+                        $loading.addClass('hidden');
+                        $requirements.addClass('hidden');
+                    } else {
+                        $not_found.removeClass('hidden');
+                        $loading.addClass('hidden');
+                        $requirements.addClass('hidden');
+                        $select.addClass('hidden');
+                    }
+
+                },
+                complete: function(data) {
+
+                },
+                error: function(error, data) {
+                    console.log(error.responseText);
+                }
+
+            });
+        }
+    }
+
+    return {
+        get_subject_per_year_level: get_subject_per_year_level
+    }
+    
+
+})();
+
 Module.Subject = (function() {
 
     var $search_subject = $('#search-subject');

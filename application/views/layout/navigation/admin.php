@@ -8,6 +8,9 @@
                   <a href="<?php echo base_url('subject'); ?>"><i class="fa fa-male"></i> Add and Modify Subjects</a>
                 </li>
                 <li>
+                  <a href="<?php echo base_url('subject//assign_subject_grade_level'); ?>"><i class="fa fa-male"></i> Assign Subject to Year Level</a>
+                </li>
+                <li>
                   <a href="<?php echo base_url('curiculum/offer-subject'); ?>"><i class="fa fa-male"></i> Offer Subject</a>
                 </li>
               </ul>

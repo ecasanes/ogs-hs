@@ -14,7 +14,7 @@ class Subject_Model extends MY_Model {
     */
 
     /* get */
-    public function get_subjects(){
+    /*public function get_subjects(){
 
         $db_table = $this::DB_TABLE;
         $db_primary =$this::DB_TABLE_PK;
@@ -36,6 +36,49 @@ class Subject_Model extends MY_Model {
         $result = $query->result();
 
         return $result;
+    }*/
+
+    public function get_subjects(){
+
+        $db_table = $this::DB_TABLE;
+        $db_primary =$this::DB_TABLE_PK;
+
+        $sql  = "SELECT DISTINCT 
+              (a.subj_id), a.*
+            FROM
+              tbl_subject a";
+
+        $query = $this->db->query($sql);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
+    public function get_subjects_not_assigned_by_school_year_and_year_level($sy_start, $sy_end, $year_level){
+
+      $sql = "SELECT 
+          * 
+        FROM
+          tbl_subject 
+        WHERE subj_id NOT IN 
+          (SELECT DISTINCT 
+            (a.`subj_id`) 
+          FROM
+            tbl_grade_subj a,
+            tbl_grade_level b 
+          WHERE b.`sy_start` = ?
+            AND b.`sy_end` = ? 
+            AND b.grade_level = ?)";
+
+      $escaped_values = array($sy_start, $sy_end, $year_level);
+
+      $query = $this->db->query($sql, $escaped_values);
+
+      $result = $query->result();
+
+      return $result;
+
     }
 
     public function get_subjects_by_school_year_and_grade_level($sy_start, $sy_end, $grade_level){
@@ -161,15 +204,34 @@ class Subject_Model extends MY_Model {
         return $result;
     }
 
+
+    public function count_subject_by_year_level($year_level, $subj_code){
+
+        $sql = "SELECT 
+          COUNT(DISTINCT (a.`subj_id`)) AS count_subject 
+        FROM
+          tbl_subject a 
+        WHERE a.subj_code LIKE '%{$subj_code}%' 
+          AND a.year_level = ?";
+
+        $escaped_values = array($year_level);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->row()->count_subject;
+
+        return $result;
+    }
+
     /* create */
-    public function create_subject($subject_code, $subject_unit, $subject_description){
+    public function create_subject($subject_code, $subject_unit, $subject_description, $year_level){
 
         $db_table = $this::DB_TABLE;
         $db_primary =$this::DB_TABLE_PK;
 
-        $sql = "INSERT INTO {$db_table} (subj_code, subj_unit, subj_desc) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO {$db_table} (subj_code, subj_unit, subj_desc, year_level) VALUES (?, ?, ?, ?)";
 
-        $escaped_values = array($subject_code, $subject_unit, $subject_description);
+        $escaped_values = array($subject_code, $subject_unit, $subject_description, $year_level);
 
         $query = $this->db->query($sql, $escaped_values);
 

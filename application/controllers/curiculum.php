@@ -456,7 +456,7 @@ class Curiculum extends My_Controller {
 			if($section != '' && $subject != ''){
 
 				foreach($subject as $subj){
-					
+
 					$exist = $this->subject_offer_exist($section, $subj);
 
 					if($exist){
@@ -469,10 +469,6 @@ class Curiculum extends My_Controller {
 						$this->session->set_flashdata( 'success', 'Subject was successfully offered.' );
 					}
 				}
-				
-
-				
-
 			}else{
 				$this->session->set_flashdata( 'error', 'Please select section and subject.' );
 			}

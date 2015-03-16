@@ -31,7 +31,7 @@
             </div>
 
 
-            <div class="form-group">
+            <!-- <div class="form-group">
               <label for="username" class="control-label col-sm-4 col-xs-12">School Year</label>
               <div class="col-sm-6 col-xs-12">
                 <select name="school_year" class="form-control">
@@ -39,7 +39,7 @@
                   <?php echo $school_year_dropdown; ?>
                 </select>
               </div>
-            </div>
+            </div> -->
 
 
             <div class="form-group">
