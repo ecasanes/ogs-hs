@@ -53,8 +53,9 @@
 	                      	<div class="loading hidden"><i class="fa fa-loading fa-spin"></i> Loading Subjects...</div>
 	                      	<div class="not-found hidden">No Subjects Found</div>
 	                      	<div class="requirements">Please Select Subject</div>
-	                      	<select name="subject" class="form-control hidden" required>
-	                      	</select>
+	                      	<div class="subject-checkbox">
+
+	                      	</div>
 	                      </div>
                     </div>
 			  		

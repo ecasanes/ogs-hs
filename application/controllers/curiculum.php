@@ -442,7 +442,6 @@ class Curiculum extends My_Controller {
 			$student_user_id = $student->user_id;
 			$this->assign_initial_scores($offer_id, $student_user_id, $subj_offerid);
 		}
-		
 	}
 
 	public function submit_offer_subject(){
@@ -456,19 +455,23 @@ class Curiculum extends My_Controller {
 
 			if($section != '' && $subject != ''){
 
+				foreach($subject as $subj){
+					
+					$exist = $this->subject_offer_exist($section, $subj);
+
+					if($exist){
+						$this->session->set_flashdata( 'error', 'Subject already offered.' );
+					}else{
+						var_dump($data);
+						$subj_offerid = $main_model->offer_subject($section, $subj);
+						$this->assign_subject_defaults($subj_offerid);
+						$this->compensate_scores_for_enrolled_students($section, $subj, $subj_offerid);
+						$this->session->set_flashdata( 'success', 'Subject was successfully offered.' );
+					}
+				}
 				
 
-				$exist = $this->subject_offer_exist($section, $subject);
-
-				if($exist){
-					$this->session->set_flashdata( 'error', 'Subject already offered.' );
-				}else{
-					var_dump($data);
-					$subj_offerid = $main_model->offer_subject($section, $subject);
-					$this->assign_subject_defaults($subj_offerid);
-					$this->compensate_scores_for_enrolled_students($section, $subject, $subj_offerid);
-					$this->session->set_flashdata( 'success', 'Subject was successfully offered.' );
-				}
+				
 
 			}else{
 				$this->session->set_flashdata( 'error', 'Please select section and subject.' );
@@ -1539,7 +1542,7 @@ class Curiculum extends My_Controller {
 		}
 	}
 
-	public function subjects_not_offered_dropdown_by_info(){
+	public function subjects_not_offered_dropdown_by_info($html_type = "dropdown"){
 
 		$data = $this->input->get();
 
@@ -1548,15 +1551,28 @@ class Curiculum extends My_Controller {
 			extract( $data, EXTR_SKIP );
 			$main_model = $this->main_model;
 
-			$option = '<option value="">Select</option>';
-
-			$option .= $this->subjects_not_offered_dropdown($section);
-
-			if($option == '<option value="">Select</option>'){
-				$success = false;
+			if($html_type == "dropdown"){
+				$option = '<option value="">Select</option>';
 			}else{
-				$success = true;
+				$option = "";
 			}
+			
+			$option .= $this->subjects_not_offered_dropdown($section, $html_type);
+
+			if($html_type == "dropdown"){
+				if($option == '<option value="">Select</option>'){
+					$success = false;
+				}else{
+					$success = true;
+				}
+			}else{
+				if($option == ""){
+					$success = false;
+				}else{
+					$success = true;
+				}
+			}
+			
 
 			$json_array = array(
 					'success' => $success,
@@ -1567,7 +1583,7 @@ class Curiculum extends My_Controller {
 		}
 	}
 
-	public function subjects_offered_dropdown_by_info(){
+	public function subjects_offered_dropdown_by_info($html_type = "dropdown"){
 
 		$data = $this->input->get();
 
@@ -1577,15 +1593,29 @@ class Curiculum extends My_Controller {
 			extract( $data, EXTR_SKIP );
 			$main_model = $this->main_model;
 
-			$option = '<option value="">Select</option>';
+			if($html_type == "dropdown"){
+				$option = '<option value="">Select</option>';
+			}else{
+				$option = '';
+			}
+			
 
 			$option .= $this->subjects_offered_dropdown($section);
 
-			if($option == '<option value="">Select</option>'){
-				$success = false;
+			if($html_type == "dropdown"){
+				if($option == '<option value="">Select</option>'){
+					$success = false;
+				}else{
+					$success = true;
+				}
 			}else{
-				$success = true;
+				if($option == ""){
+					$success = false;
+				}else{
+					$success = true;
+				}
 			}
+			
 
 			$json_array = array(
 					'query' => $this->db->last_query(),
@@ -1694,7 +1724,7 @@ class Curiculum extends My_Controller {
 	    return $option;
 	}
 
-	public function subjects_not_offered_dropdown($section_id){
+	public function subjects_not_offered_dropdown($section_id, $html_type = "dropdown"){
 
 		$this->load->model('Curiculum_Model');
 	    $main_model = new Curiculum_Model;
@@ -1708,13 +1738,18 @@ class Curiculum extends My_Controller {
 	      $subj_id = $result->subj_id;
 	      $subj_code = $result->subj_code;
 
-	      $option .= '<option value="'.$subj_id.'">'.$subj_code.'</option>';
+	      if($html_type == "dropdown"){
+	      	$option .= '<option value="'.$subj_id.'">'.$subj_code.'</option>';
+	      }else{
+	      	$option .= '<div class="checkbox"><label><input value="'.$subj_id.'" name="subject[]" type="checkbox"> '.$subj_code.' </label></div>';
+	      }
+	      
 	    }
 
 	    return $option;
 	}
 
-	public function subjects_offered_dropdown($section_id){
+	public function subjects_offered_dropdown($section_id, $html_type = "dropdown"){
 
 		$this->load->model('Curiculum_Model');
 	    $main_model = new Curiculum_Model;
@@ -1736,7 +1771,12 @@ class Curiculum extends My_Controller {
 	      $subj_id = $result->subj_id;
 	      $subj_code = $result->subj_code;
 
-	      $option .= '<option value="'.$subj_id.'">'.$subj_code.'</option>';
+	      if($html_type == "dropdown"){
+	      	$option .= '<option value="'.$subj_id.'">'.$subj_code.'</option>';
+	      }else{
+	      	$option .= '<div class="checkbox"><label><input value="'.$subj_id.'" name="subject[]" type="checkbox"> '.$subj_code.' </label></div>';
+	      }
+	      
 	    }
 
 	    return $option;

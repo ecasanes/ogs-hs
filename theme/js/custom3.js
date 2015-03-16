@@ -2259,10 +2259,10 @@ Module.Curiculum = (function() {
 
             if (section != null) {
 
-                get_subject_dropdown($subject_container, section);
+                get_subject_checkbox($subject_container, section);
 
             } else {
-                get_subject_dropdown($subject_container);
+                get_subject_checkbox($subject_container);
             }
         });
     }
@@ -2400,6 +2400,93 @@ Module.Curiculum = (function() {
                         $requirements.addClass('hidden');
                         $select.addClass('hidden');
                         $select.prop('disabled', true);
+                    }
+
+                },
+                complete: function(data) {
+
+                },
+                error: function(error, data) {
+                    console.log(error.responseText);
+                }
+
+            });
+        }
+    }
+
+    function get_subject_checkbox($subject_container, section, school_year, grade_level, type) {
+
+        console.log('get subject checkbox');
+
+        var section = section || null;
+        var type = type || 'not_offered';
+
+        var ajax_url = "";
+        var ajax_data;
+
+        switch (type) {
+            case "not_offered":
+                ajax_url = base_url + "curiculum/subjects_not_offered_dropdown_by_info/checkbox";
+                ajax_data = {
+                    "section": section
+                };
+                break;
+
+            case "not_assigned":
+                ajax_url = base_url + "curiculum/subjects_not_assigned_dropdown_by_info/checkbox";
+                ajax_data = {
+                    "section": section,
+                    "school_year": school_year,
+                    "grade_level": grade_level
+                };
+                break;
+
+            case "offered":
+                ajax_url = base_url + "curiculum/subjects_offered_dropdown_by_info/checkbox";
+                ajax_data = {
+                    "section": section
+                };
+                break;
+        }
+
+        $loading = $subject_container.find('.loading');
+        $requirements = $subject_container.find('.requirements');
+        $not_found = $subject_container.find('.not-found');
+        $select = $subject_container.find('.subject-checkbox');
+
+        if (section === null) {
+            $not_found.addClass('hidden');
+            $loading.addClass('hidden');
+            $requirements.removeClass('hidden');
+            $select.addClass('hidden');
+        } else {
+            $.ajax({
+                url: ajax_url,
+                method: "get",
+                data: ajax_data,
+                dataType: "json",
+                beforeSend: function(data) {
+
+                    $loading.removeClass('hidden');
+                    $requirements.addClass('hidden');
+
+                },
+                success: function(data) {
+
+                    var content = data.html;
+                    var success = data.success;
+
+                    if (success) {
+                        $select.html(content);
+                        $not_found.addClass('hidden');
+                        $select.removeClass('hidden');
+                        $loading.addClass('hidden');
+                        $requirements.addClass('hidden');
+                    } else {
+                        $not_found.removeClass('hidden');
+                        $loading.addClass('hidden');
+                        $requirements.addClass('hidden');
+                        $select.addClass('hidden');
                     }
 
                 },
