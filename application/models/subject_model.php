@@ -39,7 +39,21 @@ class Subject_Model extends MY_Model {
     }*/
 
     public function get_assigned_subjects(){
-      //TODO:query
+      
+      $sql = "SELECT 
+          * 
+        FROM
+          tbl_subject a,
+          tbl_grade_subj b,
+          tbl_grade_level c
+        WHERE a.subj_id = b.`subj_id` 
+        AND b.`gl_id` = c.`gl_id`";
+
+      $query = $this->db->query($sql);
+
+      $result = $query->result();
+
+      return $result;
     }
 
     public function get_subjects(){

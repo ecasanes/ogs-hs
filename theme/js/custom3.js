@@ -951,6 +951,11 @@ Module.Teacher = (function() {
 
 Module.AssignSubject = (function(){
 
+    var $search_subject = $('#search-assigned-subject');
+    var $search_results = $search_subject.find('.search-results');
+
+    var $loading = $search_subject.find('.loading');
+
     function get_subject_per_year_level(){
 
         var $form = $('#assign-subject-grade-level-form');
@@ -1058,6 +1063,48 @@ Module.AssignSubject = (function(){
 
     function filter_assigned_subjects(){
 
+        var $form = $('#filter-subject-form');
+
+        $form.submit(function(e) {
+            e.preventDefault();
+            var $this = $(this);
+
+            //console.log('test');
+            var school_year = $this.find('select[name=school_year]').val();
+            var year_level = $this.find('select[name=grade_level]').val();
+            var post_data = $this.serializeArray();
+
+            //console.log(post_data);
+
+            if (school_year == '' && year_level == '') {
+                console.log('refresh');
+                refresh_assigned_subject_list(true);
+            } else {
+                console.log('filter');
+                //filter
+                $.ajax({
+                    url: base_url + controller + '/filter_subject',
+                    method: "get",
+                    dataType: "html",
+                    data: post_data,
+                    beforeSend: function(data) {
+
+                        $search_results.html('');
+                        $loading.removeClass('hidden');
+                    },
+                    success: function(data) {
+                        $search_results.html(data);
+                    },
+                    complete: function(data) {
+                        $loading.addClass('hidden');
+                    },
+                    error: function(error, data) {
+                        console.log(error.responseText);
+                    }
+
+                });
+            }
+        });
     }
 
     function refresh_assigned_subject_list(retain_height){
@@ -1095,94 +1142,12 @@ Module.AssignSubject = (function(){
             }
 
         });
-
-    }
-
-    function refresh_subject_list(retain_height) {
-
-        var retain_height = retain_height || false;
-
-        if (retain_height) {
-            var height = $search_results.height();
-        }
-
-
-        $.ajax({
-            url: base_url + controller + '/data_list',
-            method: "post",
-            dataType: "html",
-            beforeSend: function(data) {
-
-                if (retain_height) {
-                    $search_results.height(height);
-                }
-
-                $search_results.html('');
-
-                $loading.removeClass('hidden');
-            },
-            success: function(data) {
-                $search_results.html(data);
-            },
-            complete: function(data) {
-                $loading.addClass('hidden');
-                $search_results.height('auto');
-            },
-            error: function(error, data) {
-                console.log(error.responseText);
-            }
-
-        });
-    }
-
-    function filter_subject() {
-
-        var $form = $('#filter-subject-form');
-
-        $form.submit(function(e) {
-            e.preventDefault();
-            var $this = $(this);
-
-            //console.log('test');
-            var school_year = $this.find('select[name=school_year]').val();
-            var year_level = $this.find('select[name=grade_level]').val();
-            var post_data = $this.serializeArray();
-
-            //console.log(post_data);
-
-            if (school_year == '' && year_level == '') {
-                console.log('refresh');
-                refresh_subject_list(true);
-            } else {
-                console.log('filter');
-                //filter
-                $.ajax({
-                    url: base_url + controller + '/filter_subject',
-                    method: "get",
-                    dataType: "html",
-                    data: post_data,
-                    beforeSend: function(data) {
-
-                        $search_results.html('');
-                        $loading.removeClass('hidden');
-                    },
-                    success: function(data) {
-                        $search_results.html(data);
-                    },
-                    complete: function(data) {
-                        $loading.addClass('hidden');
-                    },
-                    error: function(error, data) {
-                        console.log(error.responseText);
-                    }
-
-                });
-            }
-        });
     }
 
     return {
-        get_subject_per_year_level: get_subject_per_year_level
+        get_subject_per_year_level: get_subject_per_year_level,
+        filter_assigned_subjects: filter_assigned_subjects,
+        refresh_assigned_subject_list: refresh_assigned_subject_list
     }
     
 
