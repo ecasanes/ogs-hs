@@ -38,6 +38,10 @@ class Subject_Model extends MY_Model {
         return $result;
     }*/
 
+    public function get_assigned_subjects(){
+      //TODO:query
+    }
+
     public function get_subjects(){
 
         $db_table = $this::DB_TABLE;

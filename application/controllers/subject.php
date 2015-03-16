@@ -58,9 +58,9 @@ class Subject extends My_Controller {
 			);
 		$footer_data = array();
 		$footer_data['listeners'] = array(
-			'Module.Subject.add_subject()', 
-			'Module.Subject.refresh_subject_list()',
-			'Module.AssignSubject.get_subject_per_year_level()'
+			'Module.AssignSubject.get_subject_per_year_level()',
+			'Module.AssignSubject.filter_assigned_subjects()',
+			'Moudle.AssignSubject.refresh_assigned_subject_list()'
 		);
 
 		$this->load->view( 'layout/header', $header_data );
@@ -435,6 +435,20 @@ class Subject extends My_Controller {
 	    }
 
 	    return $option;
+	}
+
+	public function assigned_subjects_list(){
+
+		$main_model = $this->main_model;
+		$controller = $this->controller;
+
+		$results = $main_model->get_assigned_subjects();
+
+		$model_data = array(
+			'results' => $results
+			);
+
+		$this->load->view($controller.'/list', $model_data);
 	}
 
 }

@@ -74,18 +74,32 @@
     <!-- start panel -->
     <div class="panel panel-primary">
       <div class="panel-heading">
-        <h3 class="panel-title">List of Subjects with Year Level Assigned</h3>
+        <h3 class="panel-title">List of Assigned Subjects</h3>
         <div class="panel-options">
           
         </div>
       </div>
-      <div id="search-subject" class="panel-body">
-        <div class="form-horizontal">
+      <div id="search-assigned-subject" class="panel-body">
+        <div class="form-horizontal filter">
           <div class="row">
-            
-              <!-- <div class="col-sm-4 col-xs-12">
-                <input id="search-subject-input" type="text" class="form-control" placeholder="Find Subject by typing name" name="search">
-              </div> -->
+            <div class="col-sm-12 col-xs-12">
+              <?php echo form_open('', array('id' => 'filter-subject-form')); ?>
+              School Year: 
+              <select name="school_year" id="">
+                <option value="">All</option>
+                <?php echo $school_year_dropdown; ?>
+              </select>
+              Year Level: 
+              <select name="grade_level" id="">
+                <option value="">All</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+              <input type="submit" value="Filter">
+              <?php echo form_close(); ?>
+            </div>
           </div>
         </div>
         <br>
