@@ -1581,7 +1581,7 @@ class Curiculum extends My_Controller
                 $option = "";
             }
 
-            $option .= $this->subjects_not_offered_dropdown($section, $html_type);
+            $option .= $this->subjects_not_offered_dropdown($section, $year_level, $html_type);
 
             if ($html_type == "dropdown") {
                 if ($option == '<option value="">Select</option>') {
@@ -1753,13 +1753,14 @@ class Curiculum extends My_Controller
         return $option;
     }
 
-    public function subjects_not_offered_dropdown($section_id, $html_type = "dropdown")
+    public function subjects_not_offered_dropdown($section_id, $year_level, $html_type = "dropdown")
     {
 
         $this->load->model('Curiculum_Model');
         $main_model = new Curiculum_Model;
 
-        $results = $main_model->get_subjects_not_offered($section_id);
+        //$results = $main_model->get_subjects_not_offered($section_id);
+        $results = $main_model->get_subjects_not_offered_by_year_level($section_id, $year_level);
 
         $option = "";
 

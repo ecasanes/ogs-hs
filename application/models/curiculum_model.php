@@ -897,6 +897,30 @@ class Curiculum_Model extends MY_Model {
         return $result;
     }
 
+    public function get_subjects_not_offered_by_year_level($section_id, $year_level){
+
+        $sql = "SELECT 
+          * 
+        FROM
+          tbl_subject 
+        WHERE subj_id NOT IN 
+          (SELECT 
+            a.subj_id 
+          FROM
+            `tbl_subj_offering` a   
+          WHERE a.`offer_id` = ?)
+          AND year_level = ?";
+
+        $escaped_values = array($section_id, $year_level);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+
+    }
+
     public function get_subjects_offered($section_id){ //gl_id, offer_id
 
         $sql = "SELECT 

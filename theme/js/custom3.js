@@ -2458,12 +2458,13 @@ Module.Curiculum = (function() {
         $section.change(function(e) {
 
             var $this = $(this);
+            var grade_level = $grade_level.val();
 
             var section = $section.val();
 
             if (section != null) {
 
-                get_subject_checkbox($subject_container, section);
+                get_subject_checkbox($subject_container, section, null, grade_level);
 
             } else {
                 get_subject_checkbox($subject_container);
@@ -2632,7 +2633,8 @@ Module.Curiculum = (function() {
             case "not_offered":
                 ajax_url = base_url + "curiculum/subjects_not_offered_dropdown_by_info/checkbox";
                 ajax_data = {
-                    "section": section
+                    "section": section,
+                    "year_level": grade_level
                 };
                 break;
 
