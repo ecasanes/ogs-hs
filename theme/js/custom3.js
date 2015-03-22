@@ -1387,20 +1387,20 @@ Module.Subject = (function() {
             var $this = $(this);
 
             //console.log('test');
-            var school_year = $this.find('select[name=school_year]').val();
+            //var school_year = $this.find('select[name=school_year]').val();
             var year_level = $this.find('select[name=grade_level]').val();
             var post_data = $this.serializeArray();
 
             //console.log(post_data);
 
-            if (school_year == '' && year_level == '') {
+            if (year_level == '') {
                 console.log('refresh');
                 refresh_subject_list(true);
             } else {
                 console.log('filter');
                 //filter
                 $.ajax({
-                    url: base_url + controller + '/filter_subject',
+                    url: base_url + controller + '/filter_subject_by_year_level',
                     method: "get",
                     dataType: "html",
                     data: post_data,

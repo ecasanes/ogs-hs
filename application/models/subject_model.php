@@ -223,6 +223,24 @@ class Subject_Model extends MY_Model {
     }
 
 
+    public function get_subjects_by_year_level($year_level){
+
+      $sql = "SELECT 
+          * FROM
+          tbl_subject a 
+        WHERE a.year_level = ?";
+
+      $escaped_values = array($year_level);
+
+      $query = $this->db->query($sql, $escaped_values);
+
+      $result = $query->result();
+
+      return $result;
+
+    }
+
+
     public function count_subject_by_year_level($year_level, $subj_code){
 
         $sql = "SELECT 

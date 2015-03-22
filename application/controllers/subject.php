@@ -277,6 +277,26 @@ class Subject extends My_Controller {
 		$this->load->view($controller.'/list', $model_data);
 	}
 
+	public function filter_subject_by_year_level(){
+
+		$main_model = $this->main_model;
+		$controller = $this->controller;
+
+		$year_level = $this->input->get('grade_level');
+		
+
+		$results = $main_model->get_subjects_by_year_level($year_level);
+
+		$model_data = array(
+			'results' => $results
+			);
+
+		//var_dump($results);
+
+		$this->load->view($controller.'/lists/assigned-subject-list', $model_data);
+
+	}
+
 	public function filter_subject(){
 
 		$main_model = $this->main_model;

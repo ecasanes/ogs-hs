@@ -10,11 +10,11 @@
       <div class="row">
         <div class="col-sm-12 col-xs-12">
           <?php echo form_open('', array('id' => 'filter-subject-form')); ?>
-          School Year: 
+          <!--School Year: 
           <select name="school_year" id="">
             <option value="">All</option>
             <?php echo $school_year_dropdown; ?>
-          </select>
+          </select>-->
           Year Level: 
           <select name="grade_level" id="">
             <option value="">All</option>

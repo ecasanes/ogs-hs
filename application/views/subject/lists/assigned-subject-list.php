@@ -22,7 +22,13 @@ else:
 			$code = $result->subj_code;
 			$name = $result->subj_desc;
 			$unit = $result->subj_unit;
-			$grade_level = $result->grade_level;
+
+			
+			if(!isset($result->grade_level)){
+				$grade_level = $result->year_level;
+			}else{
+				$grade_level = $result->grade_level;
+			}
 			//$grade_level = $result->grade_level;
 			$link = '';
 		?>
