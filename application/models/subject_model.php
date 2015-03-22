@@ -87,7 +87,8 @@ class Subject_Model extends MY_Model {
             tbl_grade_level b 
           WHERE b.`sy_start` = ?
             AND b.`sy_end` = ? 
-            AND b.grade_level = ?)";
+            AND b.grade_level = ?
+            AND a.gl_id = b.gl_id)";
 
       $escaped_values = array($year_level, $sy_start, $sy_end, $year_level);
 
