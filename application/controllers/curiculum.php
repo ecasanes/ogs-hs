@@ -2439,7 +2439,8 @@ class Curiculum extends My_Controller
         $main_model = $this->main_model;
 
         $user_type = $this->user_type;
-        $student_user_id = $this->user_id;
+        $user_id = $this->user_id;
+        $student_user_id = $user_id;
 
         $section_info = $main_model->get_section_info($offer_id);
         $section_name = $section_info->section;
@@ -2460,7 +2461,12 @@ class Curiculum extends My_Controller
         $output .= "Student Name";
         $output .= "</td>";
 
-        $subjects = $main_model->get_subjects_offered($offer_id);
+        if($user_type == 2){
+            $subjects = $main_model->get_subjects_offered_by_teacher($offer_id, $user_id);
+        }else{
+            $subjects = $main_model->get_subjects_offered($offer_id);
+        }
+        
         $subject_count = 0;
 
         foreach ($subjects as $subject) {
@@ -2537,7 +2543,8 @@ class Curiculum extends My_Controller
         $data = $this->input->get();
 
         $user_type = $this->user_type;
-        $student_user_id = $this->user_id;
+        $user_id = $this->user_id;
+        $student_user_id = $user_id;
 
         if ($data) {
 
@@ -2573,10 +2580,12 @@ class Curiculum extends My_Controller
 
                     $output .= "<h3> Year Leve: " . $grade_level_tag . "</h3>";
 
-                    if ($user_type == 1 || $user_type == 2) {
+                    if ($user_type == 1) {
                         $sections = $main_model->get_sections_by_grade_level($grade_level_id);
                     } else if ($user_type == 3) {
                         $sections = $main_model->get_sections_by_grade_level($grade_level_id, $student_user_id);
+                    } else if ($user_type == 2){
+                        $sections = $main_model->get_sections_by_teacher_detail($grade_level_id, $user_id);
                     }
 
 

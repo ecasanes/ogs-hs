@@ -939,6 +939,24 @@ class Curiculum_Model extends MY_Model {
         return $result;
     }
 
+    public function get_subjects_offered_by_teacher($section_id, $user_id){
+
+        $sql = "SELECT 
+                *
+              FROM
+                `tbl_subj_offering` a,
+                tbl_subject b
+              WHERE a.`offer_id` = ? AND b.`subj_id` = a.`subj_id` AND subj_offerid NOT IN(SELECT subj_offerid FROM tbl_teacher_subj WHERE user_id = ?)";
+
+        $escaped_values = array($section_id, $user_id);
+
+        $query = $this->db->query($sql, $escaped_values);
+
+        $result = $query->result();
+
+        return $result;
+    }
+
     public function get_subjects_offered_by_school_year($sy_start, $sy_end, $year_level){
 
         $sql = "SELECT DISTINCT 
